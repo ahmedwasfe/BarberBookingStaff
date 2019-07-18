@@ -7,20 +7,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Adapter.CityAdapter;
+import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
 import com.ahmet.barberbookingstaff.Interface.IAllCitiesLoadListener;
+import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.City;
+import com.ahmet.barberbookingstaff.Model.Salon;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.reflect.TypeToken;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +38,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dmax.dialog.SpotsDialog;
+import io.paperdb.Paper;
 
 public class MainActivity extends AppCompatActivity implements IAllCitiesLoadListener {
 
@@ -43,17 +54,59 @@ public class MainActivity extends AppCompatActivity implements IAllCitiesLoadLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        FirebaseInstanceId.getInstance()
+                .getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
 
-        // init recyclerview
-        initRecyclerView();
+                        if (task.isSuccessful()){
 
-        // init Firebase
-        init();
+                            Common.updateToken(MainActivity.this,
+                                    task.getResult().getToken());
+                            Log.d("TOKEN", task.getResult().getToken());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        loadAllCitiesFromDatabase();
+        Paper.init(this);
+        String user = Paper.book().read(Common.KEY_LOGGED);
+        // If user not login before
+        if (TextUtils.isEmpty(user)) {
+
+            setContentView(R.layout.activity_main);
+
+            ButterKnife.bind(this);
+
+            // init recyclerview
+            initRecyclerView();
+
+            // init Firebase
+            init();
+
+            loadAllCitiesFromDatabase();
+
+        } else {  // If user already login
+
+            Gson gson = new Gson();
+            Common.cityName = Paper.book().read(Common.KEY_CITY);
+            Common.selectedSalon = gson.fromJson(Paper.book().read(Common.KEY_SALON, ""),
+                                    new TypeToken<Salon>(){}.getType());
+            Common.currentBarber = gson.fromJson(Paper.book().read(Common.KEY_BARBER, ""),
+                    new TypeToken<Barber>(){}.getType());
+
+            Intent intent = new Intent(this, HomeStaffActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void loadAllCitiesFromDatabase() {

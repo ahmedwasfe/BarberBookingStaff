@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,24 +18,32 @@ import com.ahmet.barberbookingstaff.Adapter.SalonAdapter;
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
 import com.ahmet.barberbookingstaff.Interface.IBranchLoadListener;
+import com.ahmet.barberbookingstaff.Interface.IGetBarberListener;
 import com.ahmet.barberbookingstaff.Interface.IOnLoadCountSalon;
+import com.ahmet.barberbookingstaff.Interface.IUserLoginRemebmberListener;
+import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.Salon;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dmax.dialog.SpotsDialog;
+import io.paperdb.Paper;
 
-public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalon, IBranchLoadListener {
+public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalon, IBranchLoadListener, IUserLoginRemebmberListener, IGetBarberListener {
 
     @BindView(R.id.txt_salon_count)
     TextView mTxtCountSalon;
@@ -61,6 +72,7 @@ public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalo
 
         // load all Salon
         loadSalonBaseOnCity(Common.cityName);
+
     }
 
     private void loadSalonBaseOnCity(String cityName) {
@@ -83,6 +95,7 @@ public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalo
                             List<Salon> mListBranch = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : task.getResult()) {
                                 Salon salon = documentSnapshot.toObject(Salon.class);
+                                salon.setSalonID(documentSnapshot.getId());
                                 mListBranch.add(salon);
                             }
                             iBranchLoadListener.onLoadAllSalonSuccess(mListBranch);
@@ -126,7 +139,7 @@ public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalo
     @Override
     public void onLoadAllSalonSuccess(List<Salon> mListBranch) {
 
-        SalonAdapter mSalonAdapter = new SalonAdapter(this, mListBranch);
+        SalonAdapter mSalonAdapter = new SalonAdapter(this, mListBranch, this, this);
         mRecyclerSalon.setAdapter(mSalonAdapter);
         mDialog.dismiss();;
     }
@@ -135,5 +148,21 @@ public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalo
     public void onLoadAllSalonFailed(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
         mDialog.dismiss();
+    }
+
+    @Override
+    public void onUserLoginSuccess(String user) {
+        // Save user
+        Paper.init(this);
+        Paper.book().write(Common.KEY_LOGGED, user);
+        Paper.book().write(Common.KEY_CITY, Common.cityName);
+        Paper.book().write(Common.KEY_SALON, new Gson().toJson(Common.selectedSalon));
+    }
+
+    @Override
+    public void onGetBarberSuccess(Barber barber) {
+
+        Common.currentBarber = barber;
+        Paper.book().write(Common.KEY_BARBER, new Gson().toJson(barber));
     }
 }
