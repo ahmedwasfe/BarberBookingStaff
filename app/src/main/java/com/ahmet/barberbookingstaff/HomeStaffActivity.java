@@ -3,8 +3,6 @@ package com.ahmet.barberbookingstaff;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuView;
-import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -13,10 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -28,7 +23,7 @@ import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
 import com.ahmet.barberbookingstaff.Interface.INotificationCountListener;
 import com.ahmet.barberbookingstaff.Interface.ITimeSlotLoadListener;
-import com.ahmet.barberbookingstaff.Model.TimeSlot;
+import com.ahmet.barberbookingstaff.Model.BookingInformation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -42,8 +37,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -137,7 +130,7 @@ public class HomeStaffActivity extends AppCompatActivity
                 .collection("AllSalon")
                 .document(Common.cityName)
                 .collection("Branch")
-                .document(Common.selectedSalon.getSalonID())
+                .document(Common.currentSalon.getSalonID())
                 .collection("Barber")
                 .document(Common.currentBarber.getBarberID());
 
@@ -229,7 +222,7 @@ public class HomeStaffActivity extends AppCompatActivity
                 .collection("AllSalon")
                 .document(Common.cityName)
                 .collection("Branch")
-                .document(Common.selectedSalon.getSalonID())
+                .document(Common.currentSalon.getSalonID())
                 .collection("Barber")
                 .document(Common.currentBarber.getBarberID())
                 .collection("Notifications");
@@ -299,7 +292,7 @@ public class HomeStaffActivity extends AppCompatActivity
                                         .collection("AllSalon")
                                         .document(Common.cityName)
                                         .collection("Branch")
-                                        .document(Common.selectedSalon.getSalonID())
+                                        .document(Common.currentSalon.getSalonID())
                                         .collection("Barber")
                                         .document(barberID)
                                         .collection(bookingDate);  // book date is date simpleformat with dd_MM_yyyy == 27_06_2019
@@ -317,9 +310,9 @@ public class HomeStaffActivity extends AppCompatActivity
                                                         iTimeSlotLoadListener.onTimeSoltLoadEmpty();
                                                     }else {
                                                         // If have appoiment
-                                                        List<TimeSlot> mListTimeSlot = new ArrayList<>();
+                                                        List<BookingInformation> mListTimeSlot = new ArrayList<>();
                                                         for (QueryDocumentSnapshot snapshot : task.getResult())
-                                                            mListTimeSlot.add(snapshot.toObject(TimeSlot.class));
+                                                            mListTimeSlot.add(snapshot.toObject(BookingInformation.class));
 
                                                         iTimeSlotLoadListener.onTimeSoltLoadSuccess(mListTimeSlot);
                                                     }
@@ -344,6 +337,12 @@ public class HomeStaffActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (mActionBarDrawerToggle.onOptionsItemSelected(item))
             return true;
+
+        if (item.getItemId() == R.id.action_new_notification){
+            startActivity(new Intent(HomeStaffActivity.this, NotificationsActivity.class));
+            mTxtCountNotification.setText("");
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -368,7 +367,7 @@ public class HomeStaffActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTimeSoltLoadSuccess(List<TimeSlot> mListTimeSlot) {
+    public void onTimeSoltLoadSuccess(List<BookingInformation> mListTimeSlot) {
 
         TimeSlotAdapter mTimeSlotAdapter = new TimeSlotAdapter(this, mListTimeSlot);
         mRecyclerTimeSolt.setAdapter(mTimeSlotAdapter);
@@ -396,7 +395,6 @@ public class HomeStaffActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.notification_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_new_notification);
 
-        try {
 
             mTxtCountNotification = menuItem.getActionView().findViewById(R.id.count_notification);
 
@@ -408,10 +406,6 @@ public class HomeStaffActivity extends AppCompatActivity
                     onOptionsItemSelected(menuItem);
                 }
             });
-
-        }catch (NullPointerException e){
-            Log.d("MENUERROR", e.getMessage());
-        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -432,10 +426,10 @@ public class HomeStaffActivity extends AppCompatActivity
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(HomeStaffActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(HomeStaffActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
         });
     }
 

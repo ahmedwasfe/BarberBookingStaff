@@ -4,10 +4,15 @@ import com.ahmet.barberbookingstaff.Common.Common;
 
 public class Token {
 
-    private String token, user;
+    private String token, userPhone;
     private Common.TOKEN_TYPE tokenType;
 
-    public Token() {
+    public Token() {}
+
+    public Token(String token, String userPhone, Common.TOKEN_TYPE tokenType) {
+        this.token = token;
+        this.userPhone = userPhone;
+        this.tokenType = tokenType;
     }
 
     public String getToken() {
@@ -18,12 +23,12 @@ public class Token {
         this.token = token;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserPhone() {
+        return userPhone;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
     }
 
     public Common.TOKEN_TYPE getTokenType() {

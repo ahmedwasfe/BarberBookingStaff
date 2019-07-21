@@ -6,16 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ahmet.barberbookingstaff.Common.Common;
+import com.ahmet.barberbookingstaff.DoneServicsesActivity;
 import com.ahmet.barberbookingstaff.Interface.IRecyclerItemSelectedListener;
-import com.ahmet.barberbookingstaff.Model.TimeSlot;
+import com.ahmet.barberbookingstaff.Model.BookingInformation;
 import com.ahmet.barberbookingstaff.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +30,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
 
     private Context mContext;
 
-    private List<TimeSlot> mListTimeSlot;
+    private List<BookingInformation> mListTimeSlot;
     private List<CardView> mListCardTimeSolt;
 
     private LayoutInflater inflater;
@@ -40,7 +46,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
 
     }
 
-    public TimeSlotAdapter(Context mContext, List<TimeSlot> mListTimeSlot) {
+    public TimeSlotAdapter(Context mContext, List<BookingInformation> mListTimeSlot) {
 
         this.mContext = mContext;
 
@@ -76,11 +82,19 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
 
             holder.mTxtTimeSolt.setTextColor(
                     mContext.getResources().getColor(R.color.colorBlack));
+           // holder.mCardTimeSolt.setEnabled(true);
+
+            holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
+                @Override
+                public void onItemSelected(View view, int position) {
+                    // Fix crach if we not add this function
+                }
+            });
 
 
         }else {  // If have position full (booked)
 
-            for (TimeSlot slotValue : mListTimeSlot){
+            for (BookingInformation slotValue : mListTimeSlot){
 
                 // Loop all time solt from server and set a differnt color
                 int slot = Integer.parseInt(slotValue.getTimeSlot().toString());
@@ -100,6 +114,53 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
 
                     holder.mTxtTimeSolt.setTextColor(
                             mContext.getResources().getColor(R.color.colorWhite));
+                   // holder.mCardTimeSolt.setEnabled(false);
+
+                    holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(View view, int position) {
+                            // Only add for gray time slot
+                            // Here we will get Booking Information and store in Common.currentBookingInformation
+                            // After that start Done Service Actvivty
+
+                            FirebaseFirestore.getInstance()
+                                    .collection("AllSalon")
+                                    .document(Common.cityName)
+                                    .collection("Branch")
+                                    .document(Common.currentSalon.getSalonID())
+                                    .collection("Barber")
+                                    .document(Common.currentBarber.getBarberID())
+                                    .collection(Common.mSimpleDateFormat.format(Common.bookingDate.getTime()))
+                                    .document(slotValue.getTimeSlot().toString())
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                                            if (task.isSuccessful()){
+
+                                                if (task.getResult().exists()){
+
+                                                    Common.currentBooking = task.getResult().toObject(BookingInformation.class);
+                                                    mContext.startActivity(new Intent(mContext, DoneServicsesActivity.class));
+                                                }
+                                            }
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(View view, int position) {
+                             // Fix crach
+                        }
+                    });
                 }
             }
         }
@@ -111,28 +172,30 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
             mListCardTimeSolt.add(holder.mCardTimeSolt);
 
         // check if card time slot is available
-        holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
-            @Override
-            public void onItemSelected(View view, int position1) {
-
-                // Loop all cards in card list
-                for (CardView cardView: mListCardTimeSolt) {
-                    // Only available card time slot be change
-                    if (cardView.getTag() == null)
-                        cardView.setCardBackgroundColor(
-                                mContext.getResources().getColor(R.color.colorWhite));
-                }
-
-                // Our selected card will be change color
-                holder.mCardTimeSolt.setCardBackgroundColor(
-                        mContext.getResources().getColor(R.color.colorAccent));
-                holder.mTxtTimeSolt.setTextColor(
-                        mContext.getResources().getColor(R.color.colorWhite));
-                holder.mTxtTimeSoltDescription.setTextColor(
-                        mContext.getResources().getColor(R.color.colorWhite));
-
-            }
-        });
+//        if (!mListTimeSlot.contains(position)) {
+//            holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(View view, int position1) {
+//
+//                    // Loop all cards in card list
+//                    for (CardView cardView : mListCardTimeSolt) {
+//                        // Only available card time slot be change
+//                        if (cardView.getTag() == null)
+//                            cardView.setCardBackgroundColor(
+//                                    mContext.getResources().getColor(R.color.colorWhite));
+//                    }
+//
+//                    // Our selected card will be change color
+//                    holder.mCardTimeSolt.setCardBackgroundColor(
+//                            mContext.getResources().getColor(R.color.colorAccent));
+//                    holder.mTxtTimeSolt.setTextColor(
+//                            mContext.getResources().getColor(R.color.colorWhite));
+//                    holder.mTxtTimeSoltDescription.setTextColor(
+//                            mContext.getResources().getColor(R.color.colorWhite));
+//
+//                }
+//            });
+//        }
 
     }
 

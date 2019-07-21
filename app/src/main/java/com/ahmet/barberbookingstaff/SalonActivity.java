@@ -8,9 +8,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +23,6 @@ import com.ahmet.barberbookingstaff.Model.Salon;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,7 +34,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
 
@@ -156,7 +150,7 @@ public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalo
         Paper.init(this);
         Paper.book().write(Common.KEY_LOGGED, user);
         Paper.book().write(Common.KEY_CITY, Common.cityName);
-        Paper.book().write(Common.KEY_SALON, new Gson().toJson(Common.selectedSalon));
+        Paper.book().write(Common.KEY_SALON, new Gson().toJson(Common.currentSalon));
     }
 
     @Override

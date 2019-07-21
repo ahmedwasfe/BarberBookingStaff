@@ -4,29 +4,30 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.OpenableColumns;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.ahmet.barberbookingstaff.HomeStaffActivity;
 import com.ahmet.barberbookingstaff.Model.Barber;
+import com.ahmet.barberbookingstaff.Model.BookingInformation;
 import com.ahmet.barberbookingstaff.Model.Salon;
 import com.ahmet.barberbookingstaff.Model.Token;
 import com.ahmet.barberbookingstaff.R;
-import com.ahmet.barberbookingstaff.Service.FCMService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.nio.file.OpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -41,17 +42,26 @@ public class Common {
     public static final String KEY_BARBER = "BARBER";
     public static final String KEY_TITLE = "title";
     public static final String KEY_CONTENT = "content";
+    public static final String SERVICES_ADDED = "SERVICES_ADDED";
+    public static final String SHOPPING_ITEMS = "SHOPPING_ITEMS";
+    public static final String MONEY_SIGN = "$";
+
 
     public static String cityName = "";
-    public static Salon selectedSalon;
+    public static Salon currentSalon;
     public static Barber currentBarber;
+    public static BookingInformation currentBooking;
 
     public static final int TIME_SLOT_TOTAL = 20;
+    public static final int MAX_NOTIFICATIONS_PER_LOAD = 10;
+    // default witout on services extra and items extra
+    public static final double DEFAULT_PRICE = 30;
 
     public static final Object DISABLE_TAG = "DISABLE";
 
     public static SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd_MM_yyyy");
     public static Calendar bookingDate = Calendar.getInstance();
+
 
     public static String convertTimeSoltToString(int solt) {
 
@@ -119,7 +129,7 @@ public class Common {
 
                 Token mToken = new Token();
                 mToken.setToken(token);
-                mToken.setUser(user);
+                mToken.setUserPhone(user);
                 // Because this code run from Barber Staff app
                 mToken.setTokenType(TOKEN_TYPE.BARBER);
 
@@ -169,8 +179,8 @@ public class Common {
             }
             Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL)
-                    .setContentTitle(title)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL);
+            builder.setContentTitle(title)
                     .setContentText(content)
                     .setAutoCancel(false)
                     .setSound(sound)
@@ -182,6 +192,37 @@ public class Common {
 
             Notification notification = builder.build();
             notificationManager.notify(notificationId, notification);
+    }
+
+    public static String formatShoppingName(String name) {
+
+        return name.length() > 13 ? new StringBuilder(name.substring(0, 10))
+                .append(" ...").toString() : name;
+    }
+
+    public static String getFileName(ContentResolver contentResolver, Uri fileUri) {
+
+        String result = null;
+        if (fileUri.getScheme().equals("content")){
+
+            Cursor cursor = contentResolver.query(fileUri, null, null, null, null);
+
+            try{
+                if (cursor != null && cursor.moveToFirst())
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            } finally {
+                cursor.close();
+            }
+        }
+
+        if (result == null){
+            result = fileUri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1)
+                result = result.substring(cut + 1);
+        }
+
+        return result;
     }
 
     public enum TOKEN_TYPE {

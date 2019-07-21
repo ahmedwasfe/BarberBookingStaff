@@ -44,6 +44,14 @@ dependencies {
     // Firebase
     implementation 'com.google.firebase:firebase-firestore:20.1.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
+    implementation 'com.google.firebase:firebase-storage:18.1.0'
+    implementation 'com.google.firebase:firebase-auth:18.1.0'
+
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // Permission
+    implementation 'com.karumi:dexter:5.0.0'
 
     // Retrofit & Rxjava
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'

@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ahmet.barberbookingstaff.Common.Common;
@@ -32,7 +31,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
@@ -73,7 +71,7 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
             @Override
             public void onItemSelected(View view, int position) {
 
-                Common.selectedSalon = mListSalon.get(position);
+                Common.currentSalon = mListSalon.get(position);
                 showSheetDailogLogin();
             }
         });
@@ -109,7 +107,7 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
                 .collection("AllSalon")
                 .document(Common.cityName)
                 .collection("Branch")
-                .document(Common.selectedSalon.getSalonID())
+                .document(Common.currentSalon.getSalonID())
                 .collection("Barber")
                 .whereEqualTo("username", username)
                 .whereEqualTo("password", password)
