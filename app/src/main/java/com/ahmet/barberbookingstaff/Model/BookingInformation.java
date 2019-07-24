@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class BookingInformation {
 
-    private String customerName, customerPhone, time,
+    private String bookingID, customerName, customerPhone, time,
                     barberID, barberName, salonID,
                     salonName, salonAddress, cityBooking;
 
@@ -13,6 +13,14 @@ public class BookingInformation {
     private boolean done;
 
     public BookingInformation() {}
+
+    public String getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(String bookingID) {
+        this.bookingID = bookingID;
+    }
 
     public String getCustomerName() {
         return customerName;

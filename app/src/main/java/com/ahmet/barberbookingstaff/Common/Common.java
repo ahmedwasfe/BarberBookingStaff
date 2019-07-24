@@ -42,9 +42,16 @@ public class Common {
     public static final String KEY_BARBER = "BARBER";
     public static final String KEY_TITLE = "title";
     public static final String KEY_CONTENT = "content";
+
+    public static final String KEY_RATING_CITY = "RATING_CITY";
+    public static final String KEY_RATING_SALON_ID = "RATING_SALON_ID";
+    public static final String KEY_RATING_SALON_NAME = "RATING_SALON_NAME";
+    public static final String KEY_RATING_BARBER_ID = "RATING_BARBER_ID";
+
     public static final String SERVICES_ADDED = "SERVICES_ADDED";
     public static final String SHOPPING_ITEMS = "SHOPPING_ITEMS";
     public static final String MONEY_SIGN = "$";
+    public static final String IMAGE_DOWNLIADABLE_URL = "DOWNLIADABLE_URL";
 
 
     public static String cityName = "";
