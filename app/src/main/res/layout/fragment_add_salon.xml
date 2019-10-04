@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".AddSalonActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/txt_title_salon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Add Salon"
+            android:textColor="@color/colorWhite"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:background="@color/colorPrimary"
+            android:padding="20dp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner_salon_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_input_salon_open_hour"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_input_salon_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/txt_title_salon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <EditText
+                android:id="@+id/input_salon_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Salon Name"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_input_salon_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintTop_toBottomOf="@id/layout_input_salon_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <EditText
+                android:id="@+id/input_salon_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Salon Address"
+                android:ems="10"
+                android:inputType="textPostalAddress"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_input_salon_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintTop_toBottomOf="@id/layout_input_salon_address"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <EditText
+                android:id="@+id/input_salon_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="(Optioinal) Mobile"
+                android:ems="10"
+                android:inputType="phone"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_input_salon_open_hour"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintTop_toBottomOf="@id/layout_input_salon_phone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <EditText
+                android:id="@+id/input_salon_open_hour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Open hour"
+                android:ems="10"
+                android:inputType="time"
+                android:textSize="20sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/btn_add_salon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Create Salon"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:padding="14dp"
+            android:layout_margin="30dp"
+            android:background="@drawable/btn_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_salon_type"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -27,11 +27,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
 
@@ -44,7 +47,8 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
     private IUserLoginRemebmberListener iUserLoginRemebmberListener;
     private IGetBarberListener iGetBarberListener;
 
-    public SalonAdapter(Context mContext, List<Salon> mListSalon, IUserLoginRemebmberListener iUserLoginRemebmberListener, IGetBarberListener iGetBarberListener) {
+    public SalonAdapter(Context mContext, List<Salon> mListSalon,
+                        IUserLoginRemebmberListener iUserLoginRemebmberListener, IGetBarberListener iGetBarberListener) {
         this.mContext = mContext;
         this.mListSalon = mListSalon;
         this.iUserLoginRemebmberListener = iUserLoginRemebmberListener;
@@ -105,8 +109,6 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
         // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/utQmhc07WVjaZdr9tbRB
         FirebaseFirestore.getInstance()
                 .collection("AllSalon")
-                .document(Common.cityName)
-                .collection("Branch")
                 .document(Common.currentSalon.getSalonID())
                 .collection("Barber")
                 .whereEqualTo("username", username)
@@ -142,6 +144,7 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
                             } else {
                                 mDialogLoading.dismiss();
                                 Toast.makeText(mContext, "Wrong username and password or wrong salon", Toast.LENGTH_SHORT).show();
+
                             }
                         }
 
@@ -153,6 +156,11 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
                 mDialogLoading.dismiss();
             }
         });
+
+    }
+
+    @Override
+    public void onClickPositiveButton(BottomSheetDialog sheetDialog, String name, String username, String password, String barberType) {
 
     }
 

@@ -5,12 +5,18 @@ import android.os.Parcelable;
 
 public class Barber implements Parcelable {
 
-    private String name, username, password, barberID;
+    private String name, username, password, barberType, barberID;
     private long rating;
 
     public Barber() {
     }
 
+    public Barber(String name, String username, String password, String barberType) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.barberType = barberType;
+    }
 
     public String getName() {
         return name;
@@ -36,6 +42,14 @@ public class Barber implements Parcelable {
         this.password = password;
     }
 
+    public String getBarberType() {
+        return barberType;
+    }
+
+    public void setBarberType(String barberType) {
+        this.barberType = barberType;
+    }
+
     public String getBarberID() {
         return barberID;
     }
@@ -56,6 +70,7 @@ public class Barber implements Parcelable {
         name = in.readString();
         username = in.readString();
         password = in.readString();
+        barberType = in.readString();
         barberID = in.readString();
         rating = in.readLong();
     }
@@ -82,6 +97,7 @@ public class Barber implements Parcelable {
         dest.writeString(name);
         dest.writeString(username);
         dest.writeString(password);
+        dest.writeString(barberType);
         dest.writeString(barberID);
         dest.writeLong(rating);
     }

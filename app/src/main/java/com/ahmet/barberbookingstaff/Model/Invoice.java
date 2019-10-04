@@ -9,7 +9,7 @@ public class Invoice {
     private String customerName, customerPhone;
     private String imageUrl;
     private double finalPrice;
-    private List<Shopping> mListShopping;
+    private List<CartItem> mListShopping;
     private List<BarberServices> mListBarberServices;
 
     public Invoice() {}
@@ -86,11 +86,11 @@ public class Invoice {
         this.finalPrice = finalPrice;
     }
 
-    public List<Shopping> getmListShopping() {
+    public List<CartItem> getmListShopping() {
         return mListShopping;
     }
 
-    public void setmListShopping(List<Shopping> mListShopping) {
+    public void setmListShopping(List<CartItem> mListShopping) {
         this.mListShopping = mListShopping;
     }
 

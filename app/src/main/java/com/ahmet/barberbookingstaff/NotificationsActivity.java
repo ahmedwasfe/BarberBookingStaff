@@ -88,8 +88,6 @@ public class NotificationsActivity extends AppCompatActivity implements INotific
         // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/utQmhc07WVjaZdr9tbRB/Notifications
         mNotificationCollection = FirebaseFirestore.getInstance()
                 .collection("AllSalon")
-                .document(Common.cityName)
-                .collection("Branch")
                 .document(Common.currentSalon.getSalonID())
                 .collection("Barber")
                 .document(Common.currentBarber.getBarberID())

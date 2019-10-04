@@ -17,6 +17,8 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.BookingInformation;
@@ -37,6 +39,7 @@ public class Common {
 
 
     public static final String KEY_LOGGED = "LOGGED";
+    public static String IS_LOGIN = "IsLogin";
     public static final String KEY_CITY = "CITY";
     public static final String KEY_SALON = "SALON";
     public static final String KEY_BARBER = "BARBER";
@@ -59,6 +62,8 @@ public class Common {
     public static Barber currentBarber;
     public static BookingInformation currentBooking;
 
+    public static int setp = 0; // init first setp is 0
+
     public static final int TIME_SLOT_TOTAL = 20;
     public static final int MAX_NOTIFICATIONS_PER_LOAD = 10;
     // default witout on services extra and items extra
@@ -68,6 +73,8 @@ public class Common {
 
     public static SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd_MM_yyyy");
     public static Calendar bookingDate = Calendar.getInstance();
+    public static String email = "";
+    public static int step = 0;
 
 
     public static String convertTimeSoltToString(int solt) {
@@ -136,9 +143,9 @@ public class Common {
 
                 Token mToken = new Token();
                 mToken.setToken(token);
-                mToken.setUserPhone(user);
                 // Because this code run from Barber Staff app
                 mToken.setTokenType(TOKEN_TYPE.BARBER);
+                mToken.setUser(user);
 
                 // Submit to firebase firestore
                 FirebaseFirestore.getInstance()
@@ -174,10 +181,10 @@ public class Common {
             String NOTIFICATION_CHANNEL = "sajahmet_barber_booking_staff_app_channel_01";
             NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
 
                 NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL,
-                        "SAJAHMET Barber Booking Staff App", NotificationManager.IMPORTANCE_HIGH);
+                        "SAJAHMET Barber Booking Staff App", NotificationManager.IMPORTANCE_DEFAULT);
                 notificationChannel.setDescription("Barber Booking Staff App");
                 notificationChannel.enableLights(true);
                 notificationChannel.enableVibration(true);
@@ -232,10 +239,20 @@ public class Common {
         return result;
     }
 
+    public static void setFragment(Fragment fragment, int id, FragmentManager fragmentManager){
+
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .replace(id, fragment)
+                .commit();
+
+    }
+
     public enum TOKEN_TYPE {
 
         CLIENT,
         BARBER,
         MANAGER
     }
+
 }

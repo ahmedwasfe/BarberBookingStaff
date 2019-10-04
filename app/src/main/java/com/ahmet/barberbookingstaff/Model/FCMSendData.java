@@ -8,8 +8,7 @@ public class FCMSendData {
 
     private Map<String, String> mMapData;
 
-    public FCMSendData() {
-    }
+    public FCMSendData() {}
 
     public String getTo() {
         return to;

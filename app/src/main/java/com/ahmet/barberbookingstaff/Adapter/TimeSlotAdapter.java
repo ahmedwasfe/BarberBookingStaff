@@ -127,8 +127,6 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
 
                                 FirebaseFirestore.getInstance()
                                         .collection("AllSalon")
-                                        .document(Common.cityName)
-                                        .collection("Branch")
                                         .document(Common.currentSalon.getSalonID())
                                         .collection("Barber")
                                         .document(Common.currentBarber.getBarberID())

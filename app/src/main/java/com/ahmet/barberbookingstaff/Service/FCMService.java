@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Common.Common;
+import com.ahmet.barberbookingstaff.DoneServicsesActivity;
 import com.ahmet.barberbookingstaff.HomeStaffActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -13,9 +14,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Random;
 
 public class FCMService extends FirebaseMessagingService {
-
-
-    public FCMService() {}
 
     @Override
     public void onNewToken(String token) {
@@ -31,10 +29,11 @@ public class FCMService extends FirebaseMessagingService {
 ////        Toast.makeText(this, "Show Notifiaction", Toast.LENGTH_SHORT).show();
 //        Common.testService(this);
 
+       // Intent intent = new Intent(this, DoneServicsesActivity.class);
         Common.showNotification(this,
                 new Random().nextInt(),
-                remoteMessage.getData().get(Common.KEY_TITLE),
-                remoteMessage.getData().get(Common.KEY_CONTENT),
+                "New Booking",
+                "You have a new booking",
                 null);
     }
 }

@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,8 @@ import butterknife.ButterKnife;
 import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
 
-public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalon, IBranchLoadListener, IUserLoginRemebmberListener, IGetBarberListener {
+public class SalonActivity extends AppCompatActivity
+        implements IOnLoadCountSalon, IBranchLoadListener, IUserLoginRemebmberListener, IGetBarberListener {
 
     @BindView(R.id.txt_salon_count)
     TextView mTxtCountSalon;
@@ -58,25 +62,45 @@ public class SalonActivity extends AppCompatActivity implements IOnLoadCountSalo
 
         ButterKnife.bind(this);
 
-        // init recyclerview
-        initRecyclerView();
+        Paper.init(this);
+        String user = Paper.book().read(Common.KEY_LOGGED);
+        // If user not login before
+        if (TextUtils.isEmpty(user)){
 
-        // init Firebase
-        init();
+            // init recyclerview
+            initRecyclerView();
 
-        // load all Salon
-        loadSalonBaseOnCity(Common.cityName);
+            // init Firebase
+            init();
+
+            // load all Salon
+            loadAllSalon();
+
+        } else{
+
+            Gson gson = new Gson();
+            Common.currentSalon = gson.fromJson(Paper.book().read(Common.KEY_SALON,""),
+                    new TypeToken<Salon>(){}.getType());
+            Common.currentBarber = gson.fromJson(Paper.book().read(Common.KEY_BARBER,""),
+                    new TypeToken<Barber>(){}.getType());
+
+            Intent intent = new Intent(SalonActivity.this, HomeStaffActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+
+
 
     }
 
-    private void loadSalonBaseOnCity(String cityName) {
+    private void loadAllSalon() {
 
         mDialog.show();
 
         FirebaseFirestore.getInstance()
                 .collection("AllSalon")
-                .document(cityName)
-                .collection("Branch")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

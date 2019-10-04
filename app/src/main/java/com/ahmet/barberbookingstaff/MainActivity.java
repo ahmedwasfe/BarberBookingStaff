@@ -9,9 +9,14 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Adapter.CityAdapter;
@@ -39,11 +44,14 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
 
@@ -51,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements IAllCitiesLoadLis
 
     @BindView(R.id.recycler_state)
     RecyclerView mRecyclerCity;
+
 
     private CollectionReference mCityReference;
 
@@ -67,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements IAllCitiesLoadLis
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_FINE_LOCATION
                 }).withListener(new MultiplePermissionsListener() {
             @Override
             public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -131,8 +141,10 @@ public class MainActivity extends AppCompatActivity implements IAllCitiesLoadLis
             public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
 
             }
-        }).check();
+        })
+                .check();
 
+      //  printKeyHash();
     }
 
     private void loadAllCitiesFromDatabase() {
@@ -196,5 +208,25 @@ public class MainActivity extends AppCompatActivity implements IAllCitiesLoadLis
     public void onAllCitiesLoadFailed(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
         mDialog.dismiss();
+    }
+
+    private void printKeyHash() {
+
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(
+                    getPackageName(),
+                    PackageManager.GET_SIGNATURES
+            );
+            for (Signature signature : packageInfo.signatures){
+                MessageDigest digest = MessageDigest.getInstance("SHA");
+                digest.update(signature.toByteArray());
+                Log.d("KEYHASH", Base64.encodeToString(digest.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
     }
 }

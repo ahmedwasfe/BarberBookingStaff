@@ -27,8 +27,8 @@ public class SheetDailogLogin {
     TextInputEditText mInputPassword;
     @BindView(R.id.btn_login)
     Button mBtnLogin;
-    @BindView(R.id.btn_cancel)
-    Button mBtnCancel;
+    @BindView(R.id.btn_login_add_barber)
+    Button mBtnAddBarber;
 
     public static SheetDailogLogin mDailogLogin;
 
@@ -61,10 +61,10 @@ public class SheetDailogLogin {
         }
 
         mBtnLogin.setText(positiveText);
-        mBtnCancel.setText(negativeText);
+        mBtnAddBarber.setText(negativeText);
 
-        mSheetDialog.setCancelable(false);
-        mSheetDialog.setCanceledOnTouchOutside(false);
+      //  mSheetDialog.setCancelable(false);
+       // mSheetDialog.setCanceledOnTouchOutside(false);
         mSheetDialog.show();
 
         Window window = mSheetDialog.getWindow();
@@ -81,7 +81,7 @@ public class SheetDailogLogin {
             }
         });
 
-        mBtnCancel.setOnClickListener(new View.OnClickListener() {
+        mBtnAddBarber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 iDailogClickListener.onClickNegativeButton(mSheetDialog);

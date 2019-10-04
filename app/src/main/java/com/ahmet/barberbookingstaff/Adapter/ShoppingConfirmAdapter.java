@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ahmet.barberbookingstaff.Common.Common;
+import com.ahmet.barberbookingstaff.Model.CartItem;
 import com.ahmet.barberbookingstaff.Model.Shopping;
 import com.ahmet.barberbookingstaff.R;
 import com.squareup.picasso.Picasso;
@@ -19,10 +20,10 @@ import java.util.List;
 public class ShoppingConfirmAdapter extends RecyclerView.Adapter<ShoppingAdapter.ShoppingHolder> {
 
     private Context mContext;
-    private List<Shopping> mListShopping;
+    private List<CartItem> mListShopping;
     private LayoutInflater inflater;
 
-    public ShoppingConfirmAdapter(Context mContext, List<Shopping> mListShopping) {
+    public ShoppingConfirmAdapter(Context mContext, List<CartItem> mListShopping) {
         this.mContext = mContext;
         this.mListShopping = mListShopping;
         inflater = LayoutInflater.from(mContext);
@@ -51,9 +52,12 @@ public class ShoppingConfirmAdapter extends RecyclerView.Adapter<ShoppingAdapter
         holder.mCardShopping.setLayoutParams(params);
 
 
-        holder.mTxtShoppingName.setText(Common.formatShoppingName(mListShopping.get(position).getName()));
+        holder.mTxtShoppingName.setText(
+                new StringBuilder(mListShopping.get(position).getProductName())
+                        .append(" x")
+                        .append(mListShopping.get(position).getProductQuantity()));
         Picasso.get()
-                .load(mListShopping.get(position).getImage())
+                .load(mListShopping.get(position).getProductImage())
                 .placeholder(R.drawable.default_item)
                 .into(holder.mImageShoppingItem);
 

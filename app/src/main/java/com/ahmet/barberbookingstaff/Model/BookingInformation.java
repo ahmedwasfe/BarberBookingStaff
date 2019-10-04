@@ -2,6 +2,8 @@ package com.ahmet.barberbookingstaff.Model;
 
 import com.google.firebase.Timestamp;
 
+import java.util.List;
+
 public class BookingInformation {
 
     private String bookingID, customerName, customerPhone, time,
@@ -11,6 +13,7 @@ public class BookingInformation {
     private Long timeSlot;
     private Timestamp timestamp;
     private boolean done;
+    private List<CartItem> mListCartItem;
 
     public BookingInformation() {}
 
@@ -116,5 +119,13 @@ public class BookingInformation {
 
     public void setCityBooking(String cityBooking) {
         this.cityBooking = cityBooking;
+    }
+
+    public List<CartItem> getmListCartItem() {
+        return mListCartItem;
+    }
+
+    public void setmListCartItem(List<CartItem> mListCartItem) {
+        this.mListCartItem = mListCartItem;
     }
 }

@@ -24,6 +24,10 @@ import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
 import com.ahmet.barberbookingstaff.Interface.INotificationCountListener;
 import com.ahmet.barberbookingstaff.Interface.ITimeSlotLoadListener;
 import com.ahmet.barberbookingstaff.Model.BookingInformation;
+import com.facebook.accountkit.Account;
+import com.facebook.accountkit.AccountKit;
+import com.facebook.accountkit.AccountKitCallback;
+import com.facebook.accountkit.AccountKitError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -66,8 +70,8 @@ public class HomeStaffActivity extends AppCompatActivity
     @BindView(R.id.calendar_time_slot)
     HorizontalCalendarView mCalendarDateView;
 
-    private CollectionReference notificationReference;
-    private CollectionReference currentBookingDateReference;
+    private CollectionReference notificationCollectionRef;
+    private CollectionReference currentBookingDateCollectionRef;
     // Copy Code from Booking Barber App (Client App)
     private DocumentReference mDocReferenceBarber;
 
@@ -109,11 +113,14 @@ public class HomeStaffActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        getSupportActionBar().setTitle(Common.currentSalon.getName());
+
         init();
         initView();
+
     }
 
-    private void init(){
+    private void init() {
 
         iTimeSlotLoadListener = this;
         iNotificationCountListener = this;
@@ -128,8 +135,6 @@ public class HomeStaffActivity extends AppCompatActivity
         // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/utQmhc07WVjaZdr9tbRB
         mDocReferenceBarber = FirebaseFirestore.getInstance()
                 .collection("AllSalon")
-                .document(Common.cityName)
-                .collection("Branch")
                 .document(Common.currentSalon.getSalonID())
                 .collection("Barber")
                 .document(Common.currentBarber.getBarberID());
@@ -147,15 +152,15 @@ public class HomeStaffActivity extends AppCompatActivity
             }
         };
 
-        currentBookingDateReference = mDocReferenceBarber
+        currentBookingDateCollectionRef = mDocReferenceBarber
                 .collection(mSimpleDateFormat.format(currentDate.getTime()));
-        bookingRealTimeListener = currentBookingDateReference.addSnapshotListener(bookingEventListener);
-        
+        bookingRealTimeListener = currentBookingDateCollectionRef.addSnapshotListener(bookingEventListener);
+
     }
 
     private void initView() {
 
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout, R.string.open, R.string.close);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -172,11 +177,15 @@ public class HomeStaffActivity extends AppCompatActivity
         // get Barber Name
         View headerView = mNavigationView.getHeaderView(0);
         TextView mTxtBarberName = headerView.findViewById(R.id.txt_barber_name);
+        TextView mTxtSalonName = headerView.findViewById(R.id.txt_salon_name);
+
         mTxtBarberName.setText(Common.currentBarber.getName());
+        mTxtSalonName.setText(Common.currentSalon.getName());
 
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
                 .setCancelable(false)
+                .setMessage("Please wait...")
                 .build();
 
         Calendar date = Calendar.getInstance();
@@ -207,7 +216,7 @@ public class HomeStaffActivity extends AppCompatActivity
             @Override
             public void onDateSelected(Calendar date, int position) {
 
-                if (Common.bookingDate.getTimeInMillis() != date.getTimeInMillis()){
+                if (Common.bookingDate.getTimeInMillis() != date.getTimeInMillis()) {
                     Common.bookingDate = date;  // this code will not load again you selecte day same with day selected
                     loadAvailableTimeSlotOfBarber(Common.currentBarber.getBarberID(),
                             mSimpleDateFormat.format(date.getTime()));
@@ -218,10 +227,8 @@ public class HomeStaffActivity extends AppCompatActivity
 
     private void initNotificationsRealTimeUpdate() {
 
-        notificationReference =  FirebaseFirestore.getInstance()
+        notificationCollectionRef = FirebaseFirestore.getInstance()
                 .collection("AllSalon")
-                .document(Common.cityName)
-                .collection("Branch")
                 .document(Common.currentSalon.getSalonID())
                 .collection("Barber")
                 .document(Common.currentBarber.getBarberID())
@@ -236,7 +243,7 @@ public class HomeStaffActivity extends AppCompatActivity
         };
 
         // only listen and count all notifications
-        notificationListener = notificationReference.whereEqualTo("read", false)
+        notificationListener = notificationCollectionRef.whereEqualTo("read", false)
                 .addSnapshotListener(notificationEventListener);
 
 
@@ -246,7 +253,6 @@ public class HomeStaffActivity extends AppCompatActivity
         // Just all remember Keys and start MainActivity
         Paper.init(this);
         Paper.book().delete(Common.KEY_LOGGED);
-        Paper.book().delete(Common.KEY_CITY);
         Paper.book().delete(Common.KEY_SALON);
         Paper.book().delete(Common.KEY_BARBER);
 
@@ -256,7 +262,7 @@ public class HomeStaffActivity extends AppCompatActivity
                 .setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(HomeStaffActivity.this, MainActivity.class);
+                        Intent intent = new Intent(HomeStaffActivity.this, SalonActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
@@ -275,23 +281,22 @@ public class HomeStaffActivity extends AppCompatActivity
 
         mDialog.show();
 
+
         // Get informatio for this barber
         mDocReferenceBarber.get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
 
                             DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.exists()){ // If babrber available
+                            if (documentSnapshot.exists()) { // If babrber available
 
                                 // Get information of booking
                                 // If not created return empty
-                                CollectionReference mReferenceDate =  FirebaseFirestore.getInstance()
+                                CollectionReference mReferenceDate = FirebaseFirestore.getInstance()
                                         .collection("AllSalon")
-                                        .document(Common.cityName)
-                                        .collection("Branch")
                                         .document(Common.currentSalon.getSalonID())
                                         .collection("Barber")
                                         .document(barberID)
@@ -302,13 +307,13 @@ public class HomeStaffActivity extends AppCompatActivity
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                                                if (task.isSuccessful()){
+                                                if (task.isSuccessful()) {
 
                                                     QuerySnapshot querySnapshot = task.getResult();
-                                                    if (querySnapshot.isEmpty()){  // If do not have any appoment
+                                                    if (querySnapshot.isEmpty()) {  // If do not have any appoment
 
                                                         iTimeSlotLoadListener.onTimeSoltLoadEmpty();
-                                                    }else {
+                                                    } else {
                                                         // If have appoiment
                                                         List<BookingInformation> mListTimeSlot = new ArrayList<>();
                                                         for (QueryDocumentSnapshot snapshot : task.getResult())
@@ -329,8 +334,8 @@ public class HomeStaffActivity extends AppCompatActivity
                     }
                 });
 
-
     }
+
 
 
     @Override
@@ -413,7 +418,7 @@ public class HomeStaffActivity extends AppCompatActivity
 
     private void loadNotifications() {
 
-        notificationReference.whereEqualTo("read", false)
+        notificationCollectionRef.whereEqualTo("read", false)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -435,6 +440,7 @@ public class HomeStaffActivity extends AppCompatActivity
 
     @Override
     public void onNotificationCountSuccess(int count) {
+
         if (count == 0)
             mTxtCountNotification.setVisibility(View.INVISIBLE);
         else {
