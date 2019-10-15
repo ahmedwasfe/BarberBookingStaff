@@ -10,12 +10,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.Fragments.AddSalonFragment;
 import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.Salon;
+import com.ahmet.barberbookingstaff.SubActivity.AddSalonActivity;
+import com.ahmet.barberbookingstaff.SubActivity.SalonActivity;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
@@ -25,6 +25,10 @@ import com.facebook.accountkit.AccountKitLoginResult;
 import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -51,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     Unbinder mUnbinder;
+
     @OnClick(R.id.btn_login_salon)
     void salonLogin(){
         startLoginPage(LoginType.EMAIL);
@@ -184,7 +189,9 @@ public class HomeActivity extends AppCompatActivity {
             }
         }).check();
 
+
       }
+
 
     private void init() {
 

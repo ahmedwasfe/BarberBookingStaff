@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ahmet.barberbookingstaff.Common.DiffCallBack;
 import com.ahmet.barberbookingstaff.Model.Notification;
 import com.ahmet.barberbookingstaff.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         holder.mTxtTitle.setText(mListNotification.get(position).getTitle());
         holder.mTxtContent.setText(mListNotification.get(position).getContent());
+        Picasso.get().load(R.drawable.hairdresser).into(holder.mImgUser);
 
     }
 

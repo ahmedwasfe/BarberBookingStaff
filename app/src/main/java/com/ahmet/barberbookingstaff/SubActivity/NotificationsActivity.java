@@ -1,4 +1,4 @@
-package com.ahmet.barberbookingstaff;
+package com.ahmet.barberbookingstaff.SubActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import com.ahmet.barberbookingstaff.Adapter.NotificationAdapter;
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Interface.INotificationLoadListener;
 import com.ahmet.barberbookingstaff.Model.Notification;
+import com.ahmet.barberbookingstaff.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

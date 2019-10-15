@@ -1,13 +1,6 @@
 package com.ahmet.barberbookingstaff.Service;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.widget.Toast;
-
 import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.DoneServicsesActivity;
-import com.ahmet.barberbookingstaff.HomeStaffActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 

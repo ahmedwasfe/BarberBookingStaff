@@ -1,11 +1,14 @@
-package com.ahmet.barberbookingstaff;
+package com.ahmet.barberbookingstaff.SubActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Adapter.ViewPagerAdapter;
 import com.ahmet.barberbookingstaff.Common.Common;
@@ -13,12 +16,21 @@ import com.ahmet.barberbookingstaff.Common.NonSwipeViewPager;
 import com.ahmet.barberbookingstaff.Model.EventBus.BarberEvent;
 import com.ahmet.barberbookingstaff.Model.EventBus.EnableNextButton;
 import com.ahmet.barberbookingstaff.Model.EventBus.SalonEvent;
+import com.ahmet.barberbookingstaff.R;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.shuhart.stepview.StepView;
@@ -28,7 +40,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +53,13 @@ public class AddSalonActivity extends AppCompatActivity {
 
     private Unbinder mUnbinder;
 
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
+
+    private PlacesClient mPlaceClient;
+    private Location mLastLocation;
+
     @BindView(R.id.step_view)
     StepView mStepView;
     @BindView(R.id.non_view_pager)
@@ -47,6 +68,8 @@ public class AddSalonActivity extends AppCompatActivity {
     TextView mTxtNext;
     @BindView(R.id.txt_previous)
     TextView mTxtPrevious;
+
+    String currentSalonEmail = "";
 
     @OnClick(R.id.txt_next)
     void nextStep(){
@@ -101,8 +124,10 @@ public class AddSalonActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Account account) {
 
+                currentSalonEmail = account.getEmail();
+
                 FirebaseFirestore.getInstance().collection("AllSalon")
-                        .document(account.getEmail())
+                        .document(currentSalonEmail)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -111,6 +136,10 @@ public class AddSalonActivity extends AppCompatActivity {
                                     if (task.getResult().exists()){
                                         mTxtNext.setEnabled(true);
                                         setColorStep();
+                                        Toast.makeText(AddSalonActivity.this, currentSalonEmail, Toast.LENGTH_SHORT).show();
+                                        getCurrentLocationForSalon();
+                                    }else {
+                                        getCurrentLocationForSalon();
                                     }
                                 }
                             }
@@ -123,6 +152,99 @@ public class AddSalonActivity extends AppCompatActivity {
             }
         });
 
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        Places.initialize(this, getString(R.string.google_api_key));
+        mPlaceClient = Places.createClient(this);
+       // AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+
+        getCurrentLocationForSalon();
+
+    }
+
+    private void getCurrentLocationForSalon() {
+
+        mFusedLocationProviderClient.getLastLocation()
+                .addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+
+                        if (task.isSuccessful()){
+                            mLastLocation = task.getResult();
+                            if (mLastLocation != null){
+
+                                Log.i("Current_Latitude", String.valueOf(mLastLocation.getLatitude()));
+                                Log.i("Current_Longitude", String.valueOf(mLastLocation.getLongitude()));
+                               // addCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                                updateCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                            }else {
+                                mLocationRequest = LocationRequest.create();
+                                mLocationRequest.setInterval(10000);
+                                mLocationRequest.setFastestInterval(5000);
+                                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                                mLocationCallback = new LocationCallback(){
+                                    @Override
+                                    public void onLocationResult(LocationResult locationResult) {
+                                        super.onLocationResult(locationResult);
+
+                                        if (locationResult == null)
+                                            return;
+
+                                        mLastLocation = locationResult.getLastLocation();
+                                       // addCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                                        updateCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+                                        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+                                    }
+                                };
+                            }
+                        }else {
+                            Toast.makeText(AddSalonActivity.this, "Unable to get last location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void addCurrentLocation(double latitude, double longitude) {
+
+        Map<String, Object> mMapLocation = new HashMap<>();
+        mMapLocation.put("latitude", latitude);
+        mMapLocation.put("longitude", longitude);
+
+        FirebaseFirestore.getInstance().collection("AllSalon")
+                .document(currentSalonEmail)
+                .set(mMapLocation)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(AddSalonActivity.this, "Add Location Success", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void updateCurrentLocation(double latitude, double longitude) {
+
+        Map<String, Object> mMapLocation = new HashMap<>();
+        mMapLocation.put("latitude", latitude);
+        mMapLocation.put("longitude", longitude);
+
+        FirebaseFirestore.getInstance().collection("AllSalon")
+                .document(currentSalonEmail)
+                .update(mMapLocation)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(AddSalonActivity.this, "Add Location Success", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void setupStepView() {
@@ -208,4 +330,5 @@ public class AddSalonActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
+
 }

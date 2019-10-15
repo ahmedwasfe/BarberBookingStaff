@@ -1,7 +1,6 @@
 package com.ahmet.barberbookingstaff.Fragments;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,24 +14,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.MainActivity;
 import com.ahmet.barberbookingstaff.Model.EventBus.EnableNextButton;
 import com.ahmet.barberbookingstaff.Model.Salon;
 import com.ahmet.barberbookingstaff.R;
-import com.ahmet.barberbookingstaff.SalonActivity;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import org.greenrobot.eventbus.EventBus;
@@ -125,7 +118,7 @@ public class AddSalonFragment extends Fragment {
                 if (account != null){
 
                     Paper.init(getActivity());
-                    Paper.book().write(Common.KEY_LOGGED, account.getEmail());
+                   // Paper.book().write(Common.KEY_LOGGED_EMAIL, account.getEmail());
                     FirebaseFirestore.getInstance().collection("AllSalon")
                             .document(account.getEmail())
                             .get()
@@ -197,7 +190,7 @@ public class AddSalonFragment extends Fragment {
     private void selectSalonType(){
 
         List<String> mListSalonType = new ArrayList<>();
-        mListSalonType.add("Please select your salon Type");
+        mListSalonType.add("Please select your salon type");
         mListSalonType.add("Men");
         mListSalonType.add("Women");
         mListSalonType.add("Both");

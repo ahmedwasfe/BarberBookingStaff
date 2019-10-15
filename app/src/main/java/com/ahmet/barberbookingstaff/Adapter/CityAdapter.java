@@ -16,7 +16,7 @@ import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Interface.IRecyclerItemSelectedListener;
 import com.ahmet.barberbookingstaff.Model.City;
 import com.ahmet.barberbookingstaff.R;
-import com.ahmet.barberbookingstaff.SalonActivity;
+import com.ahmet.barberbookingstaff.SubActivity.SalonActivity;
 
 import java.util.List;
 

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -16,21 +17,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddSalonActivity"></activity>
-        <activity android:name=".HomeActivity" >
-
+        <activity android:name=".SubActivity.ProductsActivity"
+            android:theme="@style/NoActionBar"/>
+        <activity
+            android:name=".SubActivity.UpdateStaffActivity"
+            android:parentActivityName=".SubActivity.StaffActivity" />
+        <activity
+            android:name=".SubActivity.StaffActivity"
+            android:parentActivityName=".HomeStaffActivity" />
+        <activity
+            android:name=".SubActivity.SettingsActivity"
+            android:theme="@style/NoActionBar" />
+        <activity android:name=".SubActivity.AddSalonActivity" />
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
-            android:name=".DoneServicsesActivity"
+            android:name=".SubActivity.DoneServicsesActivity"
             android:parentActivityName=".HomeStaffActivity" />
         <activity
-            android:name=".NotificationsActivity"
+            android:name=".SubActivity.NotificationsActivity"
             android:parentActivityName=".HomeStaffActivity" />
 
         <service android:name=".Service.FCMService">
@@ -40,10 +50,8 @@
         </service>
 
         <activity android:name=".HomeStaffActivity" />
-        <activity android:name=".SalonActivity" />
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity android:name=".SubActivity.SalonActivity" />
+        <activity android:name=".MainActivity" />
 
         <meta-data
             android:name="com.facebook.accountkit.ApplicationName"
@@ -54,6 +62,10 @@
         <meta-data
             android:name="com.facebook.accountkit.ClientToken"
             android:value="@string/ACCOUNT_KIT_CLIENT_TOKEN" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
     </application>
 
 </manifest>

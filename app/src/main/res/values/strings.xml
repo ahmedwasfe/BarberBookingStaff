@@ -5,6 +5,10 @@
     <string name="FACEBOOK_APP_ID">2070377613085786</string>
     <string name="ACCOUNT_KIT_CLIENT_TOKEN">a22c6a988d5088efe30a7af3bf9ef5c5</string>
 
+
+
+    <string name="google_maps_key">AIzaSyCmUOrRgR98qG_vK_8GmSDg7lG_I1jGBEQ</string>
+
     <string name="open">Open</string>
     <string name="close">Close</string>
 </resources>

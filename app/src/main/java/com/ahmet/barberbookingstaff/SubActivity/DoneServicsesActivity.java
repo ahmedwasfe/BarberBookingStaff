@@ -1,4 +1,4 @@
-package com.ahmet.barberbookingstaff;
+package com.ahmet.barberbookingstaff.SubActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,14 +31,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.Fragments.ShoppingFragment;
+import com.ahmet.barberbookingstaff.Fragments.ProductsFragment;
 import com.ahmet.barberbookingstaff.Fragments.TotalPriceFragment;
 import com.ahmet.barberbookingstaff.Interface.IBarberServicesListener;
 import com.ahmet.barberbookingstaff.Interface.IShoppingItemSelectedListener;
 import com.ahmet.barberbookingstaff.Model.BarberServices;
 import com.ahmet.barberbookingstaff.Model.CartItem;
 import com.ahmet.barberbookingstaff.Model.EventBus.DismissFromBottomSheetEvent;
-import com.ahmet.barberbookingstaff.Model.Shopping;
+import com.ahmet.barberbookingstaff.Model.Products;
+import com.ahmet.barberbookingstaff.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -106,7 +107,7 @@ public class DoneServicsesActivity extends AppCompatActivity implements
     private StorageReference mStorageReference;
 
     private HashSet<BarberServices> mHashServicesAdded;
-  // private List<Shopping> mListShopping;
+  // private List<Products> mListShopping;
 
     private LayoutInflater inflater;
 
@@ -193,8 +194,8 @@ public class DoneServicsesActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
-                ShoppingFragment mShoppingFragment = ShoppingFragment.getInstance(DoneServicsesActivity.this);
-                mShoppingFragment.show(getSupportFragmentManager(), "Shopping");
+                ProductsFragment mShoppingFragment = ProductsFragment.getInstance(DoneServicsesActivity.this);
+                mShoppingFragment.show(getSupportFragmentManager(), "Products");
             }
         });
     }
@@ -456,18 +457,18 @@ public class DoneServicsesActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onShoppingItemSelected(Shopping shopping) {
+    public void onShoppingItemSelected(Products products) {
 
-        // Here we will create an list to hold shopping items
-       // mListShopping.add(shopping);
+        // Here we will create an list to hold products items
+       // mListShopping.add(products);
        // Log.d("SHOPPINGITEM", "" + mListShopping.size());
 
         // Create a new Cart item
         CartItem cartItem = new CartItem();
-        cartItem.setProductId(shopping.getId());
-        cartItem.setProductName(shopping.getName());
-        cartItem.setProductPrice(shopping.getPrice());
-        cartItem.setProductImage(shopping.getImage());
+        cartItem.setProductId(products.getId());
+        cartItem.setProductName(products.getName());
+        cartItem.setProductPrice(products.getPrice());
+        cartItem.setProductImage(products.getImage());
         cartItem.setProductQuantity(1);
         cartItem.setUserPhone(Common.currentBooking.getCustomerPhone());
 
@@ -481,7 +482,7 @@ public class DoneServicsesActivity extends AppCompatActivity implements
         for (int x = 0; x < Common.currentBooking.getmListCartItem().size(); x++){
 
             if (Common.currentBooking.getmListCartItem().get(x).getProductName()
-                        .equals(shopping.getName())){
+                        .equals(products.getName())){
                 // Enable falg
                 flag = true;
                 CartItem updateCartItem = Common.currentBooking.getmListCartItem().get(x);

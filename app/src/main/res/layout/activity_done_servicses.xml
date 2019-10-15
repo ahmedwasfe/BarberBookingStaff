@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorHomeBackground"
     android:padding="8dp"
-    tools:context=".DoneServicsesActivity">
+    tools:context=".SubActivity.DoneServicsesActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

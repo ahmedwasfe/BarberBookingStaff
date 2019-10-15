@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +24,13 @@ import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
 import com.ahmet.barberbookingstaff.Interface.INotificationCountListener;
 import com.ahmet.barberbookingstaff.Interface.ITimeSlotLoadListener;
+import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.BookingInformation;
-import com.facebook.accountkit.Account;
-import com.facebook.accountkit.AccountKit;
-import com.facebook.accountkit.AccountKitCallback;
-import com.facebook.accountkit.AccountKitError;
+import com.ahmet.barberbookingstaff.SubActivity.NotificationsActivity;
+import com.ahmet.barberbookingstaff.SubActivity.ProductsActivity;
+import com.ahmet.barberbookingstaff.SubActivity.SalonActivity;
+import com.ahmet.barberbookingstaff.SubActivity.SettingsActivity;
+import com.ahmet.barberbookingstaff.SubActivity.StaffActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -115,6 +118,28 @@ public class HomeStaffActivity extends AppCompatActivity
 
         getSupportActionBar().setTitle(Common.currentSalon.getName());
 
+        FirebaseFirestore.getInstance().collection("AllSalon")
+                .document(Common.currentSalon.getSalonID())
+                .collection("Barber")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            if (task.getResult().size() > 0) {
+                                Barber barber = new Barber();
+                                for (DocumentSnapshot snapshot : task.getResult()) {
+                                    barber = snapshot.toObject(Barber.class);
+                                    barber.setBarberID(snapshot.getId());
+                                    //Log.e("ID From App", Common.currentBarber.getBarberID());
+                                    Log.e("ID From Database", snapshot.getId());
+
+                                }
+                            }
+                        }
+                    }
+                });
+
         init();
         initView();
 
@@ -170,17 +195,41 @@ public class HomeStaffActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.nav_exit)
                     logOut();
+                else if (menuItem.getItemId() == R.id.nav_settings)
+                    startActivity(new Intent(HomeStaffActivity.this, SettingsActivity.class));
+                else if (menuItem.getItemId() == R.id.nav_add_barber)
+                    startActivity(new Intent(HomeStaffActivity.this, StaffActivity.class));
+                else if (menuItem.getItemId() == R.id.nav_add_product)
+                    startActivity(new Intent(HomeStaffActivity.this, ProductsActivity.class));
                 return true;
             }
         });
 
         // get Barber Name
         View headerView = mNavigationView.getHeaderView(0);
-        TextView mTxtBarberName = headerView.findViewById(R.id.txt_barber_name);
-        TextView mTxtSalonName = headerView.findViewById(R.id.txt_salon_name);
+        TextView mTxtStaffName = headerView.findViewById(R.id.txt_barber_name);
+        TextView mTxtStaffType = headerView.findViewById(R.id.txt_barber_type);
 
-        mTxtBarberName.setText(Common.currentBarber.getName());
-        mTxtSalonName.setText(Common.currentSalon.getName());
+        FirebaseFirestore.getInstance().collection("AllSalon")
+                .document(Common.currentSalon.getSalonID())
+                .collection("Barber")
+                .document(Common.currentBarber.getBarberID())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                        if (task.isSuccessful()){
+                            DocumentSnapshot snapshot = task.getResult();
+                            mTxtStaffName.setText(snapshot.getString("name"));
+                            mTxtStaffType.setText(snapshot.getString("barberType"));
+                        }
+                    }
+                });
+
+//        mTxtStaffName.setText(Common.currentBarber.getName());
+//        mTxtStaffType.setText(Common.currentBarber.getBarberType());
+
 
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
@@ -269,12 +318,9 @@ public class HomeStaffActivity extends AppCompatActivity
                         finish();
 
                     }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        }).show();
+        })
+                .setCancelable(true)
+                .show();
     }
 
     private void loadAvailableTimeSlotOfBarber(String barberID, String bookingDate) {
@@ -345,7 +391,7 @@ public class HomeStaffActivity extends AppCompatActivity
 
         if (item.getItemId() == R.id.action_new_notification){
             startActivity(new Intent(HomeStaffActivity.this, NotificationsActivity.class));
-            mTxtCountNotification.setText("");
+            mTxtCountNotification.setText("0");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -363,12 +409,7 @@ public class HomeStaffActivity extends AppCompatActivity
                         Toast.makeText(HomeStaffActivity.this, "Fack function exit", Toast.LENGTH_SHORT).show();
 
                     }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        }).show();
+                }).show();
     }
 
     @Override

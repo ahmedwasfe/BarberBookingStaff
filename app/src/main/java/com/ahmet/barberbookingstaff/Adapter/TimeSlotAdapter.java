@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.DoneServicsesActivity;
+import com.ahmet.barberbookingstaff.SubActivity.DoneServicsesActivity;
 import com.ahmet.barberbookingstaff.Interface.IRecyclerItemSelectedListener;
 import com.ahmet.barberbookingstaff.Model.BookingInformation;
 import com.ahmet.barberbookingstaff.R;

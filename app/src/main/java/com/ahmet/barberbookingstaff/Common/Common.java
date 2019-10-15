@@ -39,6 +39,7 @@ public class Common {
 
 
     public static final String KEY_LOGGED = "LOGGED";
+    public static final String KEY_LOGGED_EMAIL = "LOGGED_EMAIL";
     public static String IS_LOGIN = "IsLogin";
     public static final String KEY_CITY = "CITY";
     public static final String KEY_SALON = "SALON";
@@ -130,7 +131,7 @@ public class Common {
     public static void updateToken(Context mContext, String token) {
 
         /* * Fires we need check if user still login
-           * Because, we nedd store token be longing user
+           * Because, we need store token be longing user
            * So, we need use store data
            *
          */

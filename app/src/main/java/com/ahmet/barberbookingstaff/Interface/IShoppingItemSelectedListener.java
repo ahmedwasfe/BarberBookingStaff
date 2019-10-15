@@ -1,11 +1,9 @@
 package com.ahmet.barberbookingstaff.Interface;
 
-import com.ahmet.barberbookingstaff.Model.Shopping;
-
-import java.util.List;
+import com.ahmet.barberbookingstaff.Model.Products;
 
 public interface IShoppingItemSelectedListener {
 
-    void onShoppingItemSelected(Shopping shopping);
+    void onShoppingItemSelected(Products products);
 
 }

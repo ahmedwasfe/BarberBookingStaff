@@ -17,13 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ahmet.barberbookingstaff.Adapter.ShoppingConfirmAdapter;
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Model.BarberServices;
-import com.ahmet.barberbookingstaff.Model.BookingInformation;
 import com.ahmet.barberbookingstaff.Model.CartItem;
 import com.ahmet.barberbookingstaff.Model.EventBus.DismissFromBottomSheetEvent;
 import com.ahmet.barberbookingstaff.Model.FCMResponse;
 import com.ahmet.barberbookingstaff.Model.FCMSendData;
 import com.ahmet.barberbookingstaff.Model.Invoice;
-import com.ahmet.barberbookingstaff.Model.Shopping;
 import com.ahmet.barberbookingstaff.Model.Token;
 import com.ahmet.barberbookingstaff.R;
 import com.ahmet.barberbookingstaff.Retrofit.IFCMService;
@@ -47,14 +45,12 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dmax.dialog.SpotsDialog;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -82,7 +78,7 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
     Button mBtnConfirm;
 
     private HashSet<BarberServices> mHashServicesAdded;
-   // private List<Shopping> mListShopping;
+   // private List<Products> mListShopping;
 
     private IFCMService mIFCMService;
 
@@ -366,7 +362,7 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
 
 //        this.mListShopping = new Gson()
 //                .fromJson(arguments.getString(Common.SHOPPING_ITEMS),
-//                        new TypeToken<List<Shopping>>(){}.getType());
+//                        new TypeToken<List<Products>>(){}.getType());
 
         imageUrl = arguments.getString(Common.IMAGE_DOWNLIADABLE_URL);
     }

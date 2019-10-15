@@ -15,10 +15,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.ahmet.barberbookingstaff.Adapter.ShoppingAdapter;
 import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
-import com.ahmet.barberbookingstaff.DoneServicsesActivity;
+import com.ahmet.barberbookingstaff.Interface.IProductsLoadListener;
 import com.ahmet.barberbookingstaff.Interface.IShoppingItemSelectedListener;
-import com.ahmet.barberbookingstaff.Interface.IShoppingLoadListener;
-import com.ahmet.barberbookingstaff.Model.Shopping;
+import com.ahmet.barberbookingstaff.Model.Products;
 import com.ahmet.barberbookingstaff.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,8 +38,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ShoppingFragment extends BottomSheetDialogFragment
-        implements IShoppingLoadListener, IShoppingItemSelectedListener {
+public class ProductsFragment extends BottomSheetDialogFragment
+        implements IProductsLoadListener, IShoppingItemSelectedListener {
 
     private Unbinder mUnbinder;
 
@@ -48,7 +47,7 @@ public class ShoppingFragment extends BottomSheetDialogFragment
     private CollectionReference mShoppingReference;
 
     private IShoppingItemSelectedListener callBackToActivity;
-    private IShoppingLoadListener mIShoppingLoadListener;
+    private IProductsLoadListener mIProductsLoadListener;
 
     @BindView(R.id.chip_group)
     ChipGroup mChipGroup;
@@ -90,10 +89,10 @@ public class ShoppingFragment extends BottomSheetDialogFragment
     @BindView(R.id.recycler_shopping_items)
     RecyclerView mRecyclerShopping;
 
-    private static ShoppingFragment instance;
+    private static ProductsFragment instance;
 
-    public static ShoppingFragment getInstance(IShoppingItemSelectedListener mIShoppingItemSelectedListener){
-        return instance == null ? new ShoppingFragment(mIShoppingItemSelectedListener) : instance;
+    public static ProductsFragment getInstance(IShoppingItemSelectedListener mIShoppingItemSelectedListener){
+        return instance == null ? new ProductsFragment(mIShoppingItemSelectedListener) : instance;
     }
 
 
@@ -119,7 +118,7 @@ public class ShoppingFragment extends BottomSheetDialogFragment
     private void loadShoppingItem(String itemMenu) {
 
         mShoppingReference = FirebaseFirestore.getInstance()
-                .collection("Shopping")
+                .collection("Products")
                 .document(itemMenu)
                 .collection("Items");
 
@@ -129,7 +128,7 @@ public class ShoppingFragment extends BottomSheetDialogFragment
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        mIShoppingLoadListener.onShoppingLoadFailed(e.getMessage());
+                        mIProductsLoadListener.onShoppingLoadFailed(e.getMessage());
                     }
                 })
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -138,17 +137,17 @@ public class ShoppingFragment extends BottomSheetDialogFragment
 
                         if (task.isSuccessful()){
 
-                            List<Shopping> mListShopping = new ArrayList<>();
+                            List<Products> mListProducts = new ArrayList<>();
 
                             for (DocumentSnapshot documentSnapshot : task.getResult()){
-                                Shopping shopping = documentSnapshot.toObject(Shopping.class);
+                                Products products = documentSnapshot.toObject(Products.class);
                                 // Remember add it if you dont want to get null referance
-                                shopping.setId(documentSnapshot.getId());
-                                mListShopping.add(shopping);
-                                Log.d("SHOPPING_ITEM", "" + shopping.getName());
+                                products.setId(documentSnapshot.getId());
+                                mListProducts.add(products);
+                                Log.d("SHOPPING_ITEM", "" + products.getName());
                             }
-                            Log.d("SHOPPING_ITEM", "" + mListShopping.size());
-                            mIShoppingLoadListener.onShoppingLoadSuccess(mListShopping);
+                            Log.d("SHOPPING_ITEM", "" + mListProducts.size());
+                            mIProductsLoadListener.onShoppingLoadSuccess(mListProducts);
                         }
 //                        else {
 //                            Log.d("TASKEXCEPTION", task.getException().getMessage());
@@ -159,11 +158,11 @@ public class ShoppingFragment extends BottomSheetDialogFragment
 
 
 
-    public ShoppingFragment(IShoppingItemSelectedListener callBackToActivity) {
+    public ProductsFragment(IShoppingItemSelectedListener callBackToActivity) {
         this.callBackToActivity = callBackToActivity;
     }
 
-    public ShoppingFragment() {}
+    public ProductsFragment() {}
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -184,7 +183,7 @@ public class ShoppingFragment extends BottomSheetDialogFragment
 
     private void init() {
 
-        mIShoppingLoadListener = this;
+        mIProductsLoadListener = this;
 
     }
 
@@ -196,9 +195,9 @@ public class ShoppingFragment extends BottomSheetDialogFragment
     }
 
     @Override
-    public void onShoppingLoadSuccess(List<Shopping> mListShopping) {
+    public void onShoppingLoadSuccess(List<Products> mListProducts) {
 
-        ShoppingAdapter mShoppingAdapter = new ShoppingAdapter(getActivity(), mListShopping, this);
+        ShoppingAdapter mShoppingAdapter = new ShoppingAdapter(getActivity(), mListProducts, this);
         if (mShoppingAdapter != null)
             mRecyclerShopping.setAdapter(mShoppingAdapter);
         else {
@@ -213,8 +212,8 @@ public class ShoppingFragment extends BottomSheetDialogFragment
     }
 
     @Override
-    public void onShoppingItemSelected(Shopping shopping) {
+    public void onShoppingItemSelected(Products products) {
 
-        callBackToActivity.onShoppingItemSelected(shopping);
+        callBackToActivity.onShoppingItemSelected(products);
     }
 }

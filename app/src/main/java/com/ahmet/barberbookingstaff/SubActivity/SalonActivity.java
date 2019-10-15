@@ -1,4 +1,4 @@
-package com.ahmet.barberbookingstaff;
+package com.ahmet.barberbookingstaff.SubActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,18 +10,25 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Adapter.SalonAdapter;
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
+import com.ahmet.barberbookingstaff.HomeStaffActivity;
 import com.ahmet.barberbookingstaff.Interface.IBranchLoadListener;
 import com.ahmet.barberbookingstaff.Interface.IGetBarberListener;
 import com.ahmet.barberbookingstaff.Interface.IOnLoadCountSalon;
 import com.ahmet.barberbookingstaff.Interface.IUserLoginRemebmberListener;
+import com.ahmet.barberbookingstaff.MainActivity;
 import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.Salon;
+import com.ahmet.barberbookingstaff.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -29,8 +36,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +51,15 @@ import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
 
 public class SalonActivity extends AppCompatActivity
-        implements IOnLoadCountSalon, IBranchLoadListener, IUserLoginRemebmberListener, IGetBarberListener {
+        implements IBranchLoadListener, IUserLoginRemebmberListener, IGetBarberListener {
 
-    @BindView(R.id.txt_salon_count)
-    TextView mTxtCountSalon;
+    @BindView(R.id.searchable_spinner)
+    SearchableSpinner mSearchableSpinner;
     @BindView(R.id.recycler_salon)
     RecyclerView mRecyclerSalon;
 
-    private CollectionReference mSalonReference;
-
-    private IOnLoadCountSalon iOnLoadCountSalon;
     private IBranchLoadListener iBranchLoadListener;
+    private List<Salon> mListSalon;
 
     private AlertDialog mDialog;
 
@@ -61,6 +69,27 @@ public class SalonActivity extends AppCompatActivity
         setContentView(R.layout.activity_salon);
 
         ButterKnife.bind(this);
+
+        FirebaseInstanceId.getInstance()
+                .getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+
+                        if (task.isSuccessful()){
+
+                            Common.updateToken(SalonActivity.this,
+                                    task.getResult().getToken());
+                            Log.d("TOKEN", task.getResult().getToken());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SalonActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         Paper.init(this);
         String user = Paper.book().read(Common.KEY_LOGGED);
@@ -91,6 +120,19 @@ public class SalonActivity extends AppCompatActivity
             finish();
         }
 
+        mSearchableSpinner.setTitle("Please Select Salon");
+        mSearchableSpinner.setKeepScreenOn(true);
+        mSearchableSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
     }
@@ -107,8 +149,6 @@ public class SalonActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         if (task.isSuccessful()) {
-
-                            iOnLoadCountSalon.onLoadCountSalonSuccess(task.getResult().size());
 
                             List<Salon> mListBranch = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : task.getResult()) {
@@ -135,7 +175,6 @@ public class SalonActivity extends AppCompatActivity
                 .setCancelable(false)
                 .build();
 
-        iOnLoadCountSalon = this;
         iBranchLoadListener = this;
     }
 
@@ -147,19 +186,18 @@ public class SalonActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadCountSalonSuccess(int count) {
+    public void onLoadAllSalonSuccess(List<Salon> mListSalons) {
 
-        mTxtCountSalon.setText(new StringBuilder("All Salon (")
-                      .append(count)
-                      .append(")"));
-    }
-
-    @Override
-    public void onLoadAllSalonSuccess(List<Salon> mListBranch) {
-
-        SalonAdapter mSalonAdapter = new SalonAdapter(this, mListBranch, this, this);
+        SalonAdapter mSalonAdapter = new SalonAdapter(this, mListSalons, this, this);
         mRecyclerSalon.setAdapter(mSalonAdapter);
         mDialog.dismiss();;
+
+        List<String> mListSalonName = new ArrayList<>();
+        for (Salon salon : mListSalons){
+            mListSalonName.add(salon.getName());
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mListSalonName);
+            mSearchableSpinner.setAdapter(adapter);
+        }
     }
 
     @Override

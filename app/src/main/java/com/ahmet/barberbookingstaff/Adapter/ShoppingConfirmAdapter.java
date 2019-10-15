@@ -9,9 +9,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Model.CartItem;
-import com.ahmet.barberbookingstaff.Model.Shopping;
 import com.ahmet.barberbookingstaff.R;
 import com.squareup.picasso.Picasso;
 

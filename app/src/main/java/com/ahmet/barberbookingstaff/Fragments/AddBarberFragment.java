@@ -19,7 +19,7 @@ import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Interface.IUserLoginRemebmberListener;
 import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.R;
-import com.ahmet.barberbookingstaff.SalonActivity;
+import com.ahmet.barberbookingstaff.SubActivity.SalonActivity;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
