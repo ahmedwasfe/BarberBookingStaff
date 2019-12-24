@@ -172,6 +172,7 @@ public class Common {
 //        Log.d("ShowNotifiaction", "Show Notifiaction");
 //    }
 
+
     public static void showNotification(Context mContext, int notificationId, String title, String content, Intent intent) {
 
         PendingIntent pendingIntent = null;
