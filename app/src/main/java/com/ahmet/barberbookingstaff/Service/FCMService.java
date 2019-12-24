@@ -1,5 +1,7 @@
 package com.ahmet.barberbookingstaff.Service;
 
+import android.util.Log;
+
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -11,6 +13,8 @@ public class FCMService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
+
+        Log.i("Token_SERVICE", token);
 
         Common.updateToken(this, token);
     }
@@ -26,7 +30,7 @@ public class FCMService extends FirebaseMessagingService {
         Common.showNotification(this,
                 new Random().nextInt(),
                 "New Booking",
-                "You have a new booking",
+                "You have a new Booking from " + Common.currentBarber.getName(),
                 null);
     }
 }

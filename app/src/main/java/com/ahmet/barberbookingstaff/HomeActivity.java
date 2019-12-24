@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Model.Barber;
@@ -90,6 +91,26 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onPermissionsChecked(MultiplePermissionsReport report) {
 
+                FirebaseInstanceId.getInstance()
+                        .getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+
+                                if (task.isSuccessful()){
+
+                                    Common.updateToken(HomeActivity.this,
+                                            task.getResult().getToken());
+                                    Log.d("TOKEN_HOME_ACTIVITY", task.getResult().getToken());
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(HomeActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 Paper.init(HomeActivity.this);
                 String user = Paper.book().read(Common.KEY_LOGGED);
                 if (TextUtils.isEmpty(user)){
@@ -97,34 +118,10 @@ public class HomeActivity extends AppCompatActivity {
                     AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     if (accessToken != null){
 
-                        // Get Token
-                        FirebaseInstanceId.getInstance()
-                                .getInstanceId()
-                                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                        if (task.isSuccessful()) {
-
-                                            Common.updateToken(HomeActivity.this, task.getResult().getToken());
-                                            Log.i("TOKEN", task.getResult().getToken());
-
-                                            Intent intent = new Intent(HomeActivity.this, AddSalonActivity.class);
-                                            intent.putExtra(Common.IS_LOGIN, false);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                                Intent intent = new Intent(HomeActivity.this, AddSalonActivity.class);
-                                intent.putExtra(Common.IS_LOGIN, true);
-                                startActivity(intent);
-                                finish();
-
-                            }
-                        });
+                        Intent intent = new Intent(HomeActivity.this, SalonActivity.class);
+                        intent.putExtra(Common.IS_LOGIN, false);
+                        startActivity(intent);
+                        finish();
 
                     }else {
                         // startLoginPage(LoginType.EMAIL);
@@ -146,40 +143,6 @@ public class HomeActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
-
-//                Paper.init(HomeActivity.this);
-//                String user = Paper.book().read(Common.KEY_LOGGED);
-//                // If user not login before
-//                if (TextUtils.isEmpty(user)) {
-//
-//                    setContentView(R.layout.activity_main);
-//
-//                    ButterKnife.bind(HomeActivity.this);
-//
-//                    // init recyclerview
-//                   // initRecyclerView();
-//
-//                    // init Firebase
-//                    init();
-//
-//                   // loadAllCitiesFromDatabase();
-//
-//                }
-//                else {  // If user already login
-//
-//                    Gson gson = new Gson();
-//                   // Common.cityName = Paper.book().read(Common.KEY_CITY);
-//                    Common.currentSalon = gson.fromJson(Paper.book().read(Common.KEY_SALON, ""),
-//                            new TypeToken<Salon>(){}.getType());
-//                    Common.currentBarber = gson.fromJson(Paper.book().read(Common.KEY_BARBER, ""),
-//                            new TypeToken<Barber>(){}.getType());
-//
-//                    Intent intent = new Intent(HomeActivity.this, HomeStaffActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    startActivity(intent);
-//                    finish();
-//                }
 
             }
 

@@ -27,7 +27,7 @@
             android:parentActivityName=".HomeStaffActivity" />
         <activity
             android:name=".SubActivity.SettingsActivity"
-            android:theme="@style/NoActionBar" />
+            android:parentActivityName=".HomeStaffActivity"/>
         <activity android:name=".SubActivity.AddSalonActivity" />
         <activity android:name=".HomeActivity">
             <intent-filter>

@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -138,6 +140,9 @@ public class Common {
 
         Paper.init(mContext);
         String user = Paper.book().read(Common.KEY_LOGGED);
+
+        //Log.i("Username_Common", user);
+        Toast.makeText(mContext, user, Toast.LENGTH_LONG).show();
 
         if (user != null){
             if (!TextUtils.isEmpty(user)){

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
+import io.paperdb.Paper;
 
 public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder> implements IDailogClickListener {
 
@@ -126,6 +127,9 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
                                 mDialogLoading.dismiss();
 
                                 iUserLoginRemebmberListener.onUserLoginSuccess(username);
+                                Paper.init(mContext);
+                                Paper.book().write(Common.KEY_LOGGED, username);
+
 
                                 Barber barber = new Barber();
                                 for (DocumentSnapshot barberSnapshot : task.getResult()){

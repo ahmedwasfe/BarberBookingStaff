@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.ahmet.barberbookingstaff.Interface.IProductsLoadListener;
 import com.ahmet.barberbookingstaff.Interface.IShoppingItemSelectedListener;
 import com.ahmet.barberbookingstaff.Model.Products;
 import com.ahmet.barberbookingstaff.R;
+import com.github.ybq.android.spinkit.style.Circle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -49,45 +51,10 @@ public class ProductsFragment extends BottomSheetDialogFragment
     private IShoppingItemSelectedListener callBackToActivity;
     private IProductsLoadListener mIProductsLoadListener;
 
-    @BindView(R.id.chip_group)
-    ChipGroup mChipGroup;
-
-
-    @BindView(R.id.chip_wax)
-    Chip chip_wax;
-    @OnClick(R.id.chip_wax)
-    void waxChipClick(){
-        setSelecedChip(chip_wax);
-        loadShoppingItem("Wax");
-
-    }
-
-    @BindView(R.id.chip_spray)
-    Chip chip_spray;
-    @OnClick(R.id.chip_spray)
-    void sprayChipClick(){
-        setSelecedChip(chip_spray);
-        loadShoppingItem("Spray");
-    }
-
-    @BindView(R.id.chip_hair_care)
-    Chip mChipHairCare;
-    @OnClick(R.id.chip_hair_care)
-    void chipHairCare(){
-        setSelecedChip(mChipHairCare);
-        loadShoppingItem("Hair Care");
-    }
-
-    @BindView(R.id.chip_body_care)
-    Chip mChipBodyCare;
-    @OnClick(R.id.chip_body_care)
-    void chipBodyCare(){
-        setSelecedChip(mChipBodyCare);
-        loadShoppingItem("Body Care");
-    }
 
     @BindView(R.id.recycler_shopping_items)
     RecyclerView mRecyclerShopping;
+
 
     private static ProductsFragment instance;
 
@@ -95,25 +62,6 @@ public class ProductsFragment extends BottomSheetDialogFragment
         return instance == null ? new ProductsFragment(mIShoppingItemSelectedListener) : instance;
     }
 
-
-    private void setSelecedChip(Chip chip) {
-
-        // Set color
-        for (int x = 0; x < mChipGroup.getChildCount(); x++){
-
-            Chip mChipItem = (Chip) mChipGroup.getChildAt(x);
-            // If not selected
-            if (mChipItem.getId() != chip.getId()){
-                mChipItem.setChipBackgroundColorResource(R.color.colorGray);
-                mChipItem.setTextColor(getResources().getColor(R.color.colorBlack));
-
-                // If selected
-            } else {
-                mChipItem.setChipBackgroundColorResource(R.color.colorPrimary);
-                mChipItem.setTextColor(getResources().getColor(R.color.colorWhite));
-            }
-        }
-    }
 
     private void loadShoppingItem(String itemMenu) {
 
@@ -184,7 +132,6 @@ public class ProductsFragment extends BottomSheetDialogFragment
     private void init() {
 
         mIProductsLoadListener = this;
-
     }
 
     private void initRecyclerView() {

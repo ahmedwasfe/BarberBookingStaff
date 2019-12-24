@@ -193,9 +193,9 @@ public class HomeStaffActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.nav_exit)
-                    logOut();
-                else if (menuItem.getItemId() == R.id.nav_settings)
+//                if (menuItem.getItemId() == R.id.nav_exit)
+//                    logOut();
+                if (menuItem.getItemId() == R.id.nav_settings)
                     startActivity(new Intent(HomeStaffActivity.this, SettingsActivity.class));
                 else if (menuItem.getItemId() == R.id.nav_add_barber)
                     startActivity(new Intent(HomeStaffActivity.this, StaffActivity.class));

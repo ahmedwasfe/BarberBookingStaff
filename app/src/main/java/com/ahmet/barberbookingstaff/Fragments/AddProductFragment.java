@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Model.Products;
 import com.ahmet.barberbookingstaff.R;
+import com.github.ybq.android.spinkit.style.Circle;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -64,6 +67,10 @@ public class AddProductFragment extends Fragment {
     TextInputEditText mInputProductPrice;
     @BindView(R.id.txt_input_product_description)
     TextInputEditText mInputProductDescription;
+    @BindView(R.id.btn_add_product)
+    Button mBtnAddProduct;
+    @BindView(R.id.progress_load_image)
+    ProgressBar mProgressBar;
 
     private Uri mFileUri;
     private String imageUri = "";
@@ -89,7 +96,10 @@ public class AddProductFragment extends Fragment {
 
     private void uploadImage(String name, long price, String descriptopion) {
 
-        mDialog.show();
+       // mDialog.show();
+        mBtnAddProduct.setEnabled(false);
+        mBtnAddProduct.setText("");
+        mProgressBar.setVisibility(View.VISIBLE);
 
         if (mFileUri != null){
 
@@ -116,7 +126,11 @@ public class AddProductFragment extends Fragment {
                          imageUri = task.getResult().toString();
                         Log.i("DOWNLIADABLELINK", imageUri);
 
-                        mDialog.dismiss();
+                       // mDialog.dismiss();
+                        mBtnAddProduct.setEnabled(true);
+                        mBtnAddProduct.setText("Add Product");
+                       // mBtnAddProduct.setBackgroundColor(R.color.colorAccent);
+                        mProgressBar.setVisibility(View.GONE);
 
                         Products setProducts = new Products(name, imageUri, price);
                         FirebaseFirestore.getInstance().collection("AllSalon")
@@ -127,7 +141,10 @@ public class AddProductFragment extends Fragment {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentReference> task) {
                                         if (task.isSuccessful()){
-                                            mDialog.dismiss();
+                                           // mDialog.dismiss();
+                                            mBtnAddProduct.setEnabled(true);
+                                            mBtnAddProduct.setText("Add Product");
+                                            mProgressBar.setVisibility(View.GONE);
                                             Toast.makeText(getActivity(), "Uploading success", Toast.LENGTH_SHORT).show();
                                             Common.setFragment(new ShowProductFragment(), R.id.frame_layout_product,
                                                     getActivity().getSupportFragmentManager());
@@ -237,6 +254,10 @@ public class AddProductFragment extends Fragment {
                 .setCancelable(false)
                 .setMessage("Loading Product...")
                 .build();
+
+        Circle circle = new Circle();
+        mProgressBar.setIndeterminateDrawable(circle);
+
     }
 
     @Override

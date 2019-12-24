@@ -6,7 +6,7 @@ android {
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.ahmet.barberbookingstaff"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -40,9 +40,10 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0-beta01'
     implementation 'com.shuhart.stepview:stepview:1.5.0'
 
-    // Spinner
+    // Spinner & Search
     implementation 'com.jaredrummler:material-spinner:1.3.1'
     implementation 'com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1'
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.2'
 
     // Firebase
     implementation 'com.google.firebase:firebase-firestore:20.1.0'
