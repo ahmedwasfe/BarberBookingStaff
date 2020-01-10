@@ -4,8 +4,10 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="8dp"
-    android:padding="8dp"
-    android:layout_margin="8dp"
+    android:padding="@dimen/margin4"
+    android:layout_margin="@dimen/margin8"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:id="@+id/card_shopping">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +18,7 @@
             android:id="@+id/img_product"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin8"
             android:scaleType="centerCrop"
             android:src="@drawable/default_item"
             app:layout_constraintEnd_toEndOf="parent"
@@ -28,11 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Colonna Spray"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="@dimen/textSize16"
             android:textAllCaps="true"
-            android:fontFamily="@font/bellerose"
+            android:textColor="@color/colorButton"
             android:gravity="center"
+            android:padding="@dimen/margin8"
             app:layout_constraintTop_toBottomOf="@id/img_product"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/margin10"
             app:layout_constraintTop_toBottomOf="@id/txt_name_product"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" >
@@ -53,9 +55,8 @@
                 android:layout_height="wrap_content"
                 android:text="$20"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/bellerose"
+                android:padding="@dimen/margin8"
                 android:layout_weight="1"
                 android:gravity="start"/>
 
@@ -64,7 +65,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text=" "
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:textSize="20sp"
                 android:fontFamily="@font/bellerose"
                 android:drawableEnd="@drawable/ic_remove"

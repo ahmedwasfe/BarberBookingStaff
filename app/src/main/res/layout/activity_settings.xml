@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8sp"
+    android:padding="@dimen/margin8"
     tools:context=".SubActivity.SettingsActivity">
 
     <androidx.cardview.widget.CardView
@@ -20,17 +20,18 @@
                 android:id="@+id/txt_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Profile"
+                android:layout_margin="@dimen/margin8"
+                android:text="@string/profile"
                 android:textColor="@color/colorAccent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/relative_user_name"
-                android:layout_width="match_parent"
+                android:id="@+id/card_user_name"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_profile">
@@ -39,11 +40,8 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:padding="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txt_profile">
+                    android:layout_margin="@dimen/margin16"
+                    android:padding="@dimen/margin8">
 
                     <ImageView
                         android:id="@+id/img_name"
@@ -51,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin8"
                         android:src="@drawable/ic_user" />
 
                     <TextView
@@ -59,51 +57,40 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_name"
-                        android:text="Name"
+                        android:text="@string/name"
                         android:textColor="@color/colorButton" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/input_update_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txt_name"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_name"
-                        android:background="@null"
-                        android:enabled="false"
-                        android:text="name"
+                        android:text="@string/name"
                         android:textColor="@color/colorButton" />
-
-                    <ImageView
-                        android:id="@+id/img_update_name"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
-                        android:src="@drawable/ic_edit" />
 
                 </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
-
             <androidx.cardview.widget.CardView
-                android:id="@+id/relative_user_phone"
-                android:layout_width="match_parent"
+                android:id="@+id/card_user_phone"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/relative_user_name">
+                app:layout_constraintTop_toBottomOf="@id/card_user_name">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:padding="8dp">
+                    android:layout_margin="@dimen/margin16"
+                    android:padding="@dimen/margin8">
 
                     <ImageView
                         android:id="@+id/img_phone"
@@ -111,7 +98,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin8"
                         android:src="@drawable/ic_mobile" />
 
                     <TextView
@@ -119,31 +106,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_phone"
-                        android:text="Mobile Number"
+                        android:text="@string/mobile_number"
                         android:textColor="@color/colorButton" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/input_update_mobile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txt_phone"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_phone"
-                        android:background="@null"
-                        android:enabled="false"
                         android:text="+970592435704"
                         android:textColor="@color/colorButton" />
 
-                    <ImageView
-                        android:id="@+id/img_update_mobile"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
-                        android:src="@drawable/ic_edit" />
 
 
                 </RelativeLayout>
@@ -152,21 +129,21 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/relative_user_email"
-                android:layout_width="match_parent"
+                android:id="@+id/card_user_email"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/relative_user_phone">
+                app:layout_constraintTop_toBottomOf="@id/card_user_phone">
 
                 <RelativeLayout
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:padding="8dp"
-                    >
+                    android:padding="@dimen/margin8">
 
                     <ImageView
                         android:id="@+id/img_email"
@@ -174,7 +151,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin8"
                         android:src="@drawable/ic_email" />
 
                     <TextView
@@ -182,31 +159,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_email"
-                        android:text="Email"
+                        android:text="@string/email"
                         android:textColor="@color/colorButton" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/input_update_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txt_email"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_email"
-                        android:background="@null"
-                        android:enabled="false"
                         android:text="test@testemail.com"
                         android:textColor="@color/colorButton" />
-
-                    <ImageView
-                        android:id="@+id/img_update_email"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
-                        android:src="@drawable/ic_edit" />
 
 
                 </RelativeLayout>
@@ -214,21 +180,21 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/relative_address"
-                android:layout_width="match_parent"
+                android:id="@+id/card_address"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/relative_user_email">
+                app:layout_constraintTop_toBottomOf="@id/card_user_email">
 
                 <RelativeLayout
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:padding="8dp"
-                    >
+                    android:layout_margin="@dimen/margin16"
+                    android:padding="@dimen/margin8">
 
                     <ImageView
                         android:id="@+id/img_address"
@@ -236,7 +202,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin8"
                         android:src="@drawable/ic_address" />
 
                     <TextView
@@ -244,31 +210,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_address"
-                        android:text="Address"
+                        android:text="@string/address"
                         android:textColor="@color/colorButton" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/input_update_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txt_address"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_address"
-                        android:background="@null"
-                        android:enabled="false"
                         android:text="gaza/ alremal street"
                         android:textColor="@color/colorButton" />
-
-                    <ImageView
-                        android:id="@+id/img_update_address"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
-                        android:src="@drawable/ic_edit" />
 
 
                 </RelativeLayout>
@@ -277,19 +232,20 @@
 
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/relative_password"
-                android:layout_width="match_parent"
+                android:id="@+id/card_password"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/relative_address">
+                app:layout_constraintTop_toBottomOf="@id/card_address">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:padding="16dp"
+                    android:layout_margin="@dimen/margin8"
+                    android:padding="@dimen/margin16"
                     >
 
                     <ImageView
@@ -298,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin8"
                         android:src="@drawable/ic_password" />
 
                     <TextView
@@ -306,23 +262,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_marginTop="@dimen/margin10"
                         android:layout_toEndOf="@id/img_password"
-                        android:text="Change password"
+                        android:text="@string/change_password"
                         android:textColor="@color/colorButton" />
-
-                    <EditText
-                        android:id="@+id/input_update_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_password"
-                        android:layout_marginStart="16dp"
-                        android:layout_toEndOf="@id/img_password"
-                        android:enabled="false"
-                        android:text="test@testemail.com"
-                        android:textColor="@color/colorButton"
-                        android:visibility="gone" />
 
                 </RelativeLayout>
 
@@ -331,30 +275,31 @@
 
             <View
                 android:id="@+id/first_view"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="2dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="@dimen/margin20"
+                android:layout_marginBottom="@dimen/margin20"
                 android:background="@color/colorGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/relative_password" />
+                app:layout_constraintTop_toBottomOf="@id/card_password" />
 
             <TextView
                 android:id="@+id/txt_general"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="General"
+                android:layout_margin="@dimen/margin8"
+                android:text="@string/general"
                 android:textColor="@color/colorAccent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/first_view" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/relative_language"
-                android:layout_width="match_parent"
+                android:id="@+id/card_language"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_general">
@@ -363,8 +308,8 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:padding="16dp"
+                    android:layout_margin="@dimen/margin8"
+                    android:padding="@dimen/margin16"
                     >
 
                     <ImageView
@@ -377,24 +322,23 @@
                         android:src="@drawable/ic_language" />
 
                     <TextView
-                        android:id="@+id/txt_language"
+                        android:id="@+id/text_language"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_marginTop="@dimen/margin10"
                         android:layout_toEndOf="@id/img_language"
-                        android:text="Language"
+                        android:text="@string/language"
                         android:textColor="@color/colorButton" />
 
                     <TextView
-                        android:id="@+id/input_language"
+                        android:id="@+id/txt_language"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_language"
-                        android:layout_marginStart="16dp"
+                        android:layout_below="@id/text_language"
+                        android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_language"
-                        android:enabled="false"
                         android:text="English"
                         android:textColor="@color/colorButton" />
 
@@ -402,22 +346,72 @@
 
             </androidx.cardview.widget.CardView>
 
-
             <androidx.cardview.widget.CardView
-                android:id="@+id/relative_rate_app"
-                android:layout_width="match_parent"
+                android:id="@+id/card_dark_mode"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/relative_language">
+                app:layout_constraintTop_toBottomOf="@id/card_language">
 
                 <RelativeLayout
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:padding="8dp"
+                    android:layout_margin="@dimen/margin8"
+                    android:padding="@dimen/margin16">
+
+                    <ImageView
+                        android:id="@+id/img_dark_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/margin8"
+                        android:src="@drawable/ic_dark_mode" />
+
+                    <TextView
+                        android:id="@+id/txt_dark_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_marginTop="@dimen/margin10"
+                        android:layout_toEndOf="@id/img_dark_mode"
+                        android:text="@string/dark_mode"
+                        android:textColor="@color/colorButton" />
+
+                    <Switch
+                        android:id="@+id/input_dark_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_dark_mode"
+                        android:textColor="@color/colorButton"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_rate_app"
+                android:layout_width="@dimen/widthheight"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_dark_mode">
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin16"
+                    android:padding="@dimen/margin8"
                     >
 
                     <ImageView
@@ -426,7 +420,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin8"
                         android:src="@drawable/ic_rate_app" />
 
                     <TextView
@@ -434,10 +428,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_marginTop="@dimen/margin10"
                         android:layout_toEndOf="@id/img_rate_app"
-                        android:text="Rate the app"
+                        android:text="@string/rate_the_app"
                         android:textColor="@color/colorButton" />
 
                 </RelativeLayout>
@@ -447,46 +441,47 @@
 
             <View
                 android:id="@+id/secound_view"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="2dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="@dimen/margin20"
+                android:layout_marginBottom="@dimen/margin20"
                 android:background="@color/colorGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/relative_rate_app" />
+                app:layout_constraintTop_toBottomOf="@id/card_rate_app" />
 
             <TextView
                 android:id="@+id/txt_About"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="About"
+                android:text="@string/about"
                 android:textColor="@color/colorAccent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/secound_view" />
 
             <TextView
                 android:id="@+id/txt_app_version"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
-                android:text="App Version"
-                android:textSize="20dp"
-                android:layout_margin="16dp"
-                android:padding="8dp"
+                android:text="@string/app_version"
+                android:textSize="@dimen/textCardSize20"
+                android:textColor="@color/colorButton"
+                android:layout_margin="@dimen/margin16"
+                android:padding="@dimen/margin8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_About" />
 
             <TextView
                 android:id="@+id/txt_log_out"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Log Out"
-                android:textSize="20dp"
-                android:layout_margin="16dp"
-                android:padding="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/textCardSize20"
+                android:textColor="@color/colorButton"
+                android:layout_margin="@dimen/margin16"
+                android:padding="@dimen/margin8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_app_version" />
 

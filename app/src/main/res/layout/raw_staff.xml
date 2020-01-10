@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:id="@+id/card_salon"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/card_salon"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
-    android:layout_margin="4dp">
+    android:layout_margin="8dp"
+    android:padding="@dimen/margin4">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="@dimen/margin8"
+        android:layout_gravity="center">
 
         <TextView
             android:id="@+id/txt_staff_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:text="Staff #1"
-            android:textSize="20dp"
+            android:textSize="@dimen/textCardSize20"
             android:textStyle="bold"
-            android:padding="10dp"
+            android:padding="@dimen/margin8"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,12 +32,13 @@
 
         <TextView
             android:id="@+id/txt_staff_username"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:text="Username"
-            android:textSize="18dp"
-            android:textStyle="italic"
-            android:padding="8dp"
+            android:textSize="@dimen/textSize16"
+            android:textStyle="normal"
+            android:textColor="@color/colorButton"
+            android:padding="@dimen/margin8"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_staff_name"
@@ -41,12 +46,13 @@
 
         <TextView
             android:id="@+id/txt_staff_type"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:text="Username"
-            android:textSize="18dp"
-            android:textStyle="italic"
-            android:padding="8dp"
+            android:textSize="@dimen/textSize16"
+            android:textStyle="normal"
+            android:textColor="@color/colorButton"
+            android:padding="@dimen/margin8"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_staff_username"
@@ -73,8 +79,6 @@
             app:layout_constraintStart_toEndOf="@id/txt_staff_username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/img_remove_staff"/>
-
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

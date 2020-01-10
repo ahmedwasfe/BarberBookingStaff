@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_time_solt"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/card_time_solt"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp">
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_margin="@dimen/margin8"
+    app:cardCornerRadius="@dimen/margin8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,11 +16,12 @@
 
         <TextView
             android:id="@+id/txt_time_solt"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/bellerose"
+            android:padding="@dimen/margin4"
             android:text="9:00 - 9:30"
             android:textAlignment="center"
+            android:textColor="@color/colorButton"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -30,10 +33,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Available"
-            android:textSize="14sp"
-            android:textStyle="italic"
-            android:fontFamily="@font/bellerose"
             android:textAlignment="center"
+            android:textSize="14sp"
+            android:textColor="@color/colorButton"
+            android:padding="@dimen/margin4"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -5,7 +5,9 @@
     android:id="@+id/card_salon"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="8dp"
-    android:layout_margin="4dp">
+    android:layout_margin="@dimen/margin8"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,9 +21,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Salon #1"
-            android:textSize="20dp"
+            android:textSize="@dimen/textSize16"
             android:textStyle="bold"
-            android:fontFamily="@font/bellerose"
+            android:textColor="@color/colorButton"
+            android:padding="@dimen/margin8"
             android:gravity="center_horizontal"/>
 
         <TextView
@@ -29,9 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Address #1"
-            android:textSize="16dp"
-            android:textStyle="italic"
-            android:fontFamily="@font/bellerose"
+            android:textSize="@dimen/textSize16"
+            android:textStyle="normal"
+            android:textColor="@color/colorButton"
+            android:padding="@dimen/margin8"
             android:gravity="center_horizontal"/>
 
     </LinearLayout>

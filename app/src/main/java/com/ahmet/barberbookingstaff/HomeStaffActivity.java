@@ -3,6 +3,7 @@ package com.ahmet.barberbookingstaff;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -72,6 +73,8 @@ public class HomeStaffActivity extends AppCompatActivity
     RecyclerView mRecyclerTimeSolt;
     @BindView(R.id.calendar_time_slot)
     HorizontalCalendarView mCalendarDateView;
+    @BindView(R.id.tool_bar_home)
+    Toolbar mToolbar;
 
     private CollectionReference notificationCollectionRef;
     private CollectionReference currentBookingDateCollectionRef;
@@ -116,7 +119,6 @@ public class HomeStaffActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle(Common.currentSalon.getName());
 
         FirebaseFirestore.getInstance().collection("AllSalon")
                 .document(Common.currentSalon.getSalonID())
@@ -185,10 +187,14 @@ public class HomeStaffActivity extends AppCompatActivity
 
     private void initView() {
 
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(Common.currentSalon.getName());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         mActionBarDrawerToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

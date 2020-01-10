@@ -1,42 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout"
-    android:background="@color/colorHomeBackground"
+    android:fitsSystemWindows="true"
     tools:context=".HomeStaffActivity">
-
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
+        android:layout_height="match_parent">
 
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tool_bar_home"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:backgroundTint="@color/colorPrimary"
+            android:background="@color/colorPrimary"
+            app:titleTextColor="@color/colorWhite"
+            app:subtitleTextColor="@color/colorWhite"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <devs.mulham.horizontalcalendar.HorizontalCalendarView
             android:id="@+id/calendar_time_slot"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            app:textColorSelected="@color/colorWhite"
-            app:textColorNormal="@color/colorWhite"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="@dimen/margin10"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:textColorNormal="@color/colorWhite"
+            app:textColorSelected="@color/colorWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar_home" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_time_solt"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@id/calendar_time_slot"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="@dimen/widthheight"
+            android:layout_marginTop="@dimen/margin4"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/calendar_time_slot" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -46,7 +58,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/navigation_menu"
-        app:headerLayout="@layout/navigation_layout"/>
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navigation_layout"
+        app:menu="@menu/navigation_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

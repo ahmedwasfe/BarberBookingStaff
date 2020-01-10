@@ -164,7 +164,8 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
     }
 
     @Override
-    public void onClickPositiveButton(BottomSheetDialog sheetDialog, String name, String username, String password, String barberType) {
+    public void onClickPositiveButton(BottomSheetDialog sheetDialog, String name,
+                                      String username, String password, String barberType) {
 
     }
 

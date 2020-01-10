@@ -17,31 +17,47 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".SubActivity.ProductsActivity"
-            android:theme="@style/NoActionBar"/>
+            android:theme="@style/NoActionBar"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".SubActivity.UpdateStaffActivity"
-            android:parentActivityName=".SubActivity.StaffActivity" />
+            android:parentActivityName=".SubActivity.StaffActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".SubActivity.StaffActivity"
-            android:parentActivityName=".HomeStaffActivity" />
+            android:parentActivityName=".HomeStaffActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".SubActivity.SettingsActivity"
-            android:parentActivityName=".HomeStaffActivity"/>
-        <activity android:name=".SubActivity.AddSalonActivity" />
-        <activity android:name=".HomeActivity">
+            android:parentActivityName=".HomeStaffActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".SubActivity.AddSalonActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".HomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SubActivity.DoneServicsesActivity"
-            android:parentActivityName=".HomeStaffActivity" />
+            android:parentActivityName=".HomeStaffActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".SubActivity.NotificationsActivity"
-            android:parentActivityName=".HomeStaffActivity" />
+            android:parentActivityName=".HomeStaffActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".Service.FCMService">
             <intent-filter>
@@ -49,9 +65,15 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".HomeStaffActivity" />
-        <activity android:name=".SubActivity.SalonActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".HomeStaffActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBar"/>
+
+        <activity android:name=".SubActivity.SalonActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.facebook.accountkit.ApplicationName"

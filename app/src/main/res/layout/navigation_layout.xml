@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:padding="@dimen/margin8"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -12,7 +12,7 @@
         android:layout_height="200dp"
         android:src="@drawable/barbersalon"
         android:scaleType="centerCrop"
-        android:padding="20dp"
+        android:padding="@dimen/margin20"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -22,13 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Barber Name"
-        android:textSize="24sp"
+        android:textSize="@dimen/textCardSize20"
         android:textColor="@color/colorButton"
-        android:textStyle="bold"
         android:textAllCaps="true"
-        android:padding="16dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginStart="20dp"
+        android:padding="@dimen/margin12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_logo_salon"/>
@@ -38,26 +35,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Barber Type"
-        android:textSize="20sp"
+        android:textSize="@dimen/margin20"
         android:textColor="@color/colorButton"
-        android:textStyle="italic"
-        android:textAllCaps="true"
-        android:padding="8dp"
-        android:layout_marginStart="20dp"
+        android:textAllCaps="false"
+        android:padding="@dimen/margin8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_barber_name"/>
-
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/img_barber"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_logo_salon"
-        android:src="@drawable/img_barber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

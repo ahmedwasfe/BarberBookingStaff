@@ -12,13 +12,13 @@
 
         <TextView
             android:id="@+id/txt_title"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
-            android:text="Staff Login"
+            android:text="@string/staff_login"
             android:textColor="@color/colorWhite"
             android:textAppearance="@android:style/TextAppearance.Large"
             android:background="@color/colorPrimary"
-            android:padding="20dp"
+            android:padding="@dimen/margin20"
             android:gravity="center"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -26,41 +26,39 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/txt_layout_username"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:hint="Username"
-            android:padding="5dp"
+            android:layout_margin="@dimen/margin8"
+            android:padding="@dimen/margin5"
             app:layout_constraintTop_toBottomOf="@id/txt_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <EditText
                 android:id="@+id/txt_input_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
-                android:text="ali.sd1"
+                android:hint="@string/username"
+                android:text="saja.2002"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/txt_layout_password"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:hint="Password"
-            android:padding="5dp"
+            android:layout_margin="@dimen/margin8"
+            android:padding="@dimen/margin5"
             app:layout_constraintTop_toBottomOf="@id/txt_layout_username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <EditText
                 android:id="@+id/txt_input_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:text="123456"
                 android:inputType="textPassword" />
 
@@ -69,7 +67,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:id="@+id/layout_btn"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:weightSum="4"
             app:layout_constraintTop_toBottomOf="@id/txt_layout_password"
@@ -79,16 +77,15 @@
 
             <Button
                 android:id="@+id/btn_login"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="Log In"
+                android:text="@string/log_in"
                 android:layout_weight="2"
-                android:textStyle="bold"
                 android:textAllCaps="false"
-                android:textSize="16dp"
+                android:textSize="@dimen/margin16"
                 android:padding="14dp"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/margin8"
                 android:background="@drawable/btn_bg"
                 app:layout_constraintTop_toBottomOf="@id/spinner_barber_type"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,16 +94,15 @@
 
             <Button
                 android:id="@+id/btn_login_add_barber"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:layout_weight="2"
-                android:textStyle="bold"
                 android:textAllCaps="false"
-                android:textSize="16dp"
+                android:textSize="@dimen/margin16"
                 android:padding="14dp"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/margin8"
                 android:background="@drawable/btn_bg"
                 app:layout_constraintTop_toBottomOf="@id/spinner_barber_type"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Common.Common;
@@ -38,11 +39,11 @@ public class UpdateStaffActivity extends AppCompatActivity {
     private Unbinder mUnbinder;
 
     @BindView(R.id.txt_input_staff_name_update)
-    TextInputEditText mInputName;
+    EditText mInputName;
     @BindView(R.id.txt_input_staff_username_update)
-    TextInputEditText mInputUsername;
+    EditText mInputUsername;
     @BindView(R.id.txt_input_staff_password_update)
-    TextInputEditText mInputPassword;
+    EditText mInputPassword;
     @BindView(R.id.spinner_barber_type_update)
     MaterialSpinner mSpinnerStaffType;
 
@@ -52,7 +53,11 @@ public class UpdateStaffActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_update_staff)
     void updateStaff(){
-        verifyStaff();
+
+        if (!mStaffType.equals(""))
+            verifyStaff();
+        else
+            Toast.makeText(this, "Staff Type must not be Null", Toast.LENGTH_SHORT).show();
     }
 
     @BindView(R.id.btn_remove_staff)
@@ -209,7 +214,6 @@ public class UpdateStaffActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()){
                                                     if (task.getResult().size() > 0){
 
-
                                                         FirebaseFirestore.getInstance().collection("AllSalon")
                                                                 .document(email)
                                                                 .collection("Barber")
@@ -248,7 +252,6 @@ public class UpdateStaffActivity extends AppCompatActivity {
                                 });
 
                             }else
-
                                 Toast.makeText(UpdateStaffActivity.this, "Can not add Barber", Toast.LENGTH_SHORT).show();
                         }
                     }

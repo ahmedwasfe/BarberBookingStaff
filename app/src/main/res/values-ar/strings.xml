@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Barber Booking Staff</string>
+
 
     <!-- Facebook API -->
     <string name="FACEBOOK_APP_ID">2070377613085786</string>
@@ -12,7 +14,8 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
 
-    <string name="dark_mode">Dark Mode</string>
+
+    <string name="dark_mode">الوضع الليلي</string>
     <string name="next">Next</string>
     <string name="finish">Finish</string>
     <string name="service">Service</string>

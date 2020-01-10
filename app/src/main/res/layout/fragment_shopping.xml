@@ -4,68 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
     android:orientation="vertical"
-    android:background="@color/colorHomeBackground">
+    android:padding="@dimen/margin8">
 
     <View
         android:id="@+id/view_top"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorBlack" />
+        android:layout_marginTop="@dimen/margin10"
+        android:background="@color/colorGray" />
 
     <com.google.android.material.chip.ChipGroup
-        android:visibility="visible"
         android:id="@+id/chip_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/margin10"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_top">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_wax"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin10"
+            android:layout_marginEnd="@dimen/margin10"
             android:text="Wax"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:textColor="@color/colorWhite"
-            app:chipBackgroundColor="@color/colorPrimary"
-            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+            app:chipBackgroundColor="@color/colorPrimary" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_spray"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin10"
+            android:layout_marginEnd="@dimen/margin10"
             android:text="Spray"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:textColor="@color/colorWhite"
-            app:chipBackgroundColor="@color/colorPrimary"
-            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+            app:chipBackgroundColor="@color/colorPrimary" />
 
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_hair_care"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin10"
+            android:layout_marginEnd="@dimen/margin10"
             android:text="Hair Care"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:textColor="@color/colorWhite"
-            app:chipBackgroundColor="@color/colorPrimary"
-            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+            app:chipBackgroundColor="@color/colorPrimary" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_body_care"
             style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="@dimen/margin10"
+            android:layout_marginEnd="@dimen/margin10"
             android:text="Body Care"
             android:textColor="@color/colorWhite"
             app:chipBackgroundColor="@color/colorPrimary" />
@@ -77,18 +76,13 @@
         android:id="@+id/view_bottom"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorBlack"
-        app:layout_constraintTop_toBottomOf="@id/chip_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_marginTop="@dimen/margin10"
+        android:background="@color/colorGray" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_shopping_items"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-
-            />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_shopping_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin10" />
 
 </LinearLayout>

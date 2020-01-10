@@ -6,43 +6,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SubActivity.AddSalonActivity"
-    android:padding="10dp">
+    android:padding="@dimen/margin10">
 
     <TextView
         android:id="@+id/txt_next"
         android:layout_width="wrap_content"
-        android:text="Next"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
         android:textStyle="bold"
         android:textAllCaps="false"
-        android:textSize="20sp"
+        android:textSize="@dimen/textCardSize20"
         android:textColor="@color/colorAccent"
         android:padding="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/margin16"
         android:enabled="false"
-        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/txt_previous"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Previous"
+        android:text="@string/previous"
         android:textStyle="bold"
         android:textAllCaps="false"
-        android:textSize="20sp"
+        android:textSize="@dimen/textCardSize20"
         android:textColor="@color/colorAccent"
-        android:padding="16dp"
-        android:layout_marginTop="16dp"
+        android:padding="@dimen/margin16"
+        android:layout_marginTop="@dimen/margin16"
         android:enabled="false"
-        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.ahmet.barberbookingstaff.Common.NonSwipeViewPager
         android:id="@+id/non_view_pager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/widthheight"
+        android:layout_height="@dimen/widthheight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/step_view"
@@ -51,7 +51,7 @@
 
     <com.shuhart.stepview.StepView
         android:id="@+id/step_view"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/widthheight"
         android:layout_height="wrap_content"
         android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ahmet.barberbookingstaff.Interface.IDailogClickListener;
@@ -22,9 +23,9 @@ public class SheetDailogLogin {
     @BindView(R.id.txt_title)
     TextView mTxtTitle;
     @BindView(R.id.txt_input_username)
-    TextInputEditText mInputUsername;
+    EditText mInputUsername;
     @BindView(R.id.txt_input_password)
-    TextInputEditText mInputPassword;
+    EditText mInputPassword;
     @BindView(R.id.btn_login)
     Button mBtnLogin;
     @BindView(R.id.btn_login_add_barber)
@@ -42,7 +43,8 @@ public class SheetDailogLogin {
         return mDailogLogin;
     }
 
-    public void showLoginDailog(Context mContext, String title, String positiveText, String negativeText, IDailogClickListener iDailogClickListener){
+    public void showLoginDailog(Context mContext, String title, String positiveText, String negativeText,
+                                IDailogClickListener iDailogClickListener){
 
         this.iDailogClickListener = iDailogClickListener;
 

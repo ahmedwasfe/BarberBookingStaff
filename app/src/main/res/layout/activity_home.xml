@@ -5,20 +5,20 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
+        android:padding="@dimen/margin8"
         tools:context=".SubActivity.AddSalonActivity">
 
 
 
     <Button
         android:id="@+id/btn_login_salon"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/widthheight"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Log In Salon"
+        android:text="@string/log_in_salon"
         android:textStyle="bold"
         android:textAllCaps="false"
-        android:textSize="16dp"
+        android:textSize="@dimen/margin16"
         android:padding="14dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
@@ -29,13 +29,13 @@
 
     <Button
         android:id="@+id/btn_login_barber"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/widthheight"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Log In Barber"
+        android:text="@string/log_in_barber"
         android:textStyle="bold"
         android:textAllCaps="false"
-        android:textSize="16dp"
+        android:textSize="@dimen/textSize16"
         android:padding="14dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
