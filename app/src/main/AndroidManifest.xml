@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ahmet.barberbookingstaff">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,30 +18,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".SubActivity.ProductsActivity"
-            android:theme="@style/NoActionBar"
-            android:screenOrientation="portrait"/>
-
+        <activity android:name=".SubActivity.UpdateProductActivity"></activity>
         <activity
             android:name=".SubActivity.UpdateStaffActivity"
-            android:parentActivityName=".SubActivity.StaffActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".SubActivity.StaffActivity"
-            android:parentActivityName=".HomeStaffActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SubActivity.SettingsActivity"
             android:parentActivityName=".HomeStaffActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".SubActivity.AddSalonActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SubActivity.AddSalonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,16 +38,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SubActivity.DoneServicsesActivity"
             android:parentActivityName=".HomeStaffActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SubActivity.NotificationsActivity"
             android:parentActivityName=".HomeStaffActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <service android:name=".Service.FCMService">
             <intent-filter>
@@ -65,26 +53,27 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".HomeStaffActivity"
+        <activity
+            android:name=".HomeStaffActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar"/>
-
-        <activity android:name=".SubActivity.SalonActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".MainActivity"
-            android:screenOrientation="portrait"/>
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".SubActivity.SalonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.facebook.accountkit.ApplicationName"
             android:value="@string/app_name" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/FACEBOOK_APP_ID" />
+            android:value="@string/FACEBOOK_APP_ID"
+            tools:replace="android:value" />
         <meta-data
             android:name="com.facebook.accountkit.ClientToken"
             android:value="@string/ACCOUNT_KIT_CLIENT_TOKEN" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />

@@ -51,7 +51,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Shoppi
     public void onBindViewHolder(@NonNull ShoppingHolder holder, int position) {
 
 
-        holder.mTxtShoppingName.setText(Common.formatShoppingName(mListProducts.get(position).getName()));
+        holder.mTxtShoppingName.setText(Common.formatName(mListProducts.get(position).getName()));
         holder.mTxtShoppingPrice.setText(new StringBuilder("$ ").append(mListProducts.get(position).getPrice()));
 
         Picasso.get()
@@ -65,7 +65,7 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.Shoppi
             public void onItemSelected(View view, int position) {
 
                 mIShoppingItemSelectedListener.onShoppingItemSelected(mListProducts.get(position));
-                Toast.makeText(mContext, "Added to menu shoping", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, mContext.getString(R.string.add_to_shopping), Toast.LENGTH_SHORT).show();
             }
 
 

@@ -22,7 +22,7 @@
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:text="Staff #1"
-            android:textSize="@dimen/textCardSize20"
+            android:textSize="@dimen/textSize16"
             android:textStyle="bold"
             android:padding="@dimen/margin8"
             android:gravity="center"

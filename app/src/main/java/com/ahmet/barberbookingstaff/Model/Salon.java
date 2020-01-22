@@ -5,18 +5,49 @@ import android.os.Parcelable;
 
 public class Salon implements Parcelable {
 
-    private String name,email, address, website, phone, openHour, salonType, salonID;
+    private String name, email, address, website, phone,
+            openHour, salonType, salonID, city;
+
+    private double latitude, longitude;
+
+    private boolean open;
 
     public Salon(){}
 
-    public Salon(String name, String email, String address, String phone, String openHour, String salonType, String salonID) {
+    public Salon(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Salon(String name, String email, String address, String website, String phone,
+                 String openHour, String salonType, String salonID, String city, boolean open) {
         this.name = name;
         this.email = email;
         this.address = address;
+        this.website = website;
         this.phone = phone;
         this.openHour = openHour;
         this.salonType = salonType;
         this.salonID = salonID;
+        this.city = city;
+        this.open = open;
+    }
+
+    public Salon(String name, String email, String address, String website, String phone, String openHour,
+                 String salonType, String salonID, String city,
+                 double latitude, double longitude, boolean open) {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.website = website;
+        this.phone = phone;
+        this.openHour = openHour;
+        this.salonType = salonType;
+        this.salonID = salonID;
+        this.city = city;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.open = open;
     }
 
     public String getName() {
@@ -75,12 +106,44 @@ public class Salon implements Parcelable {
         this.salonType = salonType;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public String getOpenHour() {
         return openHour;
     }
 
     public void setOpenHour(String openHour) {
         this.openHour = openHour;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     protected Salon(Parcel in) {
@@ -90,7 +153,11 @@ public class Salon implements Parcelable {
         website = in.readString();
         phone = in.readString();
         salonType = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
         openHour = in.readString();
+        city = in.readString();
+        open = in.readBoolean();
     }
 
     public static final Creator<Salon> CREATOR = new Creator<Salon>() {
@@ -118,6 +185,10 @@ public class Salon implements Parcelable {
         dest.writeString(website);
         dest.writeString(phone);
         dest.writeString(salonType);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
         dest.writeString(openHour);
+        dest.writeString(city);
+        dest.writeBoolean(open);
     }
 }

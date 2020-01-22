@@ -65,7 +65,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text=" "
-                android:visibility="visible"
+                android:visibility="gone"
                 android:textSize="20sp"
                 android:fontFamily="@font/bellerose"
                 android:drawableEnd="@drawable/ic_remove"

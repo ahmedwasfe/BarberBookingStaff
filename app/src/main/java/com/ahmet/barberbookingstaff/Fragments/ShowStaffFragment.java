@@ -75,77 +75,65 @@ public class ShowStaffFragment extends Fragment  implements IStaffLoadListener {
 
         mDialog.show();
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
+                    if (task.isSuccessful()){
 
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.get("barberType").equals("Admin")){
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot.get("barberType").equals("Admin")){
 
-                                FirebaseFirestore.getInstance().collection("AllSalon")
-                                        .document(Common.currentSalon.getSalonID())
-                                        .collection("Barber")
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                                    .document(Common.currentSalon.getSalonID())
+                                    .collection(Common.KEY_COLLECTION_BARBER)
+                                    .get()
+                                    .addOnCompleteListener(task1 -> {
 
-                                                if (task.isSuccessful()){
+                                        if (task1.isSuccessful()){
 
-                                                    List<Barber> mListStaff = new ArrayList<>();
-                                                    for (DocumentSnapshot snapshot : task.getResult()){
-                                                        Barber barber = snapshot.toObject(Barber.class);
-                                                        mListStaff.add(barber);
-                                                    }
-
-                                                    iStaffLoadListener.onLoadStaffSuccess(mListStaff);
-                                                }
+                                            List<Barber> mListStaff = new ArrayList<>();
+                                            for (DocumentSnapshot snapshot1 : task1.getResult()){
+                                                Barber barber = snapshot1.toObject(Barber.class);
+                                                mListStaff.add(barber);
                                             }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
+
+                                            iStaffLoadListener.onLoadStaffSuccess(mListStaff);
+                                        }
+                                    }).addOnFailureListener(e -> {
                                         mDialog.dismiss();
                                         iStaffLoadListener.onLoadStaffFailed(e.getMessage());
-                                    }
-                                });
+                                    });
 
-                            }else {
-                                mDialog.dismiss();
-                               // Toast.makeText(getActivity(), "You can not show all Staff", Toast.LENGTH_SHORT).show();
+                        }else {
+                            mDialog.dismiss();
+                           // Toast.makeText(getActivity(), "You can not show all Staff", Toast.LENGTH_SHORT).show();
 
 
-                                FirebaseFirestore.getInstance().collection("AllSalon")
-                                        .document(Common.currentSalon.getSalonID())
-                                        .collection("Barber")
-                                        .document(Common.currentBarber.getBarberID())
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                                    .document(Common.currentSalon.getSalonID())
+                                    .collection(Common.KEY_COLLECTION_BARBER)
+                                    .document(Common.currentBarber.getBarberID())
+                                    .get()
+                                    .addOnCompleteListener(task12 -> {
 
-                                                if (task.isSuccessful()){
+                                        if (task12.isSuccessful()){
 
-                                                    List<Barber> mListStaff = new ArrayList<>();
-                                                    DocumentSnapshot snapshot = task.getResult();
+                                            List<Barber> mListStaff = new ArrayList<>();
+                                            DocumentSnapshot snapshot12 = task12.getResult();
 
-                                                     mListStaff.add(new Barber(snapshot.get("name").toString(),
-                                                                snapshot.get("username").toString(),
-                                                                snapshot.get("password").toString(),
-                                                                snapshot.get("barberType").toString()));
+                                             mListStaff.add(new Barber(snapshot12.get("name").toString(),
+                                                        snapshot12.get("username").toString(),
+                                                        snapshot12.get("password").toString(),
+                                                        snapshot12.get("barberType").toString()));
 
-                                                    iStaffLoadListener.onLoadStaffSuccess(mListStaff);
-                                                }
+                                            iStaffLoadListener.onLoadStaffSuccess(mListStaff);
+                                        }
 
-                                            }
-                                        });
-                            }
+                                    });
                         }
                     }
                 });
@@ -161,7 +149,7 @@ public class ShowStaffFragment extends Fragment  implements IStaffLoadListener {
         mDialog = new SpotsDialog.Builder()
                 .setCancelable(false)
                 .setContext(getActivity())
-                .setMessage("Please wait...")
+                .setMessage(R.string.please_wait)
                 .build();;
     }
 

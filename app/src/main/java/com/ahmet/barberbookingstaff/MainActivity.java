@@ -84,23 +84,15 @@ public class MainActivity extends AppCompatActivity implements IAllCitiesLoadLis
 
                 FirebaseInstanceId.getInstance()
                         .getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        .addOnCompleteListener(task -> {
 
-                                if (task.isSuccessful()){
+                            if (task.isSuccessful()){
 
-                                    Common.updateToken(MainActivity.this,
-                                            task.getResult().getToken());
-                                    Log.d("TOKEN", task.getResult().getToken());
-                                }
+                                Common.updateToken(MainActivity.this,
+                                        task.getResult().getToken());
+                                Log.d(Common.TAG_TOKEN, task.getResult().getToken());
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
 
                 Paper.init(MainActivity.this);
                 String user = Paper.book().read(Common.KEY_LOGGED);
@@ -153,39 +145,32 @@ public class MainActivity extends AppCompatActivity implements IAllCitiesLoadLis
 
         mCityReference
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
+                    if (task.isSuccessful()){
 
-                            List<City> mListCity = new ArrayList<>();
+                        List<City> mListCity = new ArrayList<>();
 
-                            for (DocumentSnapshot documentSnapshot : task.getResult()){
-                                City city = documentSnapshot.toObject(City.class);
-                                mListCity.add(city);
-                            }
-
-                            iAllCitiesLoadListener.onAllCitiesLoadSuccess(mListCity);
+                        for (DocumentSnapshot documentSnapshot : task.getResult()){
+                            City city = documentSnapshot.toObject(City.class);
+                            mListCity.add(city);
                         }
+
+                        iAllCitiesLoadListener.onAllCitiesLoadSuccess(mListCity);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                iAllCitiesLoadListener.onAllCitiesLoadFailed(e.getMessage());
-            }
-        });
+                }).addOnFailureListener(e -> iAllCitiesLoadListener.onAllCitiesLoadFailed(e.getMessage()));
     }
 
     private void init() {
 
-        mCityReference = FirebaseFirestore.getInstance().collection("AllSalon");
+        mCityReference = FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON);
 
         iAllCitiesLoadListener = this;
 
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
                 .setCancelable(false)
+                .setMessage(R.string.please_wait)
                 .build();
     }
 

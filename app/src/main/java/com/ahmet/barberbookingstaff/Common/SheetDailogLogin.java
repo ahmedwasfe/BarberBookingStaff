@@ -72,15 +72,27 @@ public class SheetDailogLogin {
         Window window = mSheetDialog.getWindow();
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        mBtnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mBtnLogin.setOnClickListener(view -> {
 
-                String username = mInputUsername.getText().toString();
-                String password = mInputPassword.getText().toString();
+            String username = mInputUsername.getText().toString();
+            String password = mInputPassword.getText().toString();
 
-                iDailogClickListener.onClickPositiveButton(mSheetDialog, username, password);
+            if (TextUtils.isEmpty(username)){
+                mInputUsername.setError(mContext.getString(R.string.please_enter_username));
+                return;
             }
+
+            if (TextUtils.isEmpty(password)){
+                mInputPassword.setError(mContext.getString(R.string.please_enter_password));
+                return;
+            }
+
+            if (password.length() < 6){
+                mInputPassword.setError(mContext.getString(R.string.password_must_be_at_least_6));
+                return;
+            }
+
+            iDailogClickListener.onClickPositiveButton(mSheetDialog, username, password);
         });
 
         mBtnAddBarber.setOnClickListener(new View.OnClickListener() {

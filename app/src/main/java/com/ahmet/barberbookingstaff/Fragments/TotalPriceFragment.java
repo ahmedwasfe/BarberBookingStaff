@@ -22,12 +22,14 @@ import com.ahmet.barberbookingstaff.Model.EventBus.DismissFromBottomSheetEvent;
 import com.ahmet.barberbookingstaff.Model.FCMResponse;
 import com.ahmet.barberbookingstaff.Model.FCMSendData;
 import com.ahmet.barberbookingstaff.Model.Invoice;
+import com.ahmet.barberbookingstaff.Model.Notification;
 import com.ahmet.barberbookingstaff.Model.Token;
 import com.ahmet.barberbookingstaff.R;
 import com.ahmet.barberbookingstaff.Retrofit.IFCMService;
 import com.ahmet.barberbookingstaff.Retrofit.RetrofitClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
@@ -36,6 +38,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
@@ -46,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -119,27 +123,23 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
         mRecyclerShoopingItem.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
 
-        mBtnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mBtnConfirm.setOnClickListener(view -> {
 
-                mDialog.show();
+            mDialog.show();
 
-                // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/P06LozRgyEgFF5ehHPLZ/24_07_2019/19
-                // Update booking information, set done = true
-                DocumentReference mDocumentRef = FirebaseFirestore.getInstance()
-                        .collection("AllSalon")
-                        .document(Common.currentSalon.getSalonID())
-                        .collection("Barber")
-                        .document(Common.currentBarber.getBarberID())
-                        .collection(Common.mSimpleDateFormat.format(Common.bookingDate.getTime()))
-                        .document(Common.currentBooking.getBookingID());
+            // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/P06LozRgyEgFF5ehHPLZ/24_07_2019/19
+            // Update booking information, set done = true
+            DocumentReference mDocumentRef = FirebaseFirestore.getInstance()
+                    .collection(Common.KEY_COLLECTION_AllSALON)
+                    .document(Common.currentSalon.getSalonID())
+                    .collection(Common.KEY_COLLECTION_BARBER)
+                    .document(Common.currentBarber.getBarberID())
+                    .collection(Common.mSimpleDateFormat.format(Common.bookingDate.getTime()))
+                    .document(Common.currentBooking.getBookingID());
 
 
-                mDocumentRef.get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            mDocumentRef.get()
+                    .addOnCompleteListener(task -> {
 
                         if (task.isSuccessful()){
 
@@ -170,16 +170,11 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
                             }
                         }
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    }).addOnFailureListener(e -> {
                         mDialog.dismiss();
                         Toast.makeText(getActivity(), e.getMessage()
                                 , Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                    });
         });
     }
 
@@ -187,9 +182,9 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
 
         // Create invoice
         CollectionReference mCollectionRefInvoice = FirebaseFirestore.getInstance()
-                .collection("AllSalon")
+                .collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Invoices");
+                .collection(Common.KEY_COLLECTION_INVOICES);
 
         Invoice invoice = new Invoice();
 
@@ -212,12 +207,7 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
 
         mCollectionRefInvoice.document()
                 .set(invoice)
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -233,58 +223,73 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
 
     private void sendNotificationUpdateToUser(String customerPhone) {
 
-        // get token of user first
-        FirebaseFirestore.getInstance()
-                .collection("Tokens")
-                .whereEqualTo("userPhone", customerPhone)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        // Create Notification
+        Notification notification = new Notification();
+        notification.setTitle(getString(R.string.finish_booking));
+        notification.setContent(getString(R.string.thank_you_for_booking));
+        notification.setUuid(UUID.randomUUID().toString());
+        notification.setRead(false);
+       // notification.setServerTimestamp(FieldValue.serverTimestamp());
+
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_USER)
+                .document(customerPhone)
+                .collection(Common.KEY_COLLECTION_NOTIFICATIONS)
+                .document(notification.getUuid())
+                .set(notification)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onSuccess(Void aVoid) {
 
-                        if (task.isSuccessful() && task.getResult().size() > 0){
+                        // get token of user first
+                        FirebaseFirestore.getInstance()
+                                .collection(Common.KEY_COLLECTION_TOKENS)
+                                .whereEqualTo("userPhone", customerPhone)
+                                .get()
+                                .addOnCompleteListener(task -> {
 
-                            Token token = new Token();
-                            for (DocumentSnapshot docSnapshot : task.getResult())
-                                token = docSnapshot.toObject(Token.class);
+                                    if (task.isSuccessful() && task.getResult().size() > 0){
 
-                            // Create notification
-                            FCMSendData fcmSendData = new FCMSendData();
+                                        Token token = new Token();
+                                        for (DocumentSnapshot docSnapshot : task.getResult())
+                                            token = docSnapshot.toObject(Token.class);
 
-                            Map<String, String> mMapSendData = new HashMap<>();
-                            mMapSendData.put("done", "true");
+                                        // Create notification
+                                        FCMSendData fcmSendData = new FCMSendData();
 
-                            // Information need for rating barber
-                            mMapSendData.put(Common.KEY_RATING_CITY, Common.cityName);
-                            mMapSendData.put(Common.KEY_RATING_SALON_ID, Common.currentSalon.getSalonID());
-                            mMapSendData.put(Common.KEY_RATING_SALON_NAME, Common.currentSalon.getName());
-                            mMapSendData.put(Common.KEY_RATING_BARBER_ID, Common.currentBarber.getBarberID());
+                                        Map<String, String> mMapSendData = new HashMap<>();
+                                        mMapSendData.put("done", "true");
 
-                            fcmSendData.setTo(token.getToken());
-                            fcmSendData.setmMapData(mMapSendData);
+                                        // Information need for rating barber
+                                        //  mMapSendData.put(Common.KEY_RATING_CITY, Common.cityName);
+                                        mMapSendData.put(Common.KEY_RATING_SALON_ID, Common.currentSalon.getSalonID());
+                                        mMapSendData.put(Common.KEY_RATING_SALON_NAME, Common.currentSalon.getName());
+                                        mMapSendData.put(Common.KEY_RATING_BARBER_ID, Common.currentBarber.getBarberID());
 
-                            mIFCMService.sendNotification(fcmSendData)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(Schedulers.newThread())
-                                    .subscribe(new Consumer<FCMResponse>() {
-                                        @Override
-                                        public void accept(FCMResponse fcmResponse) throws Exception {
-                                            mDialog.dismiss();
-                                            dismiss();
-                                            EventBus.getDefault().postSticky(new DismissFromBottomSheetEvent(true));
-                                            //mISheetDialogDismissListener.onDismissSheetDialog(true);
-                                        }
-                                    }, new Consumer<Throwable>() {
-                                        @Override
-                                        public void accept(Throwable throwable) throws Exception {
+                                        fcmSendData.setTo(token.getToken());
+                                        fcmSendData.setmMapData(mMapSendData);
 
-                                            Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                        mIFCMService.sendNotification(fcmSendData)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(Schedulers.newThread())
+                                                .subscribe(fcmResponse -> {
+                                                    mDialog.dismiss();
+                                                    dismiss();
+                                                    EventBus.getDefault().postSticky(new DismissFromBottomSheetEvent(true));
+                                                    //mISheetDialogDismissListener.onDismissSheetDialog(true);
+                                                }, new Consumer<Throwable>() {
+                                                    @Override
+                                                    public void accept(Throwable throwable) throws Exception {
 
-                        }
+                                                        Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                    }
+                                });
                     }
                 });
+
     }
 
     private void setInformation() {
@@ -305,14 +310,11 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
                 chip.setText(barberServices.getServiceName());
                 chip.setTag(tag);
 
-                chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mHashServicesAdded.remove(view.getTag());
-                        mChipGroup_Services.removeView(view);
+                chip.setOnCloseIconClickListener(view -> {
+                    mHashServicesAdded.remove(view.getTag());
+                    mChipGroup_Services.removeView(view);
 
-                        calculatePrice();
-                    }
+                    calculatePrice();
                 });
 
                 mChipGroup_Services.addView(chip);
@@ -372,6 +374,7 @@ public class TotalPriceFragment extends BottomSheetDialogFragment {
         mDialog = new SpotsDialog.Builder()
                 .setContext(getActivity())
                 .setCancelable(false)
+                .setMessage(R.string.please_wait)
                 .build();
 
         mIFCMService = RetrofitClient.getInstance()

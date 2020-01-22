@@ -16,8 +16,10 @@
     <dimen name="margin8">8dp</dimen>
     <dimen name="margin10">10dp</dimen>
     <dimen name="margin12">12dp</dimen>
+    <dimen name="margin14">14dp</dimen>
     <dimen name="margin16">16dp</dimen>
     <dimen name="margin20">20dp</dimen>
+    <dimen name="margin30">30dp</dimen>
 
 
 </resources>

@@ -76,7 +76,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
             holder.mCardTimeSolt.setCardBackgroundColor(
                     mContext.getResources().getColor(R.color.colorWhite));
 
-            holder.mTxtTimeSoltDescription.setText("Available");
+            holder.mTxtTimeSoltDescription.setText(R.string.available);
             holder.mTxtTimeSoltDescription.setTextColor(
                     mContext.getResources().getColor(R.color.colorBlack));
 
@@ -110,7 +110,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
                         holder.mCardTimeSolt.setCardBackgroundColor(
                                 mContext.getResources().getColor(R.color.colorPrimary));
 
-                        holder.mTxtTimeSoltDescription.setText("Full");
+                        holder.mTxtTimeSoltDescription.setText(R.string.full);
                         holder.mTxtTimeSoltDescription.setTextColor(
                                 mContext.getResources().getColor(R.color.colorWhite));
 
@@ -118,42 +118,31 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
                                 mContext.getResources().getColor(R.color.colorWhite));
                         // holder.mCardTimeSolt.setEnabled(false);
 
-                        holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(View view, int position) {
-                                // Only add for gray time slot
-                                // Here we will get Booking Information and store in Common.currentBookingInformation
-                                // After that start Done Service Actvivty
+                        holder.setmIRecyclerItemSelectedListener((view, position1) -> {
+                            // Only add for gray time slot
+                            // Here we will get Booking Information and store in Common.currentBookingInformation
+                            // After that start Done Service Actvivty
 
-                                FirebaseFirestore.getInstance()
-                                        .collection("AllSalon")
-                                        .document(Common.currentSalon.getSalonID())
-                                        .collection("Barber")
-                                        .document(Common.currentBarber.getBarberID())
-                                        .collection(Common.mSimpleDateFormat.format(Common.bookingDate.getTime()))
-                                        .document(slotValue.getTimeSlot().toString())
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            FirebaseFirestore.getInstance()
+                                    .collection(Common.KEY_COLLECTION_AllSALON)
+                                    .document(Common.currentSalon.getSalonID())
+                                    .collection(Common.KEY_COLLECTION_BARBER)
+                                    .document(Common.currentBarber.getBarberID())
+                                    .collection(Common.mSimpleDateFormat.format(Common.bookingDate.getTime()))
+                                    .document(slotValue.getTimeSlot().toString())
+                                    .get()
+                                    .addOnCompleteListener(task -> {
 
-                                                if (task.isSuccessful()) {
+                                        if (task.isSuccessful()) {
 
-                                                    if (task.getResult().exists()) {
+                                            if (task.getResult().exists()) {
 
-                                                        Common.currentBooking = task.getResult().toObject(BookingInformation.class);
-                                                        Common.currentBooking.setBookingID(task.getResult().getId());
-                                                        mContext.startActivity(new Intent(mContext, DoneServicsesActivity.class));
-                                                    }
-                                                }
+                                                Common.currentBooking = task.getResult().toObject(BookingInformation.class);
+                                                Common.currentBooking.setBookingID(task.getResult().getId());
+                                                mContext.startActivity(new Intent(mContext, DoneServicsesActivity.class));
                                             }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
+                                        }
+                                    }).addOnFailureListener(e -> Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show());
                         });
                     } else {
 
@@ -163,18 +152,15 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
                         holder.mCardTimeSolt.setCardBackgroundColor(
                                 mContext.getResources().getColor(R.color.colorRed));
 
-                        holder.mTxtTimeSoltDescription.setText("Done");
+                        holder.mTxtTimeSoltDescription.setText(R.string.done);
                         holder.mTxtTimeSoltDescription.setTextColor(
                                 mContext.getResources().getColor(R.color.colorWhite));
 
                         holder.mTxtTimeSolt.setTextColor(
                                 mContext.getResources().getColor(R.color.colorWhite));
 
-                        holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(View view, int position) {
-                                // Fix here to crash
-                            }
+                        holder.setmIRecyclerItemSelectedListener((view, position12) -> {
+                            // Fix here to crash
                         });
                     }
 
@@ -186,11 +172,8 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.TimeSo
                          * Because if we donوt put this condition
                          * All time slot with value higher current time slot will be override event
                         */
-                        holder.setmIRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(View view, int position) {
-                                // Fix crach
-                            }
+                        holder.setmIRecyclerItemSelectedListener((view, position13) -> {
+                            // Fix crach
                         });
                     }
                 }

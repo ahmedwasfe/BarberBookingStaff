@@ -16,6 +16,7 @@ import com.ahmet.barberbookingstaff.Common.NonSwipeViewPager;
 import com.ahmet.barberbookingstaff.Model.EventBus.BarberEvent;
 import com.ahmet.barberbookingstaff.Model.EventBus.EnableNextButton;
 import com.ahmet.barberbookingstaff.Model.EventBus.SalonEvent;
+import com.ahmet.barberbookingstaff.Model.Salon;
 import com.ahmet.barberbookingstaff.R;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
@@ -73,16 +74,21 @@ public class AddSalonActivity extends AppCompatActivity {
 
     @OnClick(R.id.txt_next)
     void nextStep(){
-        if (Common.step < 2 || Common.step == 0){
+        if (Common.step < 3 || Common.step == 0){
 
             Common.step++;
             if (Common.step == 1){
 
                 EventBus.getDefault().postSticky(new SalonEvent(Common.currentSalon));
 
-            } else if (Common.step == 2){
+            }else if (Common.step == 2){
+
                 if (Common.currentSalon != null)
                     EventBus.getDefault().postSticky(new BarberEvent(Common.currentBarber));
+
+            } else if (Common.step == 3){
+//                if (Common.currentSalon != null)
+//                    EventBus.getDefault().postSticky(new BarberEvent(Common.currentBarber));
             }
 
             mViewPager.setCurrentItem(Common.step);
@@ -114,144 +120,24 @@ public class AddSalonActivity extends AppCompatActivity {
         mUnbinder = ButterKnife.bind(
                 this);
 
-        getSupportActionBar().setTitle("Add Salon");
+        getSupportActionBar().setTitle(R.string.new_salon);
 
         setupViewPager();
         setupStepView();
         setColorStep();
 
-        AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
-            @Override
-            public void onSuccess(Account account) {
 
-                currentSalonEmail = account.getEmail();
-
-                FirebaseFirestore.getInstance().collection("AllSalon")
-                        .document(currentSalonEmail)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()){
-                                    if (task.getResult().exists()){
-                                        mTxtNext.setEnabled(true);
-                                        setColorStep();
-                                        Toast.makeText(AddSalonActivity.this, currentSalonEmail, Toast.LENGTH_SHORT).show();
-                                        getCurrentLocationForSalon();
-                                    }else {
-                                        getCurrentLocationForSalon();
-                                    }
-                                }
-                            }
-                        });
-            }
-
-            @Override
-            public void onError(AccountKitError accountKitError) {
-
-            }
-        });
-
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        Places.initialize(this, getString(R.string.google_api_key));
-        mPlaceClient = Places.createClient(this);
-       // AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-        getCurrentLocationForSalon();
 
     }
 
-    private void getCurrentLocationForSalon() {
 
-        mFusedLocationProviderClient.getLastLocation()
-                .addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-
-                        if (task.isSuccessful()){
-                            mLastLocation = task.getResult();
-                            if (mLastLocation != null){
-
-                                Log.i("Current_Latitude", String.valueOf(mLastLocation.getLatitude()));
-                                Log.i("Current_Longitude", String.valueOf(mLastLocation.getLongitude()));
-                               // addCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                                updateCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                            }else {
-                                mLocationRequest = LocationRequest.create();
-                                mLocationRequest.setInterval(10000);
-                                mLocationRequest.setFastestInterval(5000);
-                                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                                mLocationCallback = new LocationCallback(){
-                                    @Override
-                                    public void onLocationResult(LocationResult locationResult) {
-                                        super.onLocationResult(locationResult);
-
-                                        if (locationResult == null)
-                                            return;
-
-                                        mLastLocation = locationResult.getLastLocation();
-                                       // addCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                                        updateCurrentLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-                                        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
-                                    }
-                                };
-                            }
-                        }else {
-                            Toast.makeText(AddSalonActivity.this, "Unable to get last location", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void addCurrentLocation(double latitude, double longitude) {
-
-        Map<String, Object> mMapLocation = new HashMap<>();
-        mMapLocation.put("latitude", latitude);
-        mMapLocation.put("longitude", longitude);
-
-        FirebaseFirestore.getInstance().collection("AllSalon")
-                .document(currentSalonEmail)
-                .set(mMapLocation)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(AddSalonActivity.this, "Add Location Success", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void updateCurrentLocation(double latitude, double longitude) {
-
-        Map<String, Object> mMapLocation = new HashMap<>();
-        mMapLocation.put("latitude", latitude);
-        mMapLocation.put("longitude", longitude);
-
-        FirebaseFirestore.getInstance().collection("AllSalon")
-                .document(currentSalonEmail)
-                .update(mMapLocation)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(AddSalonActivity.this, "Add Location Success", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
 
     private void setupStepView() {
 
         List<String> mListStep = new ArrayList<>();
-        mListStep.add("Salon");
-        mListStep.add("Barber");
+        mListStep.add(getString(R.string.email));
+        mListStep.add(getString(R.string.salon_));
+        mListStep.add(getString(R.string.barber_));
         mStepView.setSteps(mListStep);
     }
 
@@ -313,6 +199,8 @@ public class AddSalonActivity extends AppCompatActivity {
         if (step == 1)
             Common.currentSalon = event.getSalon();
         else if (step == 2)
+            Common.currentSalon = event.getSalon();
+        else if (step == 3)
             Common.currentBarber = event.getBarber();
 
         mTxtNext.setEnabled(true);
@@ -330,5 +218,4 @@ public class AddSalonActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
-
 }

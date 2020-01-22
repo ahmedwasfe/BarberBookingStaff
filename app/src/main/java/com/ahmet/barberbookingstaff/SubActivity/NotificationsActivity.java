@@ -51,7 +51,7 @@ public class NotificationsActivity extends AppCompatActivity implements INotific
         setContentView(R.layout.activity_notificatins);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Notifications");
+        getSupportActionBar().setTitle(R.string.notifications);
 
         ButterKnife.bind(this);
 
@@ -88,20 +88,47 @@ public class NotificationsActivity extends AppCompatActivity implements INotific
 
         // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/utQmhc07WVjaZdr9tbRB/Notifications
         mNotificationCollection = FirebaseFirestore.getInstance()
-                .collection("AllSalon")
+                .collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
-                .collection("Notifications");
+                .collection(Common.KEY_COLLECTION_NOTIFICATIONS);
 
         if (lastDocument == null){
 
             mNotificationCollection.orderBy("serverTimestamp", Query.Direction.DESCENDING)
                     .limit(Common.MAX_NOTIFICATIONS_PER_LOAD)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    .addOnCompleteListener(task -> {
+
+                        if (task.isSuccessful()){
+
+                            List<Notification> mLastListNotificaton = new ArrayList<>();
+
+                            DocumentSnapshot finalDocument = null;
+
+                            for (DocumentSnapshot documentSnapshot : task.getResult()){
+
+                                Notification notification = documentSnapshot.toObject(Notification.class);
+                                mLastListNotificaton.add(notification);
+                                finalDocument = documentSnapshot;
+                            }
+
+                            iNotificationLoadListener.onLoadNotificationSuccess(mLastListNotificaton, finalDocument);
+
+                        }
+                    })
+                    .addOnFailureListener(e -> iNotificationLoadListener.inLoadNotificationFailed(e.getMessage()));
+
+        } else {
+
+            if (!isMaxData){
+
+                mNotificationCollection.orderBy("serverTimestamp", Query.Direction.DESCENDING)
+                        .startAfter(lastDocument)
+                        .limit(Common.MAX_NOTIFICATIONS_PER_LOAD)
+                        .get()
+                        .addOnCompleteListener(task -> {
 
                             if (task.isSuccessful()){
 
@@ -119,51 +146,8 @@ public class NotificationsActivity extends AppCompatActivity implements INotific
                                 iNotificationLoadListener.onLoadNotificationSuccess(mLastListNotificaton, finalDocument);
 
                             }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    iNotificationLoadListener.inLoadNotificationFailed(e.getMessage());
-                }
-            });
-
-        } else {
-
-            if (!isMaxData){
-
-                mNotificationCollection.orderBy("serverTimestamp", Query.Direction.DESCENDING)
-                        .startAfter(lastDocument)
-                        .limit(Common.MAX_NOTIFICATIONS_PER_LOAD)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                if (task.isSuccessful()){
-
-                                    List<Notification> mLastListNotificaton = new ArrayList<>();
-
-                                    DocumentSnapshot finalDocument = null;
-
-                                    for (DocumentSnapshot documentSnapshot : task.getResult()){
-
-                                        Notification notification = documentSnapshot.toObject(Notification.class);
-                                        mLastListNotificaton.add(notification);
-                                        finalDocument = documentSnapshot;
-                                    }
-
-                                    iNotificationLoadListener.onLoadNotificationSuccess(mLastListNotificaton, finalDocument);
-
-                                }
-                            }
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                iNotificationLoadListener.inLoadNotificationFailed(e.getMessage());
-                            }
-                        });
+                        .addOnFailureListener(e -> iNotificationLoadListener.inLoadNotificationFailed(e.getMessage()));
             }
         }
 

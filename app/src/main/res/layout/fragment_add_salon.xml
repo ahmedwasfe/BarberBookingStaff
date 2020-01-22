@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/margin10"
-        android:layout_gravity="center">
+        android:padding="@dimen/margin10">
 
 
         <com.jaredrummler.materialspinner.MaterialSpinner
@@ -22,6 +21,7 @@
             app:layout_constraintTop_toBottomOf="@id/layout_input_salon_open_hour"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_input_salon_name"
@@ -131,12 +131,11 @@
             android:id="@+id/btn_add_salon"
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
             android:text="@string/create_salon"
             android:textAllCaps="false"
             android:textSize="@dimen/margin16"
-            android:padding="14dp"
-            android:layout_margin="30dp"
+            android:padding="@dimen/margin14"
+            android:layout_margin="@dimen/margin30"
             android:background="@drawable/btn_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

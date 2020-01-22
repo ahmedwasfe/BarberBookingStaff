@@ -1,6 +1,8 @@
 package com.ahmet.barberbookingstaff.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,10 @@ import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Interface.IRecyclerItemSelectedListener;
 import com.ahmet.barberbookingstaff.Model.Products;
 import com.ahmet.barberbookingstaff.R;
+import com.ahmet.barberbookingstaff.SubActivity.UpdateProductActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -51,40 +55,22 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     @Override
     public void onBindViewHolder(@NonNull ProductHolder holder, int position) {
 
-        holder.mTxtProductName.setText(Common.formatShoppingName(mListProducts.get(position).getName()));
+        holder.mTxtProductName.setText(Common.formatName(mListProducts.get(position).getName()));
         holder.mTxtProductPrice.setText(new StringBuilder("$ ").append(mListProducts.get(position).getPrice()));
         Picasso.get()
                 .load(mListProducts.get(position).getImage())
-                .placeholder(R.drawable.barbersalon)
+                .placeholder(R.drawable.default_item)
                 .into(holder.mImageProduct);
 
-        holder.mRemoveProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseFirestore.getInstance().collection("AllSalon")
-                        .document(Common.currentSalon.getSalonID())
-                        .collection("Products")
-                        .document(mListProducts.get(position).getId())
-                        .delete()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(mContext, "Removed products Successfull", Toast.LENGTH_SHORT).show();
-                                    notifyDataSetChanged();
-                                }
-                            }
-                        });
-            }
-        });
+        holder.setiRecyclerItemSelectedListener((view, position1) -> {
 
-        holder.setiRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
-            @Override
-            public void onItemSelected(View view, int position) {
-                Toast.makeText(mContext, mListProducts.get(position).getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
+            Common.currentProduct = mListProducts.get(position);
+            Log.e("PRODUCTID_ADAPTER", Common.currentProduct.getId());
+
+            mContext.startActivity(new Intent(mContext, UpdateProductActivity.class));
+
+        });
 
     }
 

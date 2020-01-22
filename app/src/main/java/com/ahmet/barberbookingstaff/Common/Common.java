@@ -15,6 +15,9 @@ import android.os.Build;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,16 +27,20 @@ import androidx.fragment.app.FragmentManager;
 
 import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.BookingInformation;
+import com.ahmet.barberbookingstaff.Model.Products;
 import com.ahmet.barberbookingstaff.Model.Salon;
 import com.ahmet.barberbookingstaff.Model.Token;
 import com.ahmet.barberbookingstaff.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.nio.file.OpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.paperdb.Paper;
 
@@ -60,10 +67,29 @@ public class Common {
     public static final String IMAGE_DOWNLIADABLE_URL = "DOWNLIADABLE_URL";
 
 
+    // TAGs
+    public static final String TAG_TOKEN = "TOKEN";
+    public static final String TAG_PRICE = "Price";
+    public static final String TAG_PRODUCTS = "Products";
+
+    // Public Tag Firebase Collections
+    public static final String KEY_COLLECTION_USER = "User";
+    public static final String KEY_COLLECTION_AllSALON = "AllSalon";
+    public static final String KEY_COLLECTION_BARBER = "Barber";
+    public static final String KEY_COLLECTION_BOOKING = "Booking";
+    public static final String KEY_COLLECTION_PRODUCTS = "Products";
+    public static final String KEY_COLLECTION_SHOPPING = "Shopping";
+    public static final String KEY_COLLECTION_NOTIFICATIONS = "Notifications";
+    public static final String KEY_COLLECTION_TOKENS = "Tokens";
+    public static final String KEY_COLLECTION_SERICES = "Services";
+    public static final String KEY_COLLECTION_INVOICES = "Invoices";
+
+
     public static String cityName = "";
     public static Salon currentSalon;
     public static Barber currentBarber;
     public static BookingInformation currentBooking;
+    public static Products currentProduct;
 
     public static int setp = 0; // init first setp is 0
 
@@ -79,10 +105,15 @@ public class Common {
     public static String email = "";
     public static int step = 0;
 
+    // Code Request
+    public static final int CODE_REQUEST_SIGNIN = 888;
+    public static final int CODE_REQUEST_FACEBOOK_KIT_LOGIN = 1000;
+
+
 
     public static String convertTimeSoltToString(int solt) {
 
-        switch (solt){
+        switch (solt) {
 
             case 0:
                 return "9:00 - 9:30";
@@ -133,19 +164,19 @@ public class Common {
     public static void updateToken(Context mContext, String token) {
 
         /* * Fires we need check if user still login
-           * Because, we need store token be longing user
-           * So, we need use store data
-           *
+         * Because, we need store token be longing user
+         * So, we need use store data
+         *
          */
 
         Paper.init(mContext);
         String user = Paper.book().read(Common.KEY_LOGGED);
 
         //Log.i("Username_Common", user);
-        Toast.makeText(mContext, user, Toast.LENGTH_LONG).show();
+//        Toast.makeText(mContext, user, Toast.LENGTH_LONG).show();
 
-        if (user != null){
-            if (!TextUtils.isEmpty(user)){
+        if (user != null) {
+            if (!TextUtils.isEmpty(user)) {
 
                 Token mToken = new Token();
                 mToken.setToken(token);
@@ -155,7 +186,7 @@ public class Common {
 
                 // Submit to firebase firestore
                 FirebaseFirestore.getInstance()
-                        .collection("Tokens")
+                        .collection(KEY_COLLECTION_TOKENS)
                         .document(user)
                         .set(mToken)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -167,11 +198,6 @@ public class Common {
             }
         }
     }
-
-//    public static void testService(Context context){
-//        Log.d("ShowNotifiaction", "Show Notifiaction");
-//    }
-
 
     public static void showNotification(Context mContext, int notificationId, String title, String content, Intent intent) {
 
@@ -185,37 +211,37 @@ public class Common {
                     PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
-            String NOTIFICATION_CHANNEL = "sajahmet_barber_booking_staff_app_channel_01";
-            NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL = "sajahmet_barber_booking_staff_app_channel_01";
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 
-                NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL,
-                        "SAJAHMET Barber Booking Staff App", NotificationManager.IMPORTANCE_DEFAULT);
-                notificationChannel.setDescription("Barber Booking Staff App");
-                notificationChannel.enableLights(true);
-                notificationChannel.enableVibration(true);
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL,
+                    "SAJAHMET Barber Booking Staff App", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("Barber Booking Staff App");
+            notificationChannel.enableLights(true);
+            notificationChannel.enableVibration(true);
 
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
-            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL);
-            builder.setContentTitle(title)
-                    .setContentText(content)
-                    .setAutoCancel(false)
-                    .setSound(sound)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL);
+        builder.setContentTitle(title)
+                .setContentText(content)
+                .setAutoCancel(false)
+                .setSound(sound)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher));
 
-            if (pendingIntent != null)
-                builder.setContentIntent(pendingIntent);
+        if (pendingIntent != null)
+            builder.setContentIntent(pendingIntent);
 
-            Notification notification = builder.build();
-            notificationManager.notify(notificationId, notification);
+        Notification notification = builder.build();
+        notificationManager.notify(notificationId, notification);
     }
 
-    public static String formatShoppingName(String name) {
+    public static String formatName(String name) {
 
         return name.length() > 13 ? new StringBuilder(name.substring(0, 10))
                 .append(" ...").toString() : name;
@@ -224,11 +250,11 @@ public class Common {
     public static String getFileName(ContentResolver contentResolver, Uri fileUri) {
 
         String result = null;
-        if (fileUri.getScheme().equals("content")){
+        if (fileUri.getScheme().equals("content")) {
 
             Cursor cursor = contentResolver.query(fileUri, null, null, null, null);
 
-            try{
+            try {
                 if (cursor != null && cursor.moveToFirst())
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
             } finally {
@@ -236,7 +262,7 @@ public class Common {
             }
         }
 
-        if (result == null){
+        if (result == null) {
             result = fileUri.getPath();
             int cut = result.lastIndexOf('/');
             if (cut != -1)
@@ -246,13 +272,54 @@ public class Common {
         return result;
     }
 
-    public static void setFragment(Fragment fragment, int id, FragmentManager fragmentManager){
+    public static void setFragment(Fragment fragment, int id, FragmentManager fragmentManager) {
 
         fragmentManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .replace(id, fragment)
                 .commit();
 
+    }
+
+    public static void showProgressSnackBar(Context mContext, View view, String message) {
+
+        Snackbar mSnackBar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
+        View mSnackBarView = mSnackBar.getView();
+        mSnackBarView.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+        FrameLayout.LayoutParams mFrameParams = (FrameLayout.LayoutParams) mSnackBarView.getLayoutParams();
+        mFrameParams.gravity = Gravity.BOTTOM;
+        mSnackBarView.setLayoutParams(mFrameParams);
+        mSnackBar.show();
+    }
+
+    public static void showSnackBar(Context mContext, View view, String message) {
+
+        Snackbar mSnackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
+        View mSnackBarView = mSnackBar.getView();
+        mSnackBarView.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+        FrameLayout.LayoutParams mFrameParams = (FrameLayout.LayoutParams) mSnackBarView.getLayoutParams();
+        mFrameParams.gravity = Gravity.BOTTOM;
+        mSnackBarView.setLayoutParams(mFrameParams);
+        mSnackBar.show();
+    }
+
+    public static void dismissSnackBar(Context mContext, View view, String message) {
+
+        Snackbar mSnackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
+        View mSnackBarView = mSnackBar.getView();
+        mSnackBarView.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+        FrameLayout.LayoutParams mFrameParams = (FrameLayout.LayoutParams) mSnackBarView.getLayoutParams();
+        mFrameParams.gravity = Gravity.BOTTOM;
+        mSnackBarView.setLayoutParams(mFrameParams);
+        mSnackBar.show();
+    }
+
+    public static boolean isEmailValid(String email) {
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     public enum TOKEN_TYPE {

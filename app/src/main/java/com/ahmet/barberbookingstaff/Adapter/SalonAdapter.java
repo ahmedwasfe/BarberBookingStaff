@@ -23,18 +23,11 @@ import com.ahmet.barberbookingstaff.Interface.IUserLoginRemebmberListener;
 import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.Model.Salon;
 import com.ahmet.barberbookingstaff.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
@@ -69,8 +62,8 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
     @Override
     public void onBindViewHolder(@NonNull SalonHolder holder, int position) {
 
-        holder.mTxtSalonName.setText(mListSalon.get(position).getName());
-        holder.mTxtSalonAddress.setText(mListSalon.get(position).getAddress());
+        holder.mTxtSalonName.setText(Common.formatName(mListSalon.get(position).getName()));
+        holder.mTxtSalonAddress.setText(mListSalon.get(position).getCity());
 
         holder.setItemSelectedListener(new IRecyclerItemSelectedListener() {
             @Override
@@ -87,9 +80,9 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
 
         SheetDailogLogin.getInstance()
                 .showLoginDailog(mContext,
-                        "STAFF LOGIN",
-                        "LOG IN",
-                        "CANCEL",
+                        mContext.getString(R.string.staff_login),
+                        mContext.getString(R.string.log_in),
+                        mContext.getString(R.string.cancel),
                         this);
     }
 
@@ -109,57 +102,51 @@ public class SalonAdapter extends RecyclerView.Adapter<SalonAdapter.SalonHolder>
 
         // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/utQmhc07WVjaZdr9tbRB
         FirebaseFirestore.getInstance()
-                .collection("AllSalon")
+                .collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .whereEqualTo("username", username)
                 .whereEqualTo("password", password)
                 .limit(1)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
-                            if (task.getResult().size() > 0){
+                    if (task.isSuccessful()){
+                        if (task.getResult().size() > 0){
 
-                                sheetDialog.dismiss();
-                                mDialogLoading.dismiss();
+                            sheetDialog.dismiss();
+                            mDialogLoading.dismiss();
 
-                                iUserLoginRemebmberListener.onUserLoginSuccess(username);
-                                Paper.init(mContext);
-                                Paper.book().write(Common.KEY_LOGGED, username);
+                            iUserLoginRemebmberListener.onUserLoginSuccess(username);
+                            Paper.init(mContext);
+                            Paper.book().write(Common.KEY_LOGGED, username);
 
 
-                                Barber barber = new Barber();
-                                for (DocumentSnapshot barberSnapshot : task.getResult()){
-                                    barber = barberSnapshot.toObject(Barber.class);
-                                    barber.setBarberID(barberSnapshot.getId());
-                                }
-
-                                iGetBarberListener.onGetBarberSuccess(barber);
-
-                                // We will navigate Staff Home and clear Previous activity
-                                Intent staffHomeIntent = new Intent(mContext, HomeStaffActivity.class);
-                                staffHomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                staffHomeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                mContext.startActivity(staffHomeIntent);
-
-                            } else {
-                                mDialogLoading.dismiss();
-                                Toast.makeText(mContext, "Wrong username and password or wrong salon", Toast.LENGTH_SHORT).show();
-
+                            Barber barber = new Barber();
+                            for (DocumentSnapshot barberSnapshot : task.getResult()){
+                                barber = barberSnapshot.toObject(Barber.class);
+                                barber.setBarberID(barberSnapshot.getId());
                             }
-                        }
 
+                            iGetBarberListener.onGetBarberSuccess(barber);
+
+                            // We will navigate Staff Home and clear Previous activity
+                            Intent staffHomeIntent = new Intent(mContext, HomeStaffActivity.class);
+                            staffHomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            staffHomeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mContext.startActivity(staffHomeIntent);
+
+                        } else {
+                            mDialogLoading.dismiss();
+                            Toast.makeText(mContext, mContext.getString(R.string.wrong_username_or_password), Toast.LENGTH_SHORT).show();
+
+                        }
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-                mDialogLoading.dismiss();
-            }
-        });
+
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    mDialogLoading.dismiss();
+                });
 
     }
 

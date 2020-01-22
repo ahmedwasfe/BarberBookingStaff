@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -54,10 +55,10 @@ public class UpdateStaffActivity extends AppCompatActivity {
     @OnClick(R.id.btn_update_staff)
     void updateStaff(){
 
-        if (!mStaffType.equals(""))
+        if (!TextUtils.isEmpty(mStaffType))
             verifyStaff();
         else
-            Toast.makeText(this, "Staff Type must not be Null", Toast.LENGTH_SHORT).show();
+            Common.showSnackBar(this, mSpinnerStaffType, getString(R.string.please_select_barber_type));
     }
 
     @BindView(R.id.btn_remove_staff)
@@ -74,34 +75,31 @@ public class UpdateStaffActivity extends AppCompatActivity {
 
         mUnbinder = ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle("Staff Data");
+        getSupportActionBar().setTitle(R.string.staff_data);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (!snapshot.get("barberType").equals("Admin")){
-                                // Toast.makeText(UpdateStaffActivity.this, snapshot.get("barberType").toString(), Toast.LENGTH_SHORT).show();
-                                mBtnRemove.setVisibility(View.GONE);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (!snapshot.get("barberType").equals("Admin")){
+                            // Toast.makeText(UpdateStaffActivity.this, snapshot.get("barberType").toString(), Toast.LENGTH_SHORT).show();
+                            mBtnRemove.setVisibility(View.GONE);
+                        }else {
+                            if (snapshot.get("username").equals(Common.currentBarber.getUsername())){
+                               // Toast.makeText(UpdateStaffActivity.this, snapshot.getString("username") + " from database", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UpdateStaffActivity.this, Common.currentBarber.getUsername() + " from App", Toast.LENGTH_SHORT).show();
+                                mInputUsername.setEnabled(true);
+                                mInputPassword.setEnabled(true);
                             }else {
-                                if (snapshot.get("username").equals(Common.currentBarber.getUsername())){
-                                   // Toast.makeText(UpdateStaffActivity.this, snapshot.getString("username") + " from database", Toast.LENGTH_SHORT).show();
-                                    Toast.makeText(UpdateStaffActivity.this, Common.currentBarber.getUsername() + " from App", Toast.LENGTH_SHORT).show();
-                                    mInputUsername.setEnabled(true);
-                                    mInputPassword.setEnabled(true);
-                                }else {
-                                    mInputUsername.setEnabled(false);
-                                    mInputPassword.setEnabled(false);
-                                }
-
+                                mInputUsername.setEnabled(false);
+                                mInputPassword.setEnabled(false);
                             }
+
                         }
                     }
                 });
@@ -110,7 +108,7 @@ public class UpdateStaffActivity extends AppCompatActivity {
 //
 //            Barber barber = getIntent().getParcelableExtra("barber");
 //
-//            mInputName.setText(barber.getName());
+//            mTxtName.setText(barber.getName());
 //            mInputUsername.setText(barber.getUsername());
 //            mInputPassword.setText(barber.getPassword());
 //        }
@@ -144,7 +142,7 @@ public class UpdateStaffActivity extends AppCompatActivity {
         mDialog = new SpotsDialog.Builder()
                 .setCancelable(false)
                 .setContext(this)
-                .setMessage("Please wait...")
+                .setMessage(R.string.please_wait)
                 .build();;
     }
 
@@ -156,24 +154,21 @@ public class UpdateStaffActivity extends AppCompatActivity {
         String username = mInputUsername.getText().toString();
         String password = mInputPassword.getText().toString();
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
+                    if (task.isSuccessful()){
 //                                    DocumentSnapshot snapshot = task.getResult();
 //                                    if (!snapshot.exists()){
-                            mDialog.dismiss();
-                            updateStaff(Common.currentSalon.getEmail(), staffName, username, password, mStaffType);
+                        mDialog.dismiss();
+                        updateStaff(Common.currentSalon.getEmail(), staffName, username, password, mStaffType);
 
 //                                    }else {
 //                                        mDialog.dismiss();
 //                                        Toast.makeText(getActivity(), "This user exists", Toast.LENGTH_SHORT).show();
 //                                    }
-                        }
                     }
                 });
 
@@ -183,77 +178,62 @@ public class UpdateStaffActivity extends AppCompatActivity {
     private void updateStaff(String email, String name, String username, String password, String barberType) {
 
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.get("barberType").equals("Admin")){
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot.get("barberType").equals("Admin")){
 
 
-                                Map<String, Object> mMapUpdateStaff = new HashMap<>();
-                                mMapUpdateStaff.put("name", name);
-                                mMapUpdateStaff.put("username", username);
-                                mMapUpdateStaff.put("password", password);
-                                mMapUpdateStaff.put("barberType", barberType);
+                            Map<String, Object> mMapUpdateStaff = new HashMap<>();
+                            mMapUpdateStaff.put("name", name);
+                            mMapUpdateStaff.put("username", username);
+                            mMapUpdateStaff.put("password", password);
+                            mMapUpdateStaff.put("barberType", barberType);
 
-                                FirebaseFirestore.getInstance().collection("AllSalon")
-                                        .document(email)
-                                        .collection("Barber")
-                                        .whereEqualTo("username", username)
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                                    .document(email)
+                                    .collection(Common.KEY_COLLECTION_BARBER)
+                                    .whereEqualTo("username", username)
+                                    .get()
+                                    .addOnCompleteListener(task1 -> {
 
-                                                if (task.isSuccessful()){
-                                                    if (task.getResult().size() > 0){
+                                        if (task1.isSuccessful()){
+                                            if (task1.getResult().size() > 0){
 
-                                                        FirebaseFirestore.getInstance().collection("AllSalon")
-                                                                .document(email)
-                                                                .collection("Barber")
-                                                                .document(Common.currentBarber.getBarberID())
-                                                                .update(mMapUpdateStaff)
-                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if (task.isSuccessful()){
-                                                                            mDialog.dismiss();
-                                                                            Toast.makeText(UpdateStaffActivity.this, "Updated Staff success", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    }
-                                                                }).addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
+                                                FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                                                        .document(email)
+                                                        .collection(Common.KEY_COLLECTION_BARBER)
+                                                        .document(Common.currentBarber.getBarberID())
+                                                        .update(mMapUpdateStaff)
+                                                        .addOnCompleteListener(task11 -> {
+                                                            if (task11.isSuccessful()){
                                                                 mDialog.dismiss();
-                                                                Log.e("TAG_ADD_BARBER", e.getMessage());
+                                                                Toast.makeText(UpdateStaffActivity.this, getString(R.string.update_staff_success), Toast.LENGTH_SHORT).show();
                                                             }
+                                                        }).addOnFailureListener(e -> {
+                                                            mDialog.dismiss();
+                                                            Log.e("TAG_ADD_BARBER", e.getMessage());
                                                         });
 
-                                                    }else {
+                                            }else {
 
-                                                        mDialog.dismiss();
-                                                        Toast.makeText(UpdateStaffActivity.this, "This User not exists Please try again", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }
-
+                                                mDialog.dismiss();
+                                                Toast.makeText(UpdateStaffActivity.this, getString(R.string.this_user_not_exists), Toast.LENGTH_SHORT).show();
                                             }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
+                                        }
+
+                                    }).addOnFailureListener(e -> {
                                         mDialog.dismiss();
                                         Log.e("TAG_GET_BARBER_", e.getMessage());
-                                    }
-                                });
+                                    });
 
-                            }else
-                                Toast.makeText(UpdateStaffActivity.this, "Can not add Barber", Toast.LENGTH_SHORT).show();
-                        }
+                        }else
+                            Toast.makeText(UpdateStaffActivity.this, getString(R.string.can_not_add_barber), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -264,36 +244,30 @@ public class UpdateStaffActivity extends AppCompatActivity {
 
         mDialog.show();
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            if (task.getResult().size() > 0){
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        if (task.getResult().size() > 0){
 
-                                FirebaseFirestore.getInstance().collection("AllSalon")
-                                        .document(Common.currentSalon.getSalonID())
-                                        .collection("Barber")
-                                        .document(Common.currentBarber.getBarberID())
-                                        .delete()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    mDialog.dismiss();
-                                                    Toast.makeText(UpdateStaffActivity.this, "Removed Staff Success", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
+                            FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                                    .document(Common.currentSalon.getSalonID())
+                                    .collection(Common.KEY_COLLECTION_BARBER)
+                                    .document(Common.currentBarber.getBarberID())
+                                    .delete()
+                                    .addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            mDialog.dismiss();
+                                            Toast.makeText(UpdateStaffActivity.this, getString(R.string.remove_staff_success), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
-                            }else {
-                                mDialog.dismiss();
-                                Toast.makeText(UpdateStaffActivity.this, "This User not exists Please try again", Toast.LENGTH_SHORT).show();
+                        }else {
+                            mDialog.dismiss();
+                            Toast.makeText(UpdateStaffActivity.this, getString(R.string.this_user_not_exists), Toast.LENGTH_SHORT).show();
 
-                            }
                         }
                     }
                 });
@@ -304,9 +278,9 @@ public class UpdateStaffActivity extends AppCompatActivity {
     private void selectStaffType(){
 
         List<String> mListStaffType = new ArrayList<>();
-        mListStaffType.add("Please select your Barber Type");
-        mListStaffType.add("Admin");
-        mListStaffType.add("Staff");
+        mListStaffType.add(getString(R.string.select_barber_type));
+        mListStaffType.add(getString(R.string.admin));
+        mListStaffType.add(getString(R.string.staff));
 
         ArrayAdapter adapter = new ArrayAdapter(UpdateStaffActivity.this, android.R.layout.simple_spinner_item, mListStaffType);
         mSpinnerStaffType.setAdapter(adapter);

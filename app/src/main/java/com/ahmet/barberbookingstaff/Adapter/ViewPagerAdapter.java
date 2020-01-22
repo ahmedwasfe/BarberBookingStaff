@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.ahmet.barberbookingstaff.Fragments.AddBarberFragment;
 import com.ahmet.barberbookingstaff.Fragments.AddSalonFragment;
+import com.ahmet.barberbookingstaff.Fragments.EmailFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -19,8 +20,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
         switch (position){
             case 0:
-                return AddSalonFragment.getInstance();
+                return EmailFragment.getInstance();
             case 1:
+                return AddSalonFragment.getInstance();
+            case 2:
                 return AddBarberFragment.getInstance();
         }
         return null;
@@ -28,6 +31,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }

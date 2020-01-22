@@ -29,6 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <devs.mulham.horizontalcalendar.HorizontalCalendarView
+            android:visibility="gone"
             android:id="@+id/calendar_time_slot"
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
@@ -41,6 +42,7 @@
             app:layout_constraintTop_toBottomOf="@id/tool_bar_home" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:visibility="gone"
             android:id="@+id/recycler_time_solt"
             android:layout_width="@dimen/widthheight"
             android:layout_height="@dimen/widthheight"
@@ -50,6 +52,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_time_slot" />
 
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/text_message_verification_email"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="wrap_content"
+            android:text="@string/message_verification_email"
+            android:textColor="@color/colorRed"
+            android:textSize="@dimen/textSize16"
+            android:layout_margin="@dimen/margin8"
+            android:padding="@dimen/margin10"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar_home"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <FrameLayout
+            android:id="@+id/frame_layout_home"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="@dimen/widthheight"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar_home"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

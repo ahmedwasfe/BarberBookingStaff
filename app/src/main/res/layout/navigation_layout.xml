@@ -3,16 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin8"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/img_logo_salon"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:src="@drawable/barbersalon"
         android:scaleType="centerCrop"
         android:padding="@dimen/margin20"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_salon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/hairdresser"
+        android:layout_marginTop="50dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -26,9 +36,10 @@
         android:textColor="@color/colorButton"
         android:textAllCaps="true"
         android:padding="@dimen/margin12"
+        android:layout_marginTop="@dimen/textSize16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_logo_salon"/>
+        app:layout_constraintTop_toBottomOf="@id/img_salon"/>
 
     <TextView
         android:id="@+id/txt_barber_type"
@@ -42,5 +53,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_barber_name"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorGray"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_barber_type"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

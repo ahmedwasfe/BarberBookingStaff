@@ -8,8 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/margin10"
-        android:layout_gravity="center">
+        android:padding="@dimen/margin10">
 
 
 
@@ -81,10 +80,9 @@
             android:id="@+id/btn_add_barber"
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:layout_marginTop="18dp"
+            android:layout_margin="@dimen/margin30"
             android:background="@drawable/btn_bg"
-            android:padding="14dp"
+            android:padding="@dimen/margin14"
             android:text="@string/add_barber"
             android:textAllCaps="false"
             android:textSize="@dimen/margin16"

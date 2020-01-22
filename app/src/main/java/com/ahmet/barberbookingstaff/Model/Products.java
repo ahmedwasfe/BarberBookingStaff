@@ -7,10 +7,11 @@ public class Products {
 
     public Products() {}
 
-    public Products(String name, String image, Long price) {
+    public Products(String name, String image, Long price, String description) {
         this.name = name;
         this.image = image;
         this.price = price;
+        this.description = description;
     }
 
     public String getName() {

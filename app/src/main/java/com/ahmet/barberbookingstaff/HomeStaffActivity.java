@@ -5,98 +5,78 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ahmet.barberbookingstaff.Adapter.TimeSlotAdapter;
 import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
+import com.ahmet.barberbookingstaff.Fragments.AddProductFragment;
+import com.ahmet.barberbookingstaff.Fragments.AddServiceFragmnet;
+import com.ahmet.barberbookingstaff.Fragments.AddStaffFragment;
+import com.ahmet.barberbookingstaff.Fragments.HomeFragment;
+import com.ahmet.barberbookingstaff.Fragments.ShowProductFragment;
+import com.ahmet.barberbookingstaff.Fragments.ShowStaffFragment;
 import com.ahmet.barberbookingstaff.Interface.INotificationCountListener;
-import com.ahmet.barberbookingstaff.Interface.ITimeSlotLoadListener;
 import com.ahmet.barberbookingstaff.Model.Barber;
-import com.ahmet.barberbookingstaff.Model.BookingInformation;
 import com.ahmet.barberbookingstaff.SubActivity.NotificationsActivity;
-import com.ahmet.barberbookingstaff.SubActivity.ProductsActivity;
-import com.ahmet.barberbookingstaff.SubActivity.SalonActivity;
 import com.ahmet.barberbookingstaff.SubActivity.SettingsActivity;
-import com.ahmet.barberbookingstaff.SubActivity.StaffActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import javax.annotation.Nullable;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import devs.mulham.horizontalcalendar.HorizontalCalendar;
-import devs.mulham.horizontalcalendar.HorizontalCalendarView;
-import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
-import io.paperdb.Paper;
 
-import static com.ahmet.barberbookingstaff.Common.Common.mSimpleDateFormat;
+import static com.ahmet.barberbookingstaff.Common.Common.setFragment;
 
 public class HomeStaffActivity extends AppCompatActivity
-        implements ITimeSlotLoadListener, INotificationCountListener {
+        implements INotificationCountListener {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @BindView(R.id.navigation_view)
     NavigationView mNavigationView;
-    @BindView(R.id.recycler_time_solt)
-    RecyclerView mRecyclerTimeSolt;
-    @BindView(R.id.calendar_time_slot)
-    HorizontalCalendarView mCalendarDateView;
     @BindView(R.id.tool_bar_home)
     Toolbar mToolbar;
+    @BindView(R.id.text_message_verification_email)
+    TextView mTxtMessageVerificationEmail;
 
     private CollectionReference notificationCollectionRef;
-    private CollectionReference currentBookingDateCollectionRef;
-    // Copy Code from Booking Barber App (Client App)
-    private DocumentReference mDocReferenceBarber;
 
+    // Copy Code from Booking Barber App (Client App)
     private EventListener<QuerySnapshot> notificationEventListener;
-    private EventListener<QuerySnapshot> bookingEventListener;
 
     private ListenerRegistration notificationListener;
-    private ListenerRegistration bookingRealTimeListener;
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
 
     // init interface
-    private ITimeSlotLoadListener iTimeSlotLoadListener;
     private INotificationCountListener iNotificationCountListener;
 
     private AlertDialog mDialog;
 
     private TextView mTxtCountNotification;
+
+    private FirebaseAuth mAuth;
 
 
     /* ======================================================================================================================
@@ -120,70 +100,55 @@ public class HomeStaffActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
-                .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            if (task.getResult().size() > 0) {
-                                Barber barber = new Barber();
-                                for (DocumentSnapshot snapshot : task.getResult()) {
-                                    barber = snapshot.toObject(Barber.class);
-                                    barber.setBarberID(snapshot.getId());
-                                    //Log.e("ID From App", Common.currentBarber.getBarberID());
-                                    Log.e("ID From Database", snapshot.getId());
+        setFragment(HomeFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
 
-                                }
-                            }
-                        }
-                    }
-                });
+//        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+//                .document(Common.currentSalon.getSalonID())
+//                .collection(Common.KEY_COLLECTION_BARBER)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//
+//                    if (task.isSuccessful()){
+//                        if (task.getResult().size() > 0) {
+//                            Barber barber = new Barber();
+//                            for (DocumentSnapshot snapshot : task.getResult()) {
+//                                barber = snapshot.toObject(Barber.class);
+//                                barber.setBarberID(snapshot.getId());
+//                                //Log.e("ID From App", Common.currentBarber.getBarberID());
+//                               // Log.e("ID From Database", snapshot.getId());
+//
+//                            }
+//                        }
+//                    }
+//                });
 
         init();
         initView();
+
+//        FirebaseUser user = mAuth.getCurrentUser();
+//
+//        if (user.isEmailVerified())
+//            mTxtMessageVerificationEmail.setVisibility(View.GONE);
+//        else
+//            mTxtMessageVerificationEmail.setVisibility(View.VISIBLE);
 
     }
 
     private void init() {
 
-        iTimeSlotLoadListener = this;
         iNotificationCountListener = this;
+
+        mAuth = FirebaseAuth.getInstance();
 
         initNotificationsRealTimeUpdate();
 
-        initBookingRealTimeUpdate();
+        mDialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setCancelable(false)
+                .setMessage(R.string.please_wait)
+                .build();
     }
 
-    private void initBookingRealTimeUpdate() {
-
-        // /AllSalon/Gaza/Branch/AFXjgtlJwztf7cLFumNT/Barber/utQmhc07WVjaZdr9tbRB
-        mDocReferenceBarber = FirebaseFirestore.getInstance()
-                .collection("AllSalon")
-                .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
-                .document(Common.currentBarber.getBarberID());
-
-        // get current Date
-        Calendar currentDate = Calendar.getInstance();
-        currentDate.add(Calendar.DATE, 0);
-        bookingEventListener = new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
-                // If have any new booking, update adapter
-                loadAvailableTimeSlotOfBarber(Common.currentBarber.getBarberID(),
-                        mSimpleDateFormat.format(currentDate.getTime()));
-            }
-        };
-
-        currentBookingDateCollectionRef = mDocReferenceBarber
-                .collection(mSimpleDateFormat.format(currentDate.getTime()));
-        bookingRealTimeListener = currentBookingDateCollectionRef.addSnapshotListener(bookingEventListener);
-
-    }
 
     private void initView() {
 
@@ -196,29 +161,55 @@ public class HomeStaffActivity extends AppCompatActivity
         mActionBarDrawerToggle.syncState();
 
 
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-//                if (menuItem.getItemId() == R.id.nav_exit)
-//                    logOut();
-                if (menuItem.getItemId() == R.id.nav_settings)
-                    startActivity(new Intent(HomeStaffActivity.this, SettingsActivity.class));
-                else if (menuItem.getItemId() == R.id.nav_add_barber)
-                    startActivity(new Intent(HomeStaffActivity.this, StaffActivity.class));
-                else if (menuItem.getItemId() == R.id.nav_add_product)
-                    startActivity(new Intent(HomeStaffActivity.this, ProductsActivity.class));
-                return true;
+        mNavigationView.setNavigationItemSelectedListener(menuItem -> {
+
+            if (menuItem.getItemId() == R.id.nav_home) {
+                mDrawerLayout.closeDrawers();
+                setFragment(HomeFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+            } else if (menuItem.getItemId() == R.id.nav_show_barber) {
+                mDrawerLayout.closeDrawers();
+                setFragment(ShowStaffFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+            } else if (menuItem.getItemId() == R.id.nav_add_barber) {
+                mDrawerLayout.closeDrawers();
+                setFragment(AddStaffFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+            } else if (menuItem.getItemId() == R.id.nav_show_product) {
+                mDrawerLayout.closeDrawers();
+                setFragment(ShowProductFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+            } else if (menuItem.getItemId() == R.id.nav_add_product) {
+                mDrawerLayout.closeDrawers();
+                setFragment(AddProductFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+            } else if (menuItem.getItemId() == R.id.nav_add_service) {
+                mDrawerLayout.closeDrawers();
+                setFragment(AddServiceFragmnet.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+            } else if (menuItem.getItemId() == R.id.nav_notifications) {
+                mDrawerLayout.closeDrawers();
+                startActivity(new Intent(HomeStaffActivity.this, NotificationsActivity.class));
+            } else if (menuItem.getItemId() == R.id.nav_help) {
+                Toast.makeText(this, getString(R.string.help), Toast.LENGTH_SHORT).show();
+            } else if (menuItem.getItemId() == R.id.nav_settings) {
+                mDrawerLayout.closeDrawers();
+                startActivity(new Intent(HomeStaffActivity.this, SettingsActivity.class));
             }
+
+            return true;
         });
 
         // get Barber Name
         View headerView = mNavigationView.getHeaderView(0);
         TextView mTxtStaffName = headerView.findViewById(R.id.txt_barber_name);
         TextView mTxtStaffType = headerView.findViewById(R.id.txt_barber_type);
+        CircleImageView mImageSalon = headerView.findViewById(R.id.img_salon);
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        getSalonType(mImageSalon);
+        loadBarberInfo(mTxtStaffName, mTxtStaffType);
+    }
+
+    private void loadBarberInfo(TextView mTxtStaffName, TextView mTxtStaffType) {
+
+
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -232,69 +223,44 @@ public class HomeStaffActivity extends AppCompatActivity
                         }
                     }
                 });
+    }
 
-//        mTxtStaffName.setText(Common.currentBarber.getName());
-//        mTxtStaffType.setText(Common.currentBarber.getBarberType());
+    private void getSalonType(CircleImageView mImageSalon){
 
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                .document(Common.currentSalon.getSalonID())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-        mDialog = new SpotsDialog.Builder()
-                .setContext(this)
-                .setCancelable(false)
-                .setMessage("Please wait...")
-                .build();
+                        if (task.isSuccessful()){
 
-        Calendar date = Calendar.getInstance();
-        date.add(Calendar.DATE, 0);  // Add current date
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.getString("salonType").equals(getString(R.string.men)))
+                                Picasso.get().load(R.drawable.hairdresser).into(mImageSalon);
+                            else if (snapshot.getString("salonType").equals(getString(R.string.women)))
+                                Picasso.get().load(R.drawable.women_salon).into(mImageSalon);
+                            else if (snapshot.getString("salonType").equals(getString(R.string.both)))
+                                Picasso.get().load(R.drawable.hairdresser).into(mImageSalon);
+                        }
+                    }
+                });
 
-        loadAvailableTimeSlotOfBarber(Common.currentBarber.getBarberID(),
-                Common.mSimpleDateFormat.format(date.getTime()));
-
-        // Recycler View
-        mRecyclerTimeSolt.setHasFixedSize(true);
-        mRecyclerTimeSolt.setLayoutManager(new StaggeredGridLayoutManager(3, LinearLayout.VERTICAL));
-        mRecyclerTimeSolt.addItemDecoration(new SpacesItemDecoration(8));
-
-        Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.DATE, 0);
-
-        Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.DATE, 2);  // 2 day left
-
-        HorizontalCalendar mCalendarDate = new HorizontalCalendar.Builder(this, R.id.calendar_time_slot)
-                .range(startDate, endDate)
-                .datesNumberOnScreen(1)
-                .mode(HorizontalCalendar.Mode.DAYS)
-                .defaultSelectedDate(startDate)
-                .build();
-
-        mCalendarDate.setCalendarListener(new HorizontalCalendarListener() {
-            @Override
-            public void onDateSelected(Calendar date, int position) {
-
-                if (Common.bookingDate.getTimeInMillis() != date.getTimeInMillis()) {
-                    Common.bookingDate = date;  // this code will not load again you selecte day same with day selected
-                    loadAvailableTimeSlotOfBarber(Common.currentBarber.getBarberID(),
-                            mSimpleDateFormat.format(date.getTime()));
-                }
-            }
-        });
     }
 
     private void initNotificationsRealTimeUpdate() {
 
         notificationCollectionRef = FirebaseFirestore.getInstance()
-                .collection("AllSalon")
+                .collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
-                .collection("Notifications");
+                .collection(Common.KEY_COLLECTION_NOTIFICATIONS);
 
-        notificationEventListener = new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots.size() > 0)
-                    loadNotifications();
-            }
+        notificationEventListener = (queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots.size() > 0)
+                loadNotifications();
         };
 
         // only listen and count all notifications
@@ -303,92 +269,6 @@ public class HomeStaffActivity extends AppCompatActivity
 
 
     }
-
-    private void logOut() {
-        // Just all remember Keys and start MainActivity
-        Paper.init(this);
-        Paper.book().delete(Common.KEY_LOGGED);
-        Paper.book().delete(Common.KEY_SALON);
-        Paper.book().delete(Common.KEY_BARBER);
-
-        new AlertDialog.Builder(this)
-                .setMessage("Are you sure want to Log Out")
-                .setCancelable(false)
-                .setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(HomeStaffActivity.this, SalonActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-
-                    }
-        })
-                .setCancelable(true)
-                .show();
-    }
-
-    private void loadAvailableTimeSlotOfBarber(String barberID, String bookingDate) {
-
-        mDialog.show();
-
-
-        // Get informatio for this barber
-        mDocReferenceBarber.get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                        if (task.isSuccessful()) {
-
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.exists()) { // If babrber available
-
-                                // Get information of booking
-                                // If not created return empty
-                                CollectionReference mReferenceDate = FirebaseFirestore.getInstance()
-                                        .collection("AllSalon")
-                                        .document(Common.currentSalon.getSalonID())
-                                        .collection("Barber")
-                                        .document(barberID)
-                                        .collection(bookingDate);  // book date is date simpleformat with dd_MM_yyyy == 27_06_2019
-
-                                mReferenceDate.get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                                if (task.isSuccessful()) {
-
-                                                    QuerySnapshot querySnapshot = task.getResult();
-                                                    if (querySnapshot.isEmpty()) {  // If do not have any appoment
-
-                                                        iTimeSlotLoadListener.onTimeSoltLoadEmpty();
-                                                    } else {
-                                                        // If have appoiment
-                                                        List<BookingInformation> mListTimeSlot = new ArrayList<>();
-                                                        for (QueryDocumentSnapshot snapshot : task.getResult())
-                                                            mListTimeSlot.add(snapshot.toObject(BookingInformation.class));
-
-                                                        iTimeSlotLoadListener.onTimeSoltLoadSuccess(mListTimeSlot);
-                                                    }
-                                                }
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        iTimeSlotLoadListener.onTimeSoltLoadFailed(e.getMessage());
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
-
-    }
-
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -406,39 +286,12 @@ public class HomeStaffActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
 
-        new AlertDialog.Builder(this)
-                .setMessage("Are you sure want to exit")
-                .setCancelable(false)
-                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(HomeStaffActivity.this, "Fack function exit", Toast.LENGTH_SHORT).show();
-
-                    }
-                }).show();
-    }
-
-    @Override
-    public void onTimeSoltLoadSuccess(List<BookingInformation> mListTimeSlot) {
-
-        TimeSlotAdapter mTimeSlotAdapter = new TimeSlotAdapter(this, mListTimeSlot);
-        mRecyclerTimeSolt.setAdapter(mTimeSlotAdapter);
-
-        mDialog.dismiss();
-    }
-
-    @Override
-    public void onTimeSoltLoadFailed(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onTimeSoltLoadEmpty() {
-
-        TimeSlotAdapter mTimeSlotAdapter = new TimeSlotAdapter(this);
-        mRecyclerTimeSolt.setAdapter(mTimeSlotAdapter);
-
-        mDialog.dismiss();
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setMessage(R.string.are_you_sure_to_exit)
+                .setCancelable(true)
+                .setPositiveButton(R.string.exit, (dialogInterface, i) -> Toast.makeText(HomeStaffActivity.this, "Fack function exit", Toast.LENGTH_SHORT))
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     @Override
@@ -452,37 +305,23 @@ public class HomeStaffActivity extends AppCompatActivity
 
             loadNotifications();
 
-            menuItem.getActionView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onOptionsItemSelected(menuItem);
-                }
-            });
+            menuItem.getActionView().setOnClickListener(view -> onOptionsItemSelected(menuItem));
 
         return super.onCreateOptionsMenu(menu);
     }
-
 
     private void loadNotifications() {
 
         notificationCollectionRef.whereEqualTo("read", false)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
+                    if (task.isSuccessful()){
 
-                            iNotificationCountListener.onNotificationCountSuccess(task.getResult().size());
-                        }
-
+                        iNotificationCountListener.onNotificationCountSuccess(task.getResult().size());
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(HomeStaffActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-        });
+
+                }).addOnFailureListener(e -> Toast.makeText(HomeStaffActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -491,12 +330,11 @@ public class HomeStaffActivity extends AppCompatActivity
         if (count == 0)
             mTxtCountNotification.setVisibility(View.INVISIBLE);
         else {
-
             mTxtCountNotification.setVisibility(View.VISIBLE);
             if (count <= 9)
                 mTxtCountNotification.setText(String.valueOf(count));
             else
-                mTxtCountNotification.setText("9+");
+                mTxtCountNotification.setText(R.string.notification_count);
         }
 
     }
@@ -504,7 +342,6 @@ public class HomeStaffActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        initBookingRealTimeUpdate();
         initNotificationsRealTimeUpdate();
     }
 
@@ -514,9 +351,6 @@ public class HomeStaffActivity extends AppCompatActivity
         if(notificationListener != null)
             notificationListener.remove();
 
-        if (bookingRealTimeListener != null)
-            bookingRealTimeListener.remove();
-
         super.onStop();
     }
 
@@ -525,10 +359,6 @@ public class HomeStaffActivity extends AppCompatActivity
 
         if(notificationListener != null)
             notificationListener.remove();
-
-        if (bookingRealTimeListener != null)
-            bookingRealTimeListener.remove();
-
 
         super.onDestroy();
     }

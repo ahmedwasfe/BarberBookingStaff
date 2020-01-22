@@ -2,12 +2,14 @@ package com.ahmet.barberbookingstaff.Fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,13 +19,8 @@ import androidx.fragment.app.Fragment;
 import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Model.Barber;
 import com.ahmet.barberbookingstaff.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;
@@ -50,15 +47,52 @@ public class AddStaffFragment extends Fragment {
     EditText mInputBarberPassword;
     @BindView(R.id.spinner_barber_type)
     MaterialSpinner mSpinnerBarberType;
+    @BindView(R.id.scroll_view_add_staff)
+    ScrollView mScrollView;
 
 
     @OnClick(R.id.btn_add_barber)
     void btnAddBarber(){
-        verifyBarber();
+
+        String barberName = mInputBarberName.getText().toString();
+        String username = mInputbarberUsername.getText().toString();
+        String password = mInputBarberPassword.getText().toString();
+
+        if (TextUtils.isEmpty(barberName)){
+            mInputBarberName.setError(getString(R.string.please_enter_barber_name));
+            return;
+        }
+
+        if (TextUtils.isEmpty(username)){
+            mInputbarberUsername.setError(getString(R.string.please_enter_username));
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)){
+            mInputBarberPassword.setError(getString(R.string.please_enter_password));
+            return;
+        }
+
+        if (password.length() < 6){
+            mInputBarberPassword.setError(getString(R.string.password_must_be_at_least_6));
+            return;
+        }
+
+
+        if (TextUtils.isEmpty(mBarberType))
+            Common.showSnackBar(getActivity(), mScrollView, getString(R.string.please_select_barber_type));
+        else
+            verifyBarber(barberName, username, password);
     }
 
 
     private String mBarberType = "";
+
+    private static AddStaffFragment instance;
+    public static AddStaffFragment getInstance(){
+
+        return instance == null ? new AddStaffFragment() : instance;
+    }
 
     @Nullable
     @Override
@@ -69,12 +103,7 @@ public class AddStaffFragment extends Fragment {
         mUnbinder = ButterKnife.bind(this, layoutView);
 
 
-        mSpinnerBarberType.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                mBarberType = item.toString();
-            }
-        });
+        mSpinnerBarberType.setOnItemSelectedListener((view, position, id, item) -> mBarberType = item.toString());
 
 //        mSpinnerBarberType.setItems(barber.getBarberType());
 
@@ -89,36 +118,29 @@ public class AddStaffFragment extends Fragment {
         mDialog = new SpotsDialog.Builder()
                 .setCancelable(false)
                 .setContext(getActivity())
-                .setMessage("Please wait...")
+                .setMessage(R.string.please_wait)
                 .build();;
     }
 
-    private void verifyBarber() {
+    private void verifyBarber(String barberName, String username, String password) {
 
         mDialog.show();
 
-        String barberName = mInputBarberName.getText().toString();
-        String username = mInputbarberUsername.getText().toString();
-        String password = mInputBarberPassword.getText().toString();
-
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
+                    if (task.isSuccessful()){
 //                                    DocumentSnapshot snapshot = task.getResult();
 //                                    if (!snapshot.exists()){
-                            mDialog.dismiss();
-                            addStaff(Common.currentSalon.getEmail(), barberName, username, password, mBarberType);
+                        mDialog.dismiss();
+                        addStaff(Common.currentSalon.getEmail(), barberName, username, password, mBarberType);
 
 //                                    }else {
 //                                        mDialog.dismiss();
 //                                        Toast.makeText(getActivity(), "This user exists", Toast.LENGTH_SHORT).show();
 //                                    }
-                        }
                     }
                 });
 
@@ -128,81 +150,61 @@ public class AddStaffFragment extends Fragment {
     private void addStaff(String email, String barberName, String username, String password, String barberType) {
 
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.get("barberType").equals("Admin")){
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot snapshot = task.getResult();
+                        if (snapshot.get("barberType").equals("Admin")){
 
-                                Barber barber = new Barber(barberName, username, password, barberType);
+                            Barber barber = new Barber(barberName, username, password, barberType);
 
-                                FirebaseFirestore.getInstance().collection("AllSalon")
-                                        .document(email)
-                                        .collection("Barber")
-                                        .whereEqualTo("username", username)
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                                    .document(email)
+                                    .collection(Common.KEY_COLLECTION_BARBER)
+                                    .whereEqualTo("username", username)
+                                    .get()
+                                    .addOnCompleteListener(task1 -> {
 
-                                                if (task.isSuccessful()){
-                                                    if (task.getResult().size() > 0){
+                                        if (task1.isSuccessful()){
+                                            if (task1.getResult().size() > 0){
 
-                                                        mDialog.dismiss();
-                                                        Toast.makeText(getActivity(), "User name exists Please try again", Toast.LENGTH_SHORT).show();
+                                                mDialog.dismiss();
+                                                Toast.makeText(getActivity(), getString(R.string.username_exists), Toast.LENGTH_SHORT).show();
 
-                                                    }else {
+                                            }else {
 
 
-                                                        FirebaseFirestore.getInstance().collection("AllSalon")
-                                                                .document(email)
-                                                                .collection("Barber")
-                                                                .add(barber)
-                                                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                                        if (task.isSuccessful()){
-                                                                            mDialog.dismiss();
-                                                                            Toast.makeText(getActivity(), "Added barber success", Toast.LENGTH_SHORT).show();
-
-                                                                            task.getResult().get()
-                                                                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                                        @Override
-                                                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                                            Log.e("Barber_ID", task.getResult().getId());
-                                                                                        }
-                                                                                    });
-                                                                        }
-                                                                    }
-                                                                }).addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
+                                                FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                                                        .document(email)
+                                                        .collection(Common.KEY_COLLECTION_BARBER)
+                                                        .add(barber)
+                                                        .addOnCompleteListener(task11 -> {
+                                                            if (task11.isSuccessful()){
                                                                 mDialog.dismiss();
-                                                                Log.e("TAG_ADD_BARBER", e.getMessage());
+                                                                Toast.makeText(getActivity(), getString(R.string.add_barber_success), Toast.LENGTH_SHORT).show();
+
+                                                                task11.getResult().get()
+                                                                        .addOnCompleteListener(task111 -> Log.e("Barber_ID", task111.getResult().getId()));
                                                             }
+                                                        }).addOnFailureListener(e -> {
+                                                            mDialog.dismiss();
+                                                            Log.e("TAG_ADD_BARBER", e.getMessage());
                                                         });
 
-                                                    }
-                                                }
-
                                             }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
+                                        }
+
+                                    }).addOnFailureListener(e -> {
                                         mDialog.dismiss();
                                         Log.e("TAG_GET_BARBER_", e.getMessage());
-                                    }
-                                });
+                                    });
 
-                            }else
-                                Toast.makeText(getActivity(), "Can not add Barber", Toast.LENGTH_SHORT).show();
-                        }
+                        }else
+                            Toast.makeText(getActivity(), getString(R.string.can_not_add_barber), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -212,9 +214,9 @@ public class AddStaffFragment extends Fragment {
     private void selectBarberType(){
 
         List<String> mListSalonType = new ArrayList<>();
-        mListSalonType.add("Please select your Barber Type");
-        mListSalonType.add("Admin");
-        mListSalonType.add("Staff");
+        mListSalonType.add(getString(R.string.select_barber_type));
+        mListSalonType.add(getString(R.string.admin));
+        mListSalonType.add(getString(R.string.staff));
 
         ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, mListSalonType);
         mSpinnerBarberType.setAdapter(adapter);

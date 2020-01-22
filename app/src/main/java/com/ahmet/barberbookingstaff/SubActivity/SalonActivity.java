@@ -68,23 +68,15 @@ public class SalonActivity extends AppCompatActivity
 
         FirebaseInstanceId.getInstance()
                 .getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
+                    if (task.isSuccessful()){
 
-                            Common.updateToken(SalonActivity.this,
-                                    task.getResult().getToken());
-                            Log.d("TOKEN", task.getResult().getToken());
-                        }
+                        Common.updateToken(SalonActivity.this,
+                                task.getResult().getToken());
+                        Log.d(Common.TAG_TOKEN, task.getResult().getToken());
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SalonActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                }).addOnFailureListener(e -> Toast.makeText(SalonActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
 
 
         Paper.init(this);
@@ -137,29 +129,21 @@ public class SalonActivity extends AppCompatActivity
 
     private void searechToSalon(CharSequence text) {
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .whereEqualTo("name", text)
                 .limit(1)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            List<Salon> mListSalon = new ArrayList<>();
-                            for (DocumentSnapshot snapshot : task.getResult()){
-                                Salon salon = snapshot.toObject(Salon.class);
-                                salon.setSalonID(snapshot.getId());
-                                mListSalon.add(salon);
-                            }
-                            iSalonLoadListener.onLoadAllSalonSuccess(mListSalon);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        List<Salon> mListSalon = new ArrayList<>();
+                        for (DocumentSnapshot snapshot : task.getResult()){
+                            Salon salon = snapshot.toObject(Salon.class);
+                            salon.setSalonID(snapshot.getId());
+                            mListSalon.add(salon);
                         }
+                        iSalonLoadListener.onLoadAllSalonSuccess(mListSalon);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                iSalonLoadListener.onLoadAllSalonFailed(e.getMessage());
-            }
-        });
+                }).addOnFailureListener(e -> iSalonLoadListener.onLoadAllSalonFailed(e.getMessage()));
     }
 
 
@@ -168,30 +152,22 @@ public class SalonActivity extends AppCompatActivity
         mDialog.show();
 
         FirebaseFirestore.getInstance()
-                .collection("AllSalon")
+                .collection(Common.KEY_COLLECTION_AllSALON)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
-                            List<Salon> mListBranch = new ArrayList<>();
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                Salon salon = documentSnapshot.toObject(Salon.class);
-                                salon.setSalonID(documentSnapshot.getId());
-                                mListBranch.add(salon);
-                            }
-                            iSalonLoadListener.onLoadAllSalonSuccess(mListBranch);
+                        List<Salon> mListBranch = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            Salon salon = documentSnapshot.toObject(Salon.class);
+                            salon.setSalonID(documentSnapshot.getId());
+                            mListBranch.add(salon);
                         }
+                        iSalonLoadListener.onLoadAllSalonSuccess(mListBranch);
+                    }
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        iSalonLoadListener.onLoadAllSalonFailed(e.getMessage());
-                    }
-                });
+                }).addOnFailureListener(e -> iSalonLoadListener.onLoadAllSalonFailed(e.getMessage()));
     }
 
     private void init() {
@@ -199,6 +175,7 @@ public class SalonActivity extends AppCompatActivity
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
                 .setCancelable(false)
+                .setMessage(R.string.please_wait)
                 .build();
 
         iSalonLoadListener = this;

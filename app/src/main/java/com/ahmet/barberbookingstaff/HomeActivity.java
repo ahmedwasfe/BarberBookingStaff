@@ -26,6 +26,8 @@ import com.facebook.accountkit.AccountKitLoginResult;
 import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -34,6 +36,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.reflect.TypeToken;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
@@ -43,6 +47,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -59,7 +64,9 @@ public class HomeActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_login_salon)
     void salonLogin(){
-        startLoginPage(LoginType.EMAIL);
+
+       // startLoginPage(LoginType.EMAIL);
+        startActivity(new Intent(this, AddSalonActivity.class));
     }
 
     @OnClick(R.id.btn_login_barber)
@@ -70,7 +77,10 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    private static final int CODE_REQUEST_FACEBOOK_KIT_LOGIN = 1000;
+
+
+
+    List<AuthUI.IdpConfig> mListProviders;
 
     private AlertDialog mDialog;
 
@@ -78,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setTitle("Add New Salon");
+        getSupportActionBar().setTitle(getString(R.string.app_name));
 
 
         Dexter.withActivity(this)
@@ -93,16 +103,13 @@ public class HomeActivity extends AppCompatActivity {
 
                 FirebaseInstanceId.getInstance()
                         .getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        .addOnCompleteListener(task -> {
 
-                                if (task.isSuccessful()){
+                            if (task.isSuccessful()){
 
-                                    Common.updateToken(HomeActivity.this,
-                                            task.getResult().getToken());
-                                    Log.d("TOKEN_HOME_ACTIVITY", task.getResult().getToken());
-                                }
+                                Common.updateToken(HomeActivity.this,
+                                        task.getResult().getToken());
+                                Log.d("TOKEN_HOME_ACTIVITY", task.getResult().getToken());
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -158,11 +165,31 @@ public class HomeActivity extends AppCompatActivity {
 
     private void init() {
 
+//        mListProviders = Arrays.asList(
+//                // Email Builder
+//                new AuthUI.IdpConfig.EmailBuilder().build()
+//                // Facebook Builder
+//               // new AuthUI.IdpConfig.FacebookBuilder().build()
+//        );
+
+       // showSignInOptions();
+
         mDialog = new SpotsDialog.Builder()
                 .setCancelable(false)
                 .setContext(this)
+                .setMessage(R.string.please_wait)
                 .build();
 
+    }
+
+    private void showSignInOptions() {
+
+        startActivityForResult(
+                AuthUI.getInstance().createSignInIntentBuilder()
+                .setAvailableProviders(mListProviders)
+                .setTheme(R.style.SignInTheme)
+                .build(), Common.CODE_REQUEST_SIGNIN
+        );
     }
 
     // ---------------------------------------------------------------------
@@ -175,46 +202,55 @@ public class HomeActivity extends AppCompatActivity {
                         AccountKitActivity.ResponseType.TOKEN);
 
         intent.putExtra(AccountKitActivity.ACCOUNT_KIT_ACTIVITY_CONFIGURATION, builder.build());
-        startActivityForResult(intent, CODE_REQUEST_FACEBOOK_KIT_LOGIN);
+        startActivityForResult(intent, Common.CODE_REQUEST_FACEBOOK_KIT_LOGIN);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CODE_REQUEST_FACEBOOK_KIT_LOGIN){
+//        if (requestCode == Common.CODE_REQUEST_FACEBOOK_KIT_LOGIN){
+//            if (resultCode == RESULT_OK){
+//
+//                AccountKitLoginResult loginResult = data.getParcelableExtra(AccountKitLoginResult.RESULT_KEY);
+//                if (loginResult.getError() != null){
+//
+//                    // Toast.makeText(this, loginResult.getError().getErrorType().getMessage(), Toast.LENGTH_SHORT).show();
+//                    Log.e("TAG_LOGIN_RESULT", loginResult.getError().getErrorType().getMessage());
+//
+//                }else if (loginResult.wasCancelled())
+//
+//                    Log.e("TAG_LOGIN_RESULT", loginResult.getError().getErrorType().getMessage());
+//
+//                else{
+//                    if (loginResult.getAccessToken() != null){
+//                        mDialog.show();
+//                        AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
+//                            @Override
+//                            public void onSuccess(Account account) {
+//
+//                                Intent intent = new Intent(HomeActivity.this, AddSalonActivity.class);
+//                                intent.putExtra(Common.IS_LOGIN, false);
+//                                startActivity(intent);
+//                                finish();
+//                            }
+//
+//                            @Override
+//                            public void onError(AccountKitError accountKitError) {
+//
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//        }
+
+        if (requestCode == Common.CODE_REQUEST_SIGNIN){
+            IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK){
-
-                AccountKitLoginResult loginResult = data.getParcelableExtra(AccountKitLoginResult.RESULT_KEY);
-                if (loginResult.getError() != null){
-
-                    // Toast.makeText(this, loginResult.getError().getErrorType().getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("TAG_LOGIN_RESULT", loginResult.getError().getErrorType().getMessage());
-
-                }else if (loginResult.wasCancelled())
-
-                    Log.e("TAG_LOGIN_RESULT", loginResult.getError().getErrorType().getMessage());
-
-                else{
-                    if (loginResult.getAccessToken() != null){
-                        mDialog.show();
-                        AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
-                            @Override
-                            public void onSuccess(Account account) {
-
-                                Intent intent = new Intent(HomeActivity.this, AddSalonActivity.class);
-                                intent.putExtra(Common.IS_LOGIN, false);
-                                startActivity(intent);
-                                finish();
-                            }
-
-                            @Override
-                            public void onError(AccountKitError accountKitError) {
-
-                            }
-                        });
-                    }
-                }
+                // Get User
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                Toast.makeText(this, "" + user.getEmail(), Toast.LENGTH_SHORT).show();
             }
         }
     }

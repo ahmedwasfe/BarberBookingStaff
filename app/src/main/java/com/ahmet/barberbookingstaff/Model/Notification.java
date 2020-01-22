@@ -7,6 +7,7 @@ public class Notification {
 
     private String uuid, title, content;
     private boolean read;
+
     private Timestamp serverTimestamp;
 
     public Notification() {}

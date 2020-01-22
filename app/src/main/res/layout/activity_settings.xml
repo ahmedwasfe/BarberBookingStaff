@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/margin8"
@@ -53,7 +54,7 @@
                         android:src="@drawable/ic_user" />
 
                     <TextView
-                        android:id="@+id/txt_name"
+                        android:id="@+id/text_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
@@ -63,10 +64,10 @@
                         android:textColor="@color/colorButton" />
 
                     <TextView
-                        android:id="@+id/input_update_name"
+                        android:id="@+id/txt_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_name"
+                        android:layout_below="@id/text_name"
                         android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_name"
                         android:text="@string/name"
@@ -102,7 +103,7 @@
                         android:src="@drawable/ic_mobile" />
 
                     <TextView
-                        android:id="@+id/txt_phone"
+                        android:id="@+id/text_mobile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
@@ -112,10 +113,10 @@
                         android:textColor="@color/colorButton" />
 
                     <TextView
-                        android:id="@+id/input_update_mobile"
+                        android:id="@+id/txt_mobile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_phone"
+                        android:layout_below="@id/text_mobile"
                         android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_phone"
                         android:text="+970592435704"
@@ -155,7 +156,7 @@
                         android:src="@drawable/ic_email" />
 
                     <TextView
-                        android:id="@+id/txt_email"
+                        android:id="@+id/text_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
@@ -165,13 +166,77 @@
                         android:textColor="@color/colorButton" />
 
                     <TextView
-                        android:id="@+id/input_update_email"
+                        android:id="@+id/txt_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_email"
+                        android:layout_below="@id/text_email"
                         android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_email"
                         android:text="test@testemail.com"
+                        android:textColor="@color/colorButton" />
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/txt_verification_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/verification"
+                        android:textColor="@color/colorWhite"
+                        android:background="@drawable/text_verification_bg"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="@dimen/margin4"
+                        />
+
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_city"
+                android:layout_width="@dimen/widthheight"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_user_email">
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin16"
+                    android:padding="@dimen/margin8">
+
+                    <ImageView
+                        android:id="@+id/img_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/margin8"
+                        android:src="@drawable/ic_city_location" />
+
+                    <TextView
+                        android:id="@+id/text_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_toEndOf="@id/img_city"
+                        android:text="@string/city"
+                        android:textColor="@color/colorButton" />
+
+                    <TextView
+                        android:id="@+id/txt_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/text_city"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_toEndOf="@id/img_city"
+                        android:text="Gaza"
                         android:textColor="@color/colorButton" />
 
 
@@ -187,7 +252,7 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_user_email">
+                app:layout_constraintTop_toBottomOf="@id/card_city">
 
                 <RelativeLayout
 
@@ -206,7 +271,7 @@
                         android:src="@drawable/ic_address" />
 
                     <TextView
-                        android:id="@+id/txt_address"
+                        android:id="@+id/text_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
@@ -216,57 +281,15 @@
                         android:textColor="@color/colorButton" />
 
                     <TextView
-                        android:id="@+id/input_update_address"
+                        android:id="@+id/txt_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_address"
+                        android:layout_below="@id/text_address"
                         android:layout_marginStart="@dimen/margin16"
                         android:layout_toEndOf="@id/img_address"
                         android:text="gaza/ alremal street"
                         android:textColor="@color/colorButton" />
 
-
-                </RelativeLayout>
-
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_password"
-                android:layout_width="@dimen/widthheight"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_address">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin8"
-                    android:padding="@dimen/margin16"
-                    >
-
-                    <ImageView
-                        android:id="@+id/img_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="@dimen/margin8"
-                        android:src="@drawable/ic_password" />
-
-                    <TextView
-                        android:id="@+id/txt_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="@dimen/margin16"
-                        android:layout_marginTop="@dimen/margin10"
-                        android:layout_toEndOf="@id/img_password"
-                        android:text="@string/change_password"
-                        android:textColor="@color/colorButton" />
 
                 </RelativeLayout>
 
@@ -282,7 +305,7 @@
                 android:background="@color/colorGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_password" />
+                app:layout_constraintTop_toBottomOf="@id/card_address" />
 
             <TextView
                 android:id="@+id/txt_general"
@@ -295,7 +318,7 @@
                 app:layout_constraintTop_toBottomOf="@id/first_view" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/card_language"
+                android:id="@+id/card_salon_satus"
                 android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -303,6 +326,56 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_general">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin8"
+                    android:padding="@dimen/margin16"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_salon_satus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/margin8"
+                        android:src="@drawable/ic_password" />
+
+                    <TextView
+                        android:id="@+id/txt_salon_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_marginTop="@dimen/margin10"
+                        android:layout_toEndOf="@id/img_salon_satus"
+                        android:text="@string/close_salon"
+                        android:textColor="@color/colorButton" />
+
+                    <Switch
+                        android:id="@+id/switch_salon_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_salon_status"
+                        android:textColor="@color/colorButton"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_language"
+                android:layout_width="@dimen/widthheight"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_salon_satus">
 
                 <RelativeLayout
 
@@ -384,7 +457,7 @@
                         android:textColor="@color/colorButton" />
 
                     <Switch
-                        android:id="@+id/input_dark_mode"
+                        android:id="@+id/switch_dark_mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txt_dark_mode"

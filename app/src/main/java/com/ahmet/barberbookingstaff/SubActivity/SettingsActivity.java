@@ -1,53 +1,64 @@
 package com.ahmet.barberbookingstaff.SubActivity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.EditText;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.HomeStaffActivity;
 import com.ahmet.barberbookingstaff.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import io.paperdb.Paper;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private Unbinder mUnbinder;
 
-    @BindView(R.id.input_update_name)
-    EditText mInputName;
-    @BindView(R.id.input_update_mobile)
-    EditText mInputMobile;
-    @BindView(R.id.input_update_email)
-    EditText mInputEmail;
-    @BindView(R.id.input_update_address)
-    EditText mInputAddress;
+    @BindView(R.id.scroll_view_settings)
+    NestedScrollView mScrollView;
+    @BindView(R.id.txt_name)
+    TextView mTxtName;
+    @BindView(R.id.txt_mobile)
+    TextView mTxtMobile;
+    @BindView(R.id.txt_email)
+    TextView mTxtEmail;
+    @BindView(R.id.txt_verification_email)
+    TextView mTxtVerificationEmail;
+    @BindView(R.id.txt_city)
+    TextView mTxtCity;
+    @BindView(R.id.txt_address)
+    TextView mTxtAddress;
     @BindView(R.id.txt_app_version)
     TextView mAppVersion;
+    @BindView(R.id.txt_salon_status)
+    TextView mTxtSalonStatus;
+    @BindView(R.id.switch_salon_status)
+    Switch mSwitchSalonStatus;
+
+    private FirebaseAuth mAuth;
 
     @OnClick(R.id.txt_log_out)
-    void btnLogOut(){
+    void btnLogOut() {
 
         logOut();
     }
@@ -57,42 +68,101 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        mUnbinder = ButterKnife.bind(this);
-        getSupportActionBar().setTitle("Settings");
+        ButterKnife.bind(this);
+        getSupportActionBar().setTitle(R.string.settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        init();
+
+//        if (mAuth.getCurrentUser().isEmailVerified())
+//            mTxtVerificationEmail.setVisibility(View.GONE);
+//        else
+//            mTxtVerificationEmail.setVisibility(View.VISIBLE);
+
+
+        mSwitchSalonStatus.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if (isChecked) {
+                openSalon(true);
+                mTxtSalonStatus.setText(getString(R.string.open_salon));
+            } else {
+                openSalon(false);
+                mTxtSalonStatus.setText(getString(R.string.close_salon));
+            }
+        });
 
         getAppVersion();
         loadUserInfo();
     }
 
-    private void loadUserInfo(){
+    private void openSalon(boolean isOpen) {
+
+        Map<String, Object> mMapSalonStatus = new HashMap<>();
+        mMapSalonStatus.put("open", isOpen);
+
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                .document(Common.currentSalon.getSalonID())
+                .update(mMapSalonStatus)
+                .addOnCompleteListener(task -> {
+
+//                    FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+//                            .document(Common.currentSalon.getSalonID())
+//                            .get()
+//                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                    if (task.isSuccessful()){
+//
+//                                        DocumentSnapshot snapshot = task.getResult();
+//                                        boolean isOpen = snapshot.getBoolean("open");
+//                                        if (isOpen)
+//                                            Common.showSnackBar(SettingsActivity.this, mScrollView, getString(R.string.open_salon));
+//                                        else
+//                                            Common.showSnackBar(SettingsActivity.this, mScrollView, getString(R.string.close_salon));
+//
+//                                    }
+//                                }
+//                            });
+
+                    //Common.showSnackBar(SettingsActivity.this, mScrollView, getString(R.string.sucess));
+    });
+}
+
+    private void init() {
+
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void loadUserInfo() {
 
 //        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 //        if (user != null){
 
-            FirebaseFirestore.getInstance().collection("AllSalon")
-                    .document(Common.currentSalon.getSalonID())
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                .document(Common.currentSalon.getSalonID())
+                .get()
+                .addOnCompleteListener(task -> {
 
-                            DocumentSnapshot snapshot = task.getResult();
-                            mInputName.setText(snapshot.getString("name"));
-                            mInputMobile.setText(snapshot.getString("phone"));
-                            mInputEmail.setText(snapshot.getString("email"));
-                            mInputAddress.setText(snapshot.getString("address"));
+                    DocumentSnapshot snapshot = task.getResult();
+                    mTxtName.setText(snapshot.getString("name"));
+                    mTxtMobile.setText(snapshot.getString("phone"));
+                    mTxtEmail.setText(snapshot.getString("email"));
+                    mTxtAddress.setText(snapshot.getString("address"));
+                    mTxtCity.setText(snapshot.getString("city"));
+                    mSwitchSalonStatus.setChecked(snapshot.getBoolean("open"));
+//                    boolean isOpen = snapshot.getBoolean("open");
+
+//                    if (isOpen) {
+//                        mSwitchSalonStatus.setChecked(true);
+//                        mTxtSalonStatus.setText(getString(R.string.open_salon));
+//                    }else {
+//                        mSwitchSalonStatus.setChecked(false);
+//                        mTxtSalonStatus.setText(getString(R.string.close_salon));
+//                    }
 
 
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(SettingsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-//        }
+                }).addOnFailureListener(e ->
+                Toast.makeText(SettingsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void logOut() {
@@ -103,29 +173,26 @@ public class SettingsActivity extends AppCompatActivity {
         Paper.book().delete(Common.KEY_BARBER);
 
         new AlertDialog.Builder(this)
-                .setMessage("Are you sure want to Log Out")
+                .setMessage(R.string.are_you_sure_log_out)
                 .setCancelable(false)
-                .setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(SettingsActivity.this, SalonActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
+                .setPositiveButton(R.string.log_out, (dialogInterface, i) -> {
 
-                    }
-                })
-                .setCancelable(true)
+                    Intent intent = new Intent(SettingsActivity.this, SalonActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+
+                }).setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
-    private void getAppVersion(){
+    private void getAppVersion() {
         try {
             PackageInfo packageInfo = getPackageManager()
                     .getPackageInfo(getPackageName(), 0);
             String appVersion = packageInfo.versionName;
-            mAppVersion.setText("App Version : " +  appVersion);
+            mAppVersion.setText("App Version : " + appVersion);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

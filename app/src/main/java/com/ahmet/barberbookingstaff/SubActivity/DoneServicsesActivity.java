@@ -122,7 +122,7 @@ public class DoneServicsesActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_done_servicses);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Checkout");
+        getSupportActionBar().setTitle(R.string.checkout);
 
         ButterKnife.bind(this);
 
@@ -137,65 +137,49 @@ public class DoneServicsesActivity extends AppCompatActivity implements
 
     private void initView() {
 
-        mRadioPicture.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        mRadioPicture.setOnCheckedChangeListener((compoundButton, b) -> {
 
-                if (b){
+            if (b){
 
-                    mImgCustomerSelected.setVisibility(View.VISIBLE);
-                    mBtnFinish.setEnabled(false);
-                }
+                mImgCustomerSelected.setVisibility(View.VISIBLE);
+                mBtnFinish.setEnabled(false);
             }
         });
 
-        mRadioNoPicture.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        mRadioNoPicture.setOnCheckedChangeListener((compoundButton, b) -> {
 
-                if (b){
+            if (b){
 
-                    mImgCustomerSelected.setVisibility(View.GONE);
-                    mBtnFinish.setEnabled(true);
-                }
+                mImgCustomerSelected.setVisibility(View.GONE);
+                mBtnFinish.setEnabled(true);
             }
         });
 
-        mBtnFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mBtnFinish.setOnClickListener(view -> {
 
-                if (mRadioNoPicture.isChecked()){
+            if (mRadioNoPicture.isChecked()){
 
-                    mDialog.dismiss();
+                mDialog.dismiss();
 
-                    TotalPriceFragment totalPriceFragment = TotalPriceFragment.getInstance();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Common.SERVICES_ADDED, new Gson().toJson(mHashServicesAdded));
-                   // bundle.putString(Common.SHOPPING_ITEMS, new Gson().toJson(mListShopping));
-                    totalPriceFragment.setArguments(bundle);
-                    totalPriceFragment.show(getSupportFragmentManager(), "Price");
+                TotalPriceFragment totalPriceFragment = TotalPriceFragment.getInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString(Common.SERVICES_ADDED, new Gson().toJson(mHashServicesAdded));
+               // bundle.putString(Common.SHOPPING_ITEMS, new Gson().toJson(mListShopping));
+                totalPriceFragment.setArguments(bundle);
+                totalPriceFragment.show(getSupportFragmentManager(), Common.TAG_PRICE);
 
-                } else
-                    uploadPicture(fileUri);
-            }
+            } else
+                uploadPicture(fileUri);
         });
 
-        mImgCustomerSelected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-               showBottomSheetToSelectImage();
-
-            }
-        });
+        mImgCustomerSelected.setOnClickListener(view -> showBottomSheetToSelectImage());
 
         mImgAddShopping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 ProductsFragment mShoppingFragment = ProductsFragment.getInstance(DoneServicsesActivity.this);
-                mShoppingFragment.show(getSupportFragmentManager(), "Products");
+                mShoppingFragment.show(getSupportFragmentManager(), Common.TAG_PRODUCTS);
             }
         });
     }
@@ -213,15 +197,12 @@ public class DoneServicsesActivity extends AppCompatActivity implements
 
             mStorageReference = FirebaseStorage.getInstance().getReference(path);
             UploadTask uploadTask = mStorageReference.putFile(fileUri);
-                    Task<Uri> taskUri = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    Task<Uri> taskUri = uploadTask.continueWithTask(task -> {
 
-                            if (!task.isSuccessful())
-                                Toast.makeText(DoneServicsesActivity.this, "Can,t upload image please try again", Toast.LENGTH_SHORT).show();
+                        if (!task.isSuccessful())
+                            Toast.makeText(DoneServicsesActivity.this, getString(R.string.can_not_upload_image), Toast.LENGTH_SHORT).show();
 
-                            return mStorageReference.getDownloadUrl();
-                        }
+                        return mStorageReference.getDownloadUrl();
                     }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
@@ -241,28 +222,25 @@ public class DoneServicsesActivity extends AppCompatActivity implements
                               //  bundle.putString(Common.SHOPPING_ITEMS, new Gson().toJson(mListShopping));
                                 bundle.putString(Common.IMAGE_DOWNLIADABLE_URL, imageUri);
                                 totalPriceFragment.setArguments(bundle);
-                                totalPriceFragment.show(getSupportFragmentManager(), "Price");
+                                totalPriceFragment.show(getSupportFragmentManager(), Common.TAG_PRICE);
                             }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            mDialog.dismiss();
-                            Toast.makeText(DoneServicsesActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                    }).addOnFailureListener(e -> {
+                        mDialog.dismiss();
+                        Toast.makeText(DoneServicsesActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
 
 
         } else {
 
-            Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void showBottomSheetToSelectImage() {
 
         BottomSheetDialog sheetDialogSelectImage = new BottomSheetDialog(DoneServicsesActivity.this);
-        sheetDialogSelectImage.setTitle("Select Image");
+        sheetDialogSelectImage.setTitle(R.string.select_Image);
         sheetDialogSelectImage.setCancelable(false);
         sheetDialogSelectImage.setCanceledOnTouchOutside(true);
 
@@ -271,37 +249,31 @@ public class DoneServicsesActivity extends AppCompatActivity implements
         ImageView imgSelectImageFromGallery = sheetLayout.findViewById(R.id.img_select_image_from_gallery);
         ImageView imgSelectImageFromCamera = sheetLayout.findViewById(R.id.img_select_image_from_camera);
 
-        imgSelectImageFromCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        imgSelectImageFromCamera.setOnClickListener(view -> {
 
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                StrictMode.setVmPolicy(builder.build());
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
 
-                fileUri = getOutputMediaFileUri();
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                startActivityForResult(intent, CODE_REQUEST_CAMERA);
+            fileUri = getOutputMediaFileUri();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            startActivityForResult(intent, CODE_REQUEST_CAMERA);
 
-                sheetDialogSelectImage.dismiss();
-            }
+            sheetDialogSelectImage.dismiss();
         });
 
-        imgSelectImageFromGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        imgSelectImageFromGallery.setOnClickListener(view -> {
 
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                StrictMode.setVmPolicy(builder.build());
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
 
-                fileUri = getOutputMediaFileUri();
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                intent.setType("image/*");
-                startActivityForResult(intent, CODE_REQUEST_GALLERY);
+            fileUri = getOutputMediaFileUri();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            intent.setType("image/*");
+            startActivityForResult(intent, CODE_REQUEST_GALLERY);
 
-                sheetDialogSelectImage.dismiss();
-            }
+            sheetDialogSelectImage.dismiss();
         });
 
         sheetDialogSelectImage.setContentView(sheetLayout);
@@ -334,6 +306,7 @@ public class DoneServicsesActivity extends AppCompatActivity implements
         mDialog = new SpotsDialog.Builder()
                 .setContext(this)
                 .setCancelable(false)
+                .setMessage(R.string.please_wait)
                 .build();
 
         inflater = LayoutInflater.from(this);
@@ -349,35 +322,25 @@ public class DoneServicsesActivity extends AppCompatActivity implements
         mDialog.show();
 
         FirebaseFirestore.getInstance()
-                .collection("AllSalon")
+                .collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Services")
+                .collection(Common.KEY_COLLECTION_SERICES)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
-                            List<BarberServices> mListBarberServices = new ArrayList<>();
+                        List<BarberServices> mListBarberServices = new ArrayList<>();
 
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                BarberServices barberServices = documentSnapshot.toObject(BarberServices.class);
-                                mListBarberServices.add(barberServices);
-                            }
-
-                            iBarberServicesListener.onLoadBarberServicesSuccess(mListBarberServices);
+                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            BarberServices barberServices = documentSnapshot.toObject(BarberServices.class);
+                            mListBarberServices.add(barberServices);
                         }
 
+                        iBarberServicesListener.onLoadBarberServicesSuccess(mListBarberServices);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-                iBarberServicesListener.onLoadBarberServicesFailed(e.getMessage());
-
-            }
-        });
+                }).addOnFailureListener(e -> iBarberServicesListener.onLoadBarberServicesFailed(e.getMessage()));
 
 
 
@@ -394,12 +357,7 @@ public class DoneServicsesActivity extends AppCompatActivity implements
 
         List<String> mListNameServices = new ArrayList<>();
         // Sort alpha-bet
-        Collections.sort(mListBarberServices, new Comparator<BarberServices>() {
-            @Override
-            public int compare(BarberServices barberServices, BarberServices t1) {
-                return barberServices.getServiceName().compareTo(t1.getServiceName());
-            }
-        });
+        Collections.sort(mListBarberServices, (barberServices, t1) -> barberServices.getServiceName().compareTo(t1.getServiceName()));
 
         // Add all name of services after sort
         for (BarberServices barberServices : mListBarberServices)
@@ -410,39 +368,35 @@ public class DoneServicsesActivity extends AppCompatActivity implements
         // Will start working from forst character
         mTxtCompleteService.setThreshold(1);
         mTxtCompleteService.setAdapter(mNameServicesAdapter);
-        mTxtCompleteService.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        mTxtCompleteService.setOnItemClickListener((adapterView, view, i, l) -> {
 
-                // add to chip group
-                int index = mListNameServices.indexOf(mTxtCompleteService.getText().toString().trim());
+            // add to chip group
+            int index = mListNameServices.indexOf(mTxtCompleteService.getText().toString().trim());
 
-                if (!mHashServicesAdded.contains(mListBarberServices.get(index))) {
+            if (!mHashServicesAdded.contains(mListBarberServices.get(index))) {
 
-                    // We dont want to have dublicate service in list so we use Hashset
-                    mHashServicesAdded.add(mListBarberServices.get(index));
+                // We dont want to have dublicate service in list so we use Hashset
+                mHashServicesAdded.add(mListBarberServices.get(index));
 
-                    Chip chip = (Chip) inflater.inflate(R.layout.raw_chip, null);
-                    chip.setText(mTxtCompleteService.getText().toString());
-                    chip.setTag(i);
-                    mTxtCompleteService.setText("");
+                Chip chip = (Chip) inflater.inflate(R.layout.raw_chip, null);
+                chip.setText(mTxtCompleteService.getText().toString());
+                chip.setTag(i);
+                mTxtCompleteService.setText("");
 
-                    chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mChipGroupService.removeView(view);
-                            mHashServicesAdded.remove(chip.getTag());
-                        }
-                    });
+                chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mChipGroupService.removeView(view);
+                        mHashServicesAdded.remove(chip.getTag());
+                    }
+                });
 
-                    mChipGroupService.addView(chip);
+                mChipGroupService.addView(chip);
 
-                } else {
+            } else {
 
-                    mTxtCompleteService.setText("");
-                }
+                mTxtCompleteService.setText("");
             }
-
         });
 
       //  mDialog.dismiss();
@@ -501,12 +455,9 @@ public class DoneServicsesActivity extends AppCompatActivity implements
             chip.setTag(Common.currentBooking.getmListCartItem().indexOf(cartItem));
            // mTxtCompleteService.setText("");
 
-            chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mChipGroupShopping.removeView(view);
-                    Common.currentBooking.getmListCartItem().remove(chip.getTag());
-                }
+            chip.setOnCloseIconClickListener(view -> {
+                mChipGroupShopping.removeView(view);
+                Common.currentBooking.getmListCartItem().remove(chip.getTag());
             });
             mChipGroupShopping.addView(chip);
 
@@ -533,12 +484,9 @@ public class DoneServicsesActivity extends AppCompatActivity implements
                 chip.setTag(Common.currentBooking.getmListCartItem().indexOf(cartItem));
                // mTxtCompleteService.setText("");
 
-                chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mChipGroupShopping.removeView(view);
-                        Common.currentBooking.getmListCartItem().remove(chip.getTag());
-                    }
+                chip.setOnCloseIconClickListener(view -> {
+                    mChipGroupShopping.removeView(view);
+                    Common.currentBooking.getmListCartItem().remove(chip.getTag());
                 });
                 mChipGroupShopping.addView(chip);
 

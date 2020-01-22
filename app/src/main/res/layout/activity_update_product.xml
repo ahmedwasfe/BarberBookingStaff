@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin10">
+    android:id="@+id/scroll_view_update_product"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/margin10"
+    tools:context=".SubActivity.UpdateProductActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +15,7 @@
         android:padding="@dimen/margin10">
 
         <ImageView
-            android:id="@+id/img_add_product"
+            android:id="@+id/img_update_product"
             android:layout_width="@dimen/widthheight"
             android:layout_height="220dp"
             android:layout_margin="@dimen/margin8"
@@ -22,16 +25,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_product_name"
+            android:id="@+id/layout_update_product_name"
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_add_product">
+            app:layout_constraintTop_toBottomOf="@id/img_update_product">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_product_name"
+                android:id="@+id/input_update_product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/product_name"
@@ -40,16 +43,16 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_product_price"
+            android:id="@+id/layout_update_product_price"
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_product_name">
+            app:layout_constraintTop_toBottomOf="@id/layout_update_product_name">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_product_price"
+                android:id="@+id/input_update_product_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/price"
@@ -58,16 +61,16 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_description"
+            android:id="@+id/layout_update_description"
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_product_price">
+            app:layout_constraintTop_toBottomOf="@id/layout_update_product_price">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_product_description"
+                android:id="@+id/input_update_product_description"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/optional_description"
@@ -76,30 +79,47 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btn_add_product"
+            android:id="@+id/btn_update_product"
             android:layout_width="@dimen/widthheight"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:layout_marginTop="18dp"
             android:background="@drawable/btn_bg"
             android:padding="14dp"
-            android:text="@string/add_product"
+            android:layout_margin="@dimen/margin16"
+            android:text="@string/update_product"
             android:textAllCaps="false"
             android:textSize="@dimen/margin16"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete_product"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_description" />
+            app:layout_constraintTop_toBottomOf="@id/layout_update_description">
+
+
+
+        </Button>
 
         <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/progress_load_image"
+            android:id="@+id/progress_update_image"
             style="@style/SpinKitView.Large.Circle"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="28dp"
             app:SpinKit_Color="@color/colorAccent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete_product"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_description" />
+            app:layout_constraintTop_toBottomOf="@id/layout_update_description" />
+
+        <Button
+            android:id="@+id/btn_delete_product"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorRed"
+            android:padding="14dp"
+            android:layout_margin="@dimen/margin16"
+            android:text="@string/delete_product"
+            android:textAllCaps="false"
+            android:textSize="@dimen/margin16"
+            app:layout_constraintStart_toEndOf="@id/btn_update_product"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_update_description" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

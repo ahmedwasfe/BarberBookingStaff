@@ -80,28 +80,21 @@ public class ShowProductFragment extends Fragment implements IProductsLoadListen
         // /AllSalon/ahm.m@yahoo.com/Products/rLsRJgWCiBcVAFKtKqob
         // /AllSalon/currentSalonID/Products/rLsRJgWCiBcVAFKtKqob
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Products")
+                .collection(Common.KEY_COLLECTION_PRODUCTS)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            List<Products> mListProducts = new ArrayList<>();
-                            for (DocumentSnapshot snapshot : task.getResult()){
-                                Products products = snapshot.toObject(Products.class);
-                                mListProducts.add(products);
-                            }
-                            productsLoadListener.onShoppingLoadSuccess(mListProducts);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        List<Products> mListProducts = new ArrayList<>();
+                        for (DocumentSnapshot snapshot : task.getResult()){
+                            Products products = snapshot.toObject(Products.class);
+                            products.setId(snapshot.getId());
+                            mListProducts.add(products);
                         }
+                        productsLoadListener.onShoppingLoadSuccess(mListProducts);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                productsLoadListener.onShoppingLoadFailed(e.getMessage());
-            }
-        });
+                }).addOnFailureListener(e -> productsLoadListener.onShoppingLoadFailed(e.getMessage()));
     }
 
     private void init() {
@@ -111,7 +104,7 @@ public class ShowProductFragment extends Fragment implements IProductsLoadListen
         mDialog = new SpotsDialog.Builder()
                 .setContext(getActivity())
                 .setCancelable(false)
-                .setMessage("Loading...")
+                .setMessage(R.string.loading)
                 .build();
 
         mRecyclerProducts.setHasFixedSize(true);

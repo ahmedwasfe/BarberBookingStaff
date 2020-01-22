@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,9 +36,9 @@ public class AddServiceFragmnet extends Fragment {
     private Unbinder mUnbinder;
 
     @BindView(R.id.txt_input_service_name)
-    TextInputEditText mInputServiceName;
+    EditText mInputServiceName;
     @BindView(R.id.txt_input_service_price)
-    TextInputEditText mInputServicePrice;
+    EditText mInputServicePrice;
 
     @OnClick(R.id.btn_add_service)
     void submitService(){
@@ -58,28 +59,22 @@ public class AddServiceFragmnet extends Fragment {
         mMapService.put("serviceName", serviceName);
         mMapService.put("servicePrice", servicePrice);
 
-        FirebaseFirestore.getInstance().collection("AllSalon")
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(Common.currentSalon.getSalonID())
-                .collection("Barber")
+                .collection(Common.KEY_COLLECTION_BARBER)
                 .document(Common.currentBarber.getBarberID())
-                .collection("Services")
+                .collection(Common.KEY_COLLECTION_SERICES)
                 .add(mMapService)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()){
-                            mDialog.dismiss();
-                            Toast.makeText(getActivity(), "Addedd Services Successfull", Toast.LENGTH_SHORT).show();
-                        }
+                    if (task.isSuccessful()){
+                        mDialog.dismiss();
+                        Toast.makeText(getActivity(), getString(R.string.add_service_success), Toast.LENGTH_SHORT).show();
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                mDialog.dismiss();
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                }).addOnFailureListener(e -> {
+                    mDialog.dismiss();
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
 
@@ -108,7 +103,7 @@ public class AddServiceFragmnet extends Fragment {
         mDialog = new SpotsDialog.Builder()
                 .setContext(getActivity())
                 .setCancelable(false)
-                .setMessage("Please wait...")
+                .setMessage(R.string.please_wait)
                 .build();
     }
 }

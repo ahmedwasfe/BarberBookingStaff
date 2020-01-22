@@ -16,6 +16,10 @@
 
         <item name="drawerArrowStyle">@style/DrawerIconStyle</item>
     </style>
+    
+    <style name="SignInTheme" parent="NoActionBar">
+        <item name="android:windowBackground">@color/colorWhite</item>
+    </style>
 
 
     <style name="DrawerIconStyle" parent="Widget.AppCompat.DrawerArrowToggle">

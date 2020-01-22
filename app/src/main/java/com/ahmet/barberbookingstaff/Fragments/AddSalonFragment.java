@@ -1,7 +1,10 @@
 package com.ahmet.barberbookingstaff.Fragments;
 
 import android.app.AlertDialog;
+import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.ahmet.barberbookingstaff.Common.Common;
+import com.ahmet.barberbookingstaff.Model.EventBus.BarberEvent;
 import com.ahmet.barberbookingstaff.Model.EventBus.EnableNextButton;
 import com.ahmet.barberbookingstaff.Model.Salon;
 import com.ahmet.barberbookingstaff.R;
@@ -21,9 +25,20 @@ import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jaredrummler.materialspinner.MaterialSpinner;
@@ -31,7 +46,9 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,11 +59,11 @@ import io.paperdb.Paper;
 
 public class AddSalonFragment extends Fragment {
 
-    private Unbinder mUnbinder;
-
 
     @BindView(R.id.input_salon_name)
     EditText mInputSalonName;
+    @BindView(R.id.input_salon_city)
+    EditText mInputSalonCity;
     @BindView(R.id.input_salon_address)
     EditText mInputSalonAddress;
     @BindView(R.id.input_salon_phone)
@@ -55,9 +72,38 @@ public class AddSalonFragment extends Fragment {
     EditText mInputSalonOpenHour;
     @BindView(R.id.spinner_salon_type)
     MaterialSpinner mSpinnerSalonType;
+
+    private FirebaseAuth mAuth;
+
+
     @OnClick(R.id.btn_add_salon)
-    void btnAddSalon(){
-        verifySalon();
+    void btnAddSalon() {
+
+        String salonName = mInputSalonName.getText().toString();
+        String salonCity = mInputSalonCity.getText().toString();
+        String salonAddress = mInputSalonAddress.getText().toString();
+        String salonPhone = mInputSalonPhone.getText().toString();
+        String openHour = mInputSalonOpenHour.getText().toString();
+
+        if (TextUtils.isEmpty(salonName)){
+            mInputSalonName.setError(getString(R.string.please_enter_salon_name));
+            return;
+        }
+
+        if (TextUtils.isEmpty(salonCity)){
+            mInputSalonCity.setError(getString(R.string.please_enter_salon_city));
+            return;
+        }
+
+        if (TextUtils.isEmpty(salonAddress)){
+            mInputSalonAddress.setError(getString(R.string.please_enter_salon_address));
+            return;
+        }
+
+        if (TextUtils.isEmpty(mSalonType))
+            Common.showSnackBar(getActivity(), mSpinnerSalonType, getString(R.string.please_select_salon_type));
+        else
+            verifySalon(salonName, salonCity, salonAddress, salonPhone, openHour);
     }
 
     private String mSalonType = "";
@@ -66,9 +112,15 @@ public class AddSalonFragment extends Fragment {
 
 
     private static AddSalonFragment instance;
-    public static AddSalonFragment getInstance(){
+
+    public static AddSalonFragment getInstance() {
 
         return instance == null ? new AddSalonFragment() : instance;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -77,123 +129,114 @@ public class AddSalonFragment extends Fragment {
 
         View layoutView = inflater.inflate(R.layout.fragment_add_salon, container, false);
 
-        mUnbinder = ButterKnife.bind(this, layoutView);
+        ButterKnife.bind(this, layoutView);
 
-        mSpinnerSalonType.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                mSalonType = item.toString();
-               // Toast.makeText(getContext(), mSalonType, Toast.LENGTH_SHORT).show();
-            }
+        mSpinnerSalonType.setOnItemSelectedListener((view, position, id, item) -> {
+            mSalonType = item.toString();
+            // Toast.makeText(getContext(), mSalonType, Toast.LENGTH_SHORT).show();
         });
 
 
         init();
         selectSalonType();
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null)
+            EventBus.getDefault().postSticky(new EnableNextButton(2, Common.currentSalon));
+
         return layoutView;
     }
 
     private void init() {
 
+        mAuth = FirebaseAuth.getInstance();
+
         mDialog = new SpotsDialog.Builder()
                 .setCancelable(false)
                 .setContext(getActivity())
-                .setMessage("Pleas Wait....")
-                .build();;
+                .setMessage(R.string.please_wait)
+                .build();
+        ;
     }
 
-    private void verifySalon() {
+    private void verifySalon(String salonName, String salonCity, String salonAddress, String salonPhone, String openHour) {
 
         mDialog.show();
 
-        String salonName = mInputSalonName.getText().toString();
-        String salonAddress = mInputSalonAddress.getText().toString();
-        String salonPhone = mInputSalonPhone.getText().toString();
-        String openHour = mInputSalonOpenHour.getText().toString();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
 
-        AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
-            @Override
-            public void onSuccess(Account account) {
-                if (account != null){
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                .document(user.getEmail())
+                .get()
+                .addOnCompleteListener(task1 -> {
 
-                    Paper.init(getActivity());
-                   // Paper.book().write(Common.KEY_LOGGED_EMAIL, account.getEmail());
-                    FirebaseFirestore.getInstance().collection("AllSalon")
-                            .document(account.getEmail())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task1.isSuccessful()) {
+                        DocumentSnapshot snapshot = task1.getResult();
+                        if (snapshot.exists()) {
+                            mDialog.dismiss();
+                            addSalon(salonName, user.getEmail(), salonAddress, salonPhone, openHour, mSalonType, salonCity);
+                            // getCurrentLocationForSalon(currentSalonEmail);
 
-                                    if (task.isSuccessful()){
-                                        DocumentSnapshot snapshot = task.getResult();
-                                        if (!snapshot.exists()){
-                                            mDialog.dismiss();
-                                            addSalon(salonName, account.getEmail(),salonAddress, salonPhone, openHour, mSalonType);
+                        } else {
+                            mDialog.dismiss();
+                            Toast.makeText(getActivity(), getString(R.string.this_user_exists), Toast.LENGTH_SHORT).show();
+                            Salon salon = new Salon();
+                            salon.setSalonID(user.getEmail());
+                            Toast.makeText(getActivity(), salon.getSalonID(), Toast.LENGTH_SHORT).show();
+                            EventBus.getDefault().postSticky(new EnableNextButton(2, Common.currentSalon));
 
-                                        }else {
-                                            mDialog.dismiss();
-                                            Toast.makeText(getActivity(), "This user exists", Toast.LENGTH_SHORT).show();
-                                            Salon salon = new Salon();
-                                            salon.setSalonID(account.getEmail());
-                                            salon.setEmail(account.getEmail());
-                                            Toast.makeText(getActivity(), salon.getSalonID(), Toast.LENGTH_SHORT).show();
-                                            EventBus.getDefault().postSticky(new EnableNextButton(1, Common.currentSalon));
-
-                                        }
-                                    }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
-            }
-
-            @Override
-            public void onError(AccountKitError accountKitError) {
-
-            }
-        });
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(getActivity(),
+                        e.getMessage(), Toast.LENGTH_SHORT).show());
+        }
 
     }
 
     private void addSalon(String salonName, String email, String salonAddress,
-                          String salonPhone, String openHour, String mSalonType) {
+                          String salonPhone, String openHour, String mSalonType,
+                          String salonCity) {
 
-        Salon salon = new Salon(salonName, email, salonAddress, salonPhone, openHour, mSalonType, email);
-        FirebaseFirestore.getInstance().collection("AllSalon")
+
+        Salon salon = new Salon(salonName, email, salonAddress,
+                "", salonPhone, openHour, mSalonType, email, salonCity, true);
+
+        Map<String, Object> mMapAddSAlon = new HashMap<>();
+        mMapAddSAlon.put("name", salonName);
+        mMapAddSAlon.put("address", salonAddress);
+        mMapAddSAlon.put("phone", salonPhone);
+        mMapAddSAlon.put("openHour", openHour);
+        mMapAddSAlon.put("salonType", mSalonType);
+        mMapAddSAlon.put("city", salonCity);
+        mMapAddSAlon.put("open", true);
+
+        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
                 .document(email)
-                .set(salon)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                                mDialog.dismiss();
-                                Toast.makeText(getActivity(), "Add Salon Success", Toast.LENGTH_SHORT).show();
-                                salon.setSalonID(email);
-                                EventBus.getDefault().postSticky(new EnableNextButton(1, Common.currentSalon));
-                        }
+                .update(mMapAddSAlon)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mDialog.dismiss();
+                        Toast.makeText(getActivity(), getString(R.string.add_salon_success), Toast.LENGTH_SHORT).show();
+                        salon.setSalonID(email);
+                        EventBus.getDefault().postSticky(new EnableNextButton(2, Common.currentSalon));
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                mDialog.dismiss();
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+                }).addOnFailureListener(e -> {
+            mDialog.dismiss();
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         });
+
     }
 
-    private void selectSalonType(){
+
+    private void selectSalonType() {
 
         List<String> mListSalonType = new ArrayList<>();
-        mListSalonType.add("Please select your salon type");
-        mListSalonType.add("Men");
-        mListSalonType.add("Women");
-        mListSalonType.add("Both");
+        mListSalonType.add(getString(R.string.select_salon_type));
+        mListSalonType.add(getString(R.string.men));
+        mListSalonType.add(getString(R.string.women));
+        mListSalonType.add(getString(R.string.both));
 
         ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, mListSalonType);
         mSpinnerSalonType.setAdapter(adapter);

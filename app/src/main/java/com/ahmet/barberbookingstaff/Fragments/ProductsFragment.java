@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.ahmet.barberbookingstaff.Adapter.ShoppingAdapter;
+import com.ahmet.barberbookingstaff.Common.Common;
 import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
 import com.ahmet.barberbookingstaff.Interface.IProductsLoadListener;
 import com.ahmet.barberbookingstaff.Interface.IShoppingItemSelectedListener;
@@ -66,19 +67,14 @@ public class ProductsFragment extends BottomSheetDialogFragment
     private void loadShoppingItem(String itemMenu) {
 
         mShoppingReference = FirebaseFirestore.getInstance()
-                .collection("Products")
+                .collection(Common.KEY_COLLECTION_PRODUCTS)
                 .document(itemMenu)
                 .collection("Items");
 
         // Get data for shopping
         mShoppingReference
                 .get()
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        mIProductsLoadListener.onShoppingLoadFailed(e.getMessage());
-                    }
-                })
+                .addOnFailureListener(e -> mIProductsLoadListener.onShoppingLoadFailed(e.getMessage()))
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

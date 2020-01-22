@@ -60,35 +60,26 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffHolder>
         holder.mTxtStaffType.setText(mListStaff.get(position).getBarberType());
 
 
-        holder.setiRecyclerItemSelectedListener(new IRecyclerItemSelectedListener() {
-            @Override
-            public void onItemSelected(View view, int position) {
+        holder.setiRecyclerItemSelectedListener((view, position1) -> {
 
-//                Intent intent = new Intent(mContext, UpdateStaffActivity.class);
-//                intent.putExtra("barber", mListStaff.get(position));
-//                mContext.startActivity(intent);
+            FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
+                    .document(Common.currentSalon.getSalonID())
+                    .collection(Common.KEY_COLLECTION_BARBER)
+                    .document(Common.currentBarber.getBarberID())
+                    .get()
+                    .addOnCompleteListener(task -> {
 
-                FirebaseFirestore.getInstance().collection("AllSalon")
-                        .document(Common.currentSalon.getSalonID())
-                        .collection("Barber")
-                        .document(Common.currentBarber.getBarberID())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot snapshot = task.getResult();
-                                    if (snapshot.exists()) {
-                                        Common.currentBarber = mListStaff.get(position);
-                                        Common.currentBarber.setBarberID(snapshot.getId());
-                                        mContext.startActivity(new Intent(mContext, UpdateStaffActivity.class));
-                                    }
-                                }
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot snapshot = task.getResult();
+                            if (snapshot.exists()) {
+                                Common.currentBarber = mListStaff.get(position1);
+                                Common.currentBarber.setBarberID(snapshot.getId());
+                                mContext.startActivity(new Intent(mContext, UpdateStaffActivity.class));
                             }
-                        });
+                        }
+                    });
 
 
-            }
         });
     }
 
