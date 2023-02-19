@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <RelativeLayout
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/margin16"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/img_app_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/ic_launcher" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_input_salon_name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img_app_logo"
+            android:hint="@string/salon_name"
+            android:layout_marginTop="@dimen/margin20"
+            app:boxStrokeColor="@color/colorBlack"
+            app:boxStrokeWidthFocused="@dimen/margin2"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/colorBlack"
+            app:hintTextColor="@color/colorBlack"
+            app:startIconDrawable="@drawable/ic_user_name"
+            app:startIconTint="@color/colorBlack">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_salon_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/muli_light"
+                android:inputType="text"
+                android:textColor="@color/colorBlack" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_input_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_input_salon_name"
+            android:hint="@string/email"
+            app:boxStrokeColor="@color/colorBlack"
+            app:boxStrokeWidthFocused="@dimen/margin2"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/colorBlack"
+            app:hintTextColor="@color/colorBlack"
+            app:startIconDrawable="@drawable/ic_email"
+            app:startIconTint="@color/colorBlack">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/muli_light"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/colorBlack" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_input_email"
+            android:orientation="horizontal">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ccp_bg"
+                android:layout_marginTop="@dimen/margin10"
+                android:layout_marginEnd="@dimen/margin10"
+                android:padding="@dimen/margin5"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_showFlag="true"
+                app:ccp_showFullName="false"
+                app:ccp_showNameCode="false"
+                app:ccp_showPhoneCode="true" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_input_phone"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone_number"
+                app:boxStrokeColor="@color/colorBlack"
+                app:boxStrokeWidthFocused="@dimen/margin2"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorBlack"
+                app:hintTextColor="@color/colorBlack"
+                app:startIconDrawable="@drawable/fui_ic_phone_white_24dp"
+                app:startIconTint="@color/colorBlack">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/muli_light"
+                    android:inputType="phone"
+                    android:textColor="@color/colorBlack" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_input_city"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_phone_number"
+            android:hint="@string/salon_city"
+            app:boxStrokeColor="@color/colorBlack"
+            app:boxStrokeWidthFocused="@dimen/margin2"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/colorBlack"
+            app:hintTextColor="@color/colorBlack"
+            app:startIconDrawable="@drawable/ic_city_location"
+            app:startIconTint="@color/colorBlack">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_city"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/muli_light"
+                android:inputType="text"
+                android:textColor="@color/colorBlack" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner_salon_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_input_city"
+            android:layout_marginTop="@dimen/margin8" />
+
+        <Button
+            android:id="@+id/btn_new_salon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="transition_create_account"
+            android:layout_below="@id/spinner_salon_type"
+            android:layout_margin="@dimen/margin30"
+            android:background="@drawable/btn_bg_black"
+            android:text="@string/new_salon"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite" />
+
+        <RelativeLayout
+            android:id="@+id/relative_progress"
+            android:layout_width="@dimen/margin50"
+            android:layout_height="@dimen/margin50"
+            android:background="@drawable/progress_bg"
+            android:elevation="@dimen/margin8"
+            android:padding="@dimen/margin16"
+            android:layout_centerInParent="true">
+
+            <ProgressBar
+                android:layout_width="@dimen/margin30"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

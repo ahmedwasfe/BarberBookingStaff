@@ -11,42 +11,32 @@
         android:padding="@dimen/margin10"
         android:layout_gravity="center">
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_service_name"
-            android:layout_width="@dimen/widthheight"
+        <EditText
+            android:id="@+id/input_service_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/service"
+            android:inputType="text"
+            android:padding="@dimen/margin16"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <EditText
-                android:id="@+id/txt_input_service_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/service"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_service_price"
-            android:layout_width="@dimen/widthheight"
+        <EditText
+            android:id="@+id/input_service_price"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_service_name"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/service_price"
+            android:inputType="number"
+            android:padding="@dimen/margin16"
+            app:layout_constraintTop_toBottomOf="@id/input_service_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <EditText
-                android:id="@+id/txt_input_service_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/service_price"
-                android:inputType="number" />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btn_add_service"
@@ -54,14 +44,26 @@
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:layout_marginTop="18dp"
-            android:background="@drawable/btn_bg"
+            android:background="@drawable/btn_bg_yallow"
             android:padding="14dp"
             android:text="@string/add_service"
             android:textAllCaps="false"
             android:textSize="@dimen/margin16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_service_price" />
+            app:layout_constraintTop_toBottomOf="@id/input_service_price" />
+
+        <com.syd.oden.circleprogressdialog.view.RotateLoading
+            android:id="@+id/progress_add_service"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/margin16"
+            app:loading_color="@color/colorPrimary"
+            app:loading_width="6dp"
+            app:shadow_offset="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_add_service" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

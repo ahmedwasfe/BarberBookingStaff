@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/margin8"
-    tools:context=".SubActivity.SettingsActivity">
+    tools:context=".ui.settings.SettingsActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/card_user_name"
+                android:id="@+id/card_salon_name"
                 android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -51,7 +51,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_marginTop="@dimen/margin8"
-                        android:src="@drawable/ic_user" />
+                        android:src="@drawable/ic_user_name" />
 
                     <TextView
                         android:id="@+id/text_name"
@@ -78,14 +78,14 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/card_user_phone"
+                android:id="@+id/card_salon_phone"
                 android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_user_name">
+                app:layout_constraintTop_toBottomOf="@id/card_salon_name">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -130,14 +130,14 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/card_user_email"
+                android:id="@+id/card_salon_email"
                 android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_user_phone">
+                app:layout_constraintTop_toBottomOf="@id/card_salon_phone">
 
                 <RelativeLayout
 
@@ -194,6 +194,58 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_salon_website"
+                android:layout_width="@dimen/widthheight"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_salon_email">
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:padding="@dimen/margin8">
+
+                    <ImageView
+                        android:id="@+id/img_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/margin8"
+                        android:src="@drawable/ic_web_site" />
+
+                    <TextView
+                        android:id="@+id/text_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_toEndOf="@id/img_website"
+                        android:text="@string/website"
+                        android:textColor="@color/colorButton" />
+
+                    <TextView
+                        android:id="@+id/txt_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/text_website"
+                        android:layout_marginStart="@dimen/margin16"
+                        android:layout_toEndOf="@id/img_website"
+                        android:text="www.salonwebsite.com"
+                        android:textColor="@color/colorButton" />
+
+
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/card_city"
                 android:layout_width="@dimen/widthheight"
                 android:layout_height="wrap_content"
@@ -201,7 +253,7 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_user_email">
+                app:layout_constraintTop_toBottomOf="@id/card_salon_website">
 
                 <RelativeLayout
 
@@ -539,7 +591,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/app_version"
                 android:textSize="@dimen/textCardSize20"
-                android:textColor="@color/colorButton"
+                android:textColor="@color/colorGray"
                 android:layout_margin="@dimen/margin16"
                 android:padding="@dimen/margin8"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -557,7 +609,6 @@
                 android:padding="@dimen/margin8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_app_version" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

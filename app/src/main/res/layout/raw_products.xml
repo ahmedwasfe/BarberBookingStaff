@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="8dp"
-    android:padding="@dimen/margin4"
+    app:cardCornerRadius="@dimen/margin16"
+    android:padding="@dimen/margin10"
     android:layout_margin="@dimen/margin8"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -12,68 +12,58 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:padding="0dp">
 
         <ImageView
             android:id="@+id/img_product"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="@dimen/margin8"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/default_item"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/txt_name_product"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Colonna Spray"
             android:textSize="@dimen/textSize16"
-            android:textAllCaps="true"
             android:textColor="@color/colorButton"
-            android:gravity="center"
             android:padding="@dimen/margin8"
-            app:layout_constraintTop_toBottomOf="@id/img_product"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_marginTop="@dimen/margin10"
+            android:layout_marginStart="@dimen/margin8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_product" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/txt_price_product"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_margin="@dimen/margin10"
+            android:text="$20"
+            android:textSize="20sp"
+            android:textColor="@color/colorButton"
+            android:padding="@dimen/margin4"
+            android:layout_margin="@dimen/margin8"
             app:layout_constraintTop_toBottomOf="@id/txt_name_product"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" >
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
-            <TextView
-                android:id="@+id/txt_price_product"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="$20"
-                android:textSize="20sp"
-                android:textColor="@color/colorBlack"
-                android:padding="@dimen/margin8"
-                android:layout_weight="1"
-                android:gravity="start"/>
-
-            <TextView
-                android:id="@+id/txt_remove"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text=" "
-                android:visibility="gone"
-                android:textSize="20sp"
-                android:fontFamily="@font/bellerose"
-                android:drawableEnd="@drawable/ic_remove"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"/>
+        <RatingBar
+            android:id="@+id/rating_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:stepSize="0.5"
+            android:isIndicator="true"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_margin="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_product"/>
 
 
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
@@ -16,36 +17,32 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.Fragments.AddProductFragment;
-import com.ahmet.barberbookingstaff.Fragments.AddServiceFragmnet;
-import com.ahmet.barberbookingstaff.Fragments.AddStaffFragment;
-import com.ahmet.barberbookingstaff.Fragments.HomeFragment;
-import com.ahmet.barberbookingstaff.Fragments.ShowProductFragment;
-import com.ahmet.barberbookingstaff.Fragments.ShowStaffFragment;
-import com.ahmet.barberbookingstaff.Interface.INotificationCountListener;
-import com.ahmet.barberbookingstaff.Model.Barber;
-import com.ahmet.barberbookingstaff.SubActivity.NotificationsActivity;
-import com.ahmet.barberbookingstaff.SubActivity.SettingsActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.ahmet.barberbookingstaff.common.Common;
+import com.ahmet.barberbookingstaff.ui.home.HomeFragment;
+import com.ahmet.barberbookingstaff.ui.product.ProductFragment;
+import com.ahmet.barberbookingstaff.ui.service.ServicesFragment;
+import com.ahmet.barberbookingstaff.ui.staff.StaffFragment;
+import com.ahmet.barberbookingstaff.callback.INotificationCountListener;
+import com.ahmet.barberbookingstaff.ui.settings.SettingsBarberActivity;
+import com.ahmet.barberbookingstaff.ui.notification.NotificationsActivity;
+import com.ahmet.barberbookingstaff.ui.settings.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
-import dmax.dialog.SpotsDialog;
+import io.paperdb.Paper;
 
-import static com.ahmet.barberbookingstaff.Common.Common.setFragment;
+import static com.ahmet.barberbookingstaff.common.Common.setFragment;
 
 public class HomeStaffActivity extends AppCompatActivity
         implements INotificationCountListener {
@@ -59,12 +56,11 @@ public class HomeStaffActivity extends AppCompatActivity
     @BindView(R.id.text_message_verification_email)
     TextView mTxtMessageVerificationEmail;
 
-    private CollectionReference notificationCollectionRef;
+    private DatabaseReference notificationRef;
 
     // Copy Code from Booking Barber App (Client App)
     private EventListener<QuerySnapshot> notificationEventListener;
 
-    private ListenerRegistration notificationListener;
 
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
@@ -99,61 +95,20 @@ public class HomeStaffActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        Paper.init(HomeStaffActivity.this);
+        Paper.book().write(Common.KEY_LOGGED, Common.currentBarber.getUsername());
 
-        setFragment(HomeFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+       setFragment(HomeFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
 
-//        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
-//                .document(Common.currentSalon.getSalonID())
-//                .collection(Common.KEY_COLLECTION_BARBER)
-//                .get()
-//                .addOnCompleteListener(task -> {
-//
-//                    if (task.isSuccessful()){
-//                        if (task.getResult().size() > 0) {
-//                            Barber barber = new Barber();
-//                            for (DocumentSnapshot snapshot : task.getResult()) {
-//                                barber = snapshot.toObject(Barber.class);
-//                                barber.setBarberID(snapshot.getId());
-//                                //Log.e("ID From App", Common.currentBarber.getBarberID());
-//                               // Log.e("ID From Database", snapshot.getId());
-//
-//                            }
-//                        }
-//                    }
-//                });
+       initView();
 
-        init();
-        initView();
-
-//        FirebaseUser user = mAuth.getCurrentUser();
-//
-//        if (user.isEmailVerified())
-//            mTxtMessageVerificationEmail.setVisibility(View.GONE);
-//        else
-//            mTxtMessageVerificationEmail.setVisibility(View.VISIBLE);
-
-    }
-
-    private void init() {
-
-        iNotificationCountListener = this;
-
-        mAuth = FirebaseAuth.getInstance();
-
-        initNotificationsRealTimeUpdate();
-
-        mDialog = new SpotsDialog.Builder()
-                .setContext(this)
-                .setCancelable(false)
-                .setMessage(R.string.please_wait)
-                .build();
     }
 
 
     private void initView() {
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(Common.currentSalon.getName());
+        getSupportActionBar().setTitle(Common.currentSalon.getSalonName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
@@ -168,19 +123,13 @@ public class HomeStaffActivity extends AppCompatActivity
                 setFragment(HomeFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
             } else if (menuItem.getItemId() == R.id.nav_show_barber) {
                 mDrawerLayout.closeDrawers();
-                setFragment(ShowStaffFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
-            } else if (menuItem.getItemId() == R.id.nav_add_barber) {
-                mDrawerLayout.closeDrawers();
-                setFragment(AddStaffFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+                setFragment(StaffFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
             } else if (menuItem.getItemId() == R.id.nav_show_product) {
                 mDrawerLayout.closeDrawers();
-                setFragment(ShowProductFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
-            } else if (menuItem.getItemId() == R.id.nav_add_product) {
-                mDrawerLayout.closeDrawers();
-                setFragment(AddProductFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+                setFragment(ProductFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
             } else if (menuItem.getItemId() == R.id.nav_add_service) {
                 mDrawerLayout.closeDrawers();
-                setFragment(AddServiceFragmnet.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
+                setFragment(ServicesFragment.getInstance(), R.id.frame_layout_home, getSupportFragmentManager());
             } else if (menuItem.getItemId() == R.id.nav_notifications) {
                 mDrawerLayout.closeDrawers();
                 startActivity(new Intent(HomeStaffActivity.this, NotificationsActivity.class));
@@ -196,79 +145,53 @@ public class HomeStaffActivity extends AppCompatActivity
 
         // get Barber Name
         View headerView = mNavigationView.getHeaderView(0);
+        ConstraintLayout mConstraintBarber = headerView.findViewById(R.id.constraint_barber);
         TextView mTxtStaffName = headerView.findViewById(R.id.txt_barber_name);
         TextView mTxtStaffType = headerView.findViewById(R.id.txt_barber_type);
         CircleImageView mImageSalon = headerView.findViewById(R.id.img_salon);
 
-        getSalonType(mImageSalon);
-        loadBarberInfo(mTxtStaffName, mTxtStaffType);
+        mTxtStaffName.setText(Common.currentBarber.getName());
+        mTxtStaffType.setText(Common.currentBarber.getBarberType());
+        Picasso.get()
+                .load(Common.currentBarber.getImage())
+                .placeholder(R.drawable.hairdresser)
+                .into(mImageSalon);
+
+        mConstraintBarber.setOnClickListener(v -> startActivity(new Intent(HomeStaffActivity.this, SettingsBarberActivity.class)));
+
+      //  getSalonType(mImageSalon);
+
     }
 
-    private void loadBarberInfo(TextView mTxtStaffName, TextView mTxtStaffType) {
-
-
-        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
-                .document(Common.currentSalon.getSalonID())
-                .collection(Common.KEY_COLLECTION_BARBER)
-                .document(Common.currentBarber.getBarberID())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                        if (task.isSuccessful()){
-                            DocumentSnapshot snapshot = task.getResult();
-                            mTxtStaffName.setText(snapshot.getString("name"));
-                            mTxtStaffType.setText(snapshot.getString("barberType"));
-                        }
-                    }
-                });
-    }
 
     private void getSalonType(CircleImageView mImageSalon){
 
-        FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON)
-                .document(Common.currentSalon.getSalonID())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        FirebaseDatabase.getInstance().getReference()
+                .child(Common.KEY_AllSALON_REFERANCE)
+                .child(Common.currentSalon.getSalonId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if (task.isSuccessful()){
+                        if (dataSnapshot.exists()){
 
-                            DocumentSnapshot snapshot = task.getResult();
-                            if (snapshot.getString("salonType").equals(getString(R.string.men)))
+
+                            if (dataSnapshot.child("salonType").getValue().equals(getString(R.string.men)))
                                 Picasso.get().load(R.drawable.hairdresser).into(mImageSalon);
-                            else if (snapshot.getString("salonType").equals(getString(R.string.women)))
+                            else if (dataSnapshot.child("salonType").getValue().equals(getString(R.string.women)))
                                 Picasso.get().load(R.drawable.women_salon).into(mImageSalon);
-                            else if (snapshot.getString("salonType").equals(getString(R.string.both)))
+                            else if (dataSnapshot.child("salonType").getValue().equals(getString(R.string.both)))
                                 Picasso.get().load(R.drawable.hairdresser).into(mImageSalon);
                         }
                     }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
                 });
-
     }
 
-    private void initNotificationsRealTimeUpdate() {
-
-        notificationCollectionRef = FirebaseFirestore.getInstance()
-                .collection(Common.KEY_COLLECTION_AllSALON)
-                .document(Common.currentSalon.getSalonID())
-                .collection(Common.KEY_COLLECTION_BARBER)
-                .document(Common.currentBarber.getBarberID())
-                .collection(Common.KEY_COLLECTION_NOTIFICATIONS);
-
-        notificationEventListener = (queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots.size() > 0)
-                loadNotifications();
-        };
-
-        // only listen and count all notifications
-        notificationListener = notificationCollectionRef.whereEqualTo("read", false)
-                .addSnapshotListener(notificationEventListener);
-
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -283,16 +206,6 @@ public class HomeStaffActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setMessage(R.string.are_you_sure_to_exit)
-                .setCancelable(true)
-                .setPositiveButton(R.string.exit, (dialogInterface, i) -> Toast.makeText(HomeStaffActivity.this, "Fack function exit", Toast.LENGTH_SHORT))
-                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                .show();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -303,26 +216,13 @@ public class HomeStaffActivity extends AppCompatActivity
 
             mTxtCountNotification = menuItem.getActionView().findViewById(R.id.count_notification);
 
-            loadNotifications();
+          //  loadNotifications();
 
             menuItem.getActionView().setOnClickListener(view -> onOptionsItemSelected(menuItem));
 
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void loadNotifications() {
-
-        notificationCollectionRef.whereEqualTo("read", false)
-                .get()
-                .addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()){
-
-                        iNotificationCountListener.onNotificationCountSuccess(task.getResult().size());
-                    }
-
-                }).addOnFailureListener(e -> Toast.makeText(HomeStaffActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
 
     @Override
     public void onNotificationCountSuccess(int count) {
@@ -339,27 +239,5 @@ public class HomeStaffActivity extends AppCompatActivity
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initNotificationsRealTimeUpdate();
-    }
 
-    @Override
-    protected void onStop() {
-
-        if(notificationListener != null)
-            notificationListener.remove();
-
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        if(notificationListener != null)
-            notificationListener.remove();
-
-        super.onDestroy();
-    }
 }

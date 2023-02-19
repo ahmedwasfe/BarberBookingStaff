@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionName="transition_create_account"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/margin30">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_back_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_back_24"
+                android:transitionName="transition_back_arrow"
+                android:padding="@dimen/margin5"/>
+
+            <TextView
+                android:id="@+id/tv_salon_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/textSize20"
+                android:textAllCaps="true"
+                android:fontFamily="@font/arkhip_font"
+                android:padding="@dimen/margin8"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_create_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_account"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/textSize30"
+                android:fontFamily="@font/arkhip_font"
+                android:transitionName="transition_title_text"
+                android:layout_marginTop="@dimen/margin50"/>
+
+            <TextView
+                android:id="@+id/text_numbers_of_screens"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/numbers_screens_bg"
+                android:text="2/3"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/textSize30"
+                android:fontFamily="@font/arkhip_font"
+                android:gravity="center"
+                android:transitionName="transition_screen_number"
+                android:padding="@dimen/margin16"
+                android:layout_marginEnd="@dimen/margin4"
+                android:layout_marginTop="@dimen/margin30"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin40">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_input_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="@string/full_name"
+                app:hintTextColor="@color/colorBlack"
+                app:boxStrokeColor="@color/colorBlack"
+                app:boxStrokeWidthFocused="@dimen/margin2"
+                app:startIconDrawable="@drawable/ic_user_name"
+                app:startIconTint="@color/colorBlack"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorBlack">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_full_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_light"
+                    android:textColor="@color/colorBlack"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_input_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="@string/username"
+                app:hintTextColor="@color/colorBlack"
+                app:boxStrokeColor="@color/colorBlack"
+                app:boxStrokeWidthFocused="@dimen/margin2"
+                app:startIconDrawable="@drawable/ic_username"
+                app:startIconTint="@color/colorBlack"
+                app:endIconMode="none"
+                app:endIconTint="@color/colorBlack"
+                android:layout_below="@id/txt_input_full_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_light"
+                    android:textColor="@color/colorBlack"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/margin20"
+                android:layout_height="@dimen/margin20"
+                android:layout_marginEnd="@dimen/margin10"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@id/txt_input_username"
+                android:layout_alignBottom="@id/txt_input_username">
+
+                <ProgressBar
+                    android:id="@+id/progress_check_username"
+                    android:layout_gravity="center"
+                    android:layout_width="@dimen/margin20"
+                    android:layout_height="@dimen/margin20"/>
+
+                <ImageView
+                    android:id="@+id/img_username_available"
+                    android:layout_gravity="center"
+                    android:layout_width="@dimen/margin20"
+                    android:layout_height="@dimen/margin20"
+                    android:src="@drawable/ic_baseline_check_circle_24"
+                    />
+
+            </FrameLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_input_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="@string/password"
+                app:hintTextColor="@color/colorBlack"
+                app:boxStrokeColor="@color/colorBlack"
+                app:boxStrokeWidthFocused="@dimen/margin2"
+                app:startIconDrawable="@drawable/ic_password"
+                app:startIconTint="@color/colorBlack"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/colorBlack"
+                android:layout_below="@id/txt_input_username">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/muli_light"
+                    android:textColor="@color/colorBlack"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_input_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="@string/confirm_password"
+                app:hintTextColor="@color/colorBlack"
+                app:boxStrokeColor="@color/colorBlack"
+                app:boxStrokeWidthFocused="@dimen/margin2"
+                app:startIconDrawable="@drawable/ic_password"
+                app:startIconTint="@color/colorBlack"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/colorBlack"
+                android:layout_below="@id/txt_input_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_confirm_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/muli_light"
+                    android:textColor="@color/colorBlack"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/text_choose_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_gender"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/textSize16"
+                android:layout_marginTop="@dimen/margin8"
+                android:layout_below="@id/txt_input_confirm_password"/>
+
+            <RadioGroup
+                android:id="@+id/radio_gender"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin4"
+                android:layout_marginTop="@dimen/margin4"
+                android:layout_below="@id/text_choose_gender">
+
+                <RadioButton
+                    android:id="@+id/radio_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/male"/>
+
+                <RadioButton
+                    android:id="@+id/radio_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/female"
+                    android:layout_marginStart="@dimen/margin20"/>
+
+            </RadioGroup>
+
+
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/next"
+                android:textColor="@color/colorWhite"
+                android:transitionName="transition_create_account"
+                android:background="@drawable/btn_bg_black"
+                android:layout_marginTop="@dimen/margin24"
+                android:layout_below="@id/radio_gender"/>
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:fontFamily="@font/arkhip_font"
+                android:transitionName="transition_login_btn"
+                android:layout_gravity="center"
+                android:background="#00000000"
+                android:layout_marginTop="@dimen/margin20"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/btn_next"/>
+
+            <RelativeLayout
+                android:id="@+id/relative_progress"
+                android:layout_width="@dimen/margin50"
+                android:layout_height="@dimen/margin50"
+                android:background="@drawable/progress_bg"
+                android:elevation="@dimen/margin8"
+                android:padding="@dimen/margin16"
+                android:layout_centerInParent="true">
+
+                <ProgressBar
+                    android:layout_width="@dimen/margin30"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

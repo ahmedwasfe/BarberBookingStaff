@@ -2,216 +2,201 @@ package com.ahmet.barberbookingstaff;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ahmet.barberbookingstaff.Adapter.CityAdapter;
-import com.ahmet.barberbookingstaff.Common.Common;
-import com.ahmet.barberbookingstaff.Common.SpacesItemDecoration;
-import com.ahmet.barberbookingstaff.Interface.IAllCitiesLoadListener;
-import com.ahmet.barberbookingstaff.Model.Barber;
-import com.ahmet.barberbookingstaff.Model.City;
-import com.ahmet.barberbookingstaff.Model.Salon;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.common.reflect.TypeToken;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-import com.google.gson.Gson;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.DexterActivity;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import com.ahmet.barberbookingstaff.common.Common;
+import com.ahmet.barberbookingstaff.model.Barber;
+import com.ahmet.barberbookingstaff.model.Salon;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.syd.oden.circleprogressdialog.view.RotateLoading;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
 
-public class MainActivity extends AppCompatActivity implements IAllCitiesLoadListener {
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
-    @BindView(R.id.recycler_state)
-    RecyclerView mRecyclerCity;
+    @BindView(R.id.input_login_barber_username)
+    EditText mInputUsername;
+    @BindView(R.id.input_login_password)
+    EditText mInputPassword;
+
+    @BindView(R.id.btn_login)
+    Button mBtnLogin;
+
+    @BindView(R.id.progress_login)
+    RotateLoading mRotateLoading;
+
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser firebaseUser;
+
+    @OnClick(R.id.btn_login)
+    void onLoginClick() {
+
+        mRotateLoading.start();
 
 
-    private CollectionReference mCityReference;
+        String username = mInputUsername.getText().toString();
+        String password = mInputPassword.getText().toString();
 
-    private IAllCitiesLoadListener iAllCitiesLoadListener;
+        if (TextUtils.isEmpty(username)) {
+            mInputUsername.setError(getString(R.string.please_enter_username));
+            mRotateLoading.stop();
+            return;
+        }
 
-    private AlertDialog mDialog;
+        if (TextUtils.isEmpty(password)) {
+            mInputPassword.setError(getString(R.string.please_enter_password));
+            mRotateLoading.stop();
+            return;
+        }
+
+        if (password.length() < 8) {
+            mInputPassword.setError(getString(R.string.password_must_be_at_least_6));
+            mRotateLoading.stop();
+            return;
+        }
+
+        checkBarberExsist(username, password);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        Dexter.withActivity(this)
-                .withPermissions(new String [] {
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                }).withListener(new MultiplePermissionsListener() {
-            @Override
-            public void onPermissionsChecked(MultiplePermissionsReport report) {
+        ButterKnife.bind(this);
 
+        mRotateLoading.stop();
 
-                FirebaseInstanceId.getInstance()
-                        .getInstanceId()
-                        .addOnCompleteListener(task -> {
+        init();
 
-                            if (task.isSuccessful()){
+        Paper.init(this);
+        String username = Paper.book().read(Common.KEY_LOGGED);
+        if (username != null && firebaseUser.getUid() != null){
+            FirebaseDatabase.getInstance().getReference()
+                    .child(Common.KEY_AllSALON_REFERANCE)
+                    .child(firebaseUser.getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()){
 
-                                Common.updateToken(MainActivity.this,
-                                        task.getResult().getToken());
-                                Log.d(Common.TAG_TOKEN, task.getResult().getToken());
+                                mRotateLoading.start();
+                                mInputUsername.setVisibility(View.GONE);
+                                mInputPassword.setVisibility(View.GONE);
+                                mBtnLogin.setVisibility(View.GONE);
+                                Salon salon = dataSnapshot.getValue(Salon.class);
+                                Common.currentSalon = salon;
+                                startActivity(new Intent(MainActivity.this, HomeStaffActivity.class));
+                                finish();
                             }
-                        }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
-
-                Paper.init(MainActivity.this);
-                String user = Paper.book().read(Common.KEY_LOGGED);
-                // If user not login before
-                if (TextUtils.isEmpty(user)) {
-
-                    setContentView(R.layout.activity_main);
-
-                    ButterKnife.bind(MainActivity.this);
-
-                    // init recyclerview
-                    initRecyclerView();
-
-                    // init Firebase
-                    init();
-
-                    loadAllCitiesFromDatabase();
-
-                } else {  // If user already login
-
-                    Gson gson = new Gson();
-                    Common.cityName = Paper.book().read(Common.KEY_CITY);
-                    Common.currentSalon = gson.fromJson(Paper.book().read(Common.KEY_SALON, ""),
-                            new TypeToken<Salon>(){}.getType());
-                    Common.currentBarber = gson.fromJson(Paper.book().read(Common.KEY_BARBER, ""),
-                            new TypeToken<Barber>(){}.getType());
-
-                    Intent intent = new Intent(MainActivity.this, HomeStaffActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-
-            }
-
-            @Override
-            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-
-            }
-        })
-                .check();
-
-      //  printKeyHash();
-    }
-
-    private void loadAllCitiesFromDatabase() {
-
-        mDialog.show();
-
-        mCityReference
-                .get()
-                .addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()){
-
-                        List<City> mListCity = new ArrayList<>();
-
-                        for (DocumentSnapshot documentSnapshot : task.getResult()){
-                            City city = documentSnapshot.toObject(City.class);
-                            mListCity.add(city);
                         }
 
-                        iAllCitiesLoadListener.onAllCitiesLoadSuccess(mListCity);
-                    }
-                }).addOnFailureListener(e -> iAllCitiesLoadListener.onAllCitiesLoadFailed(e.getMessage()));
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+        }else{
+            Toast.makeText(this, "Please login", Toast.LENGTH_SHORT).show();
+        }
+
+
+
     }
 
     private void init() {
 
-        mCityReference = FirebaseFirestore.getInstance().collection(Common.KEY_COLLECTION_AllSALON);
-
-        iAllCitiesLoadListener = this;
-
-        mDialog = new SpotsDialog.Builder()
-                .setContext(this)
-                .setCancelable(false)
-                .setMessage(R.string.please_wait)
-                .build();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = mFirebaseAuth.getCurrentUser();
     }
 
-    private void initRecyclerView() {
+    private void checkBarberExsist(String username, String password) {
 
-        mRecyclerCity.setHasFixedSize(true);
-        mRecyclerCity.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
-        mRecyclerCity.addItemDecoration(new SpacesItemDecoration(8));
+        FirebaseDatabase.getInstance().getReference()
+                .child(Common.KEY_AllSALON_REFERANCE)
+                .child(firebaseUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+
+                        if (dataSnapshot1.exists()){
+
+                            Salon salon = dataSnapshot1.getValue(Salon.class);
+                            getSupportActionBar().setTitle(salon.getSalonName());
+
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child(Common.KEY_AllSALON_REFERANCE)
+                                    .child(firebaseUser.getUid())
+                                    .child(Common.KEY_BARBER_REFERANCE)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+
+                                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                    if (snapshot.exists()) {
+                                                        if (snapshot.child("username").getValue().equals(username) &&
+                                                                snapshot.child("password").getValue().equals(password)) {
+
+                                                            mRotateLoading.stop();
+                                                            Barber barber = snapshot.getValue(Barber.class);
+                                                            gotoHomeActivity(salon, barber);
+                                                            Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            mRotateLoading.stop();
+                                                          //  Toast.makeText(MainActivity.this, "username or password is incorrect", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }else {
+                                                        mRotateLoading.stop();
+                                                        Toast.makeText(MainActivity.this, "Username not exixst", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
-    @Override
-    public void onAllCitiesLoadSuccess(List<City> mListCity) {
+    private void gotoHomeActivity(Salon salon, Barber barber) {
 
-        CityAdapter mCityAdapter = new CityAdapter(MainActivity.this, mListCity);
-        mRecyclerCity.setAdapter(mCityAdapter);
-        mDialog.dismiss();
+        Common.currentSalon = salon;
+        Common.currentBarber = barber;
+        startActivity(new Intent(this, HomeStaffActivity.class));
+        finish();
     }
 
-    @Override
-    public void onAllCitiesLoadFailed(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-        mDialog.dismiss();
-    }
 
-    private void printKeyHash() {
 
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(
-                    getPackageName(),
-                    PackageManager.GET_SIGNATURES
-            );
-            for (Signature signature : packageInfo.signatures){
-                MessageDigest digest = MessageDigest.getInstance("SHA");
-                digest.update(signature.toByteArray());
-                Log.d("KEYHASH", Base64.encodeToString(digest.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

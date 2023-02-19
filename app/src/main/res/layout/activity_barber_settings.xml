@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin10"
+    tools:context=".ui.settings.SettingsBarberActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txt_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin8"
+            android:text="@string/profile"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_barber_profile" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_barber_profile"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/hairdresser"
+            android:layout_marginTop="@dimen/margin20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/img_change_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin10"
+            android:layout_marginBottom="@dimen/margin10"
+            android:src="@drawable/ic_edit_profile"
+            app:layout_constraintEnd_toEndOf="@id/img_barber_profile"
+            app:layout_constraintBottom_toBottomOf="@id/img_barber_profile"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_barber_name"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_profile">
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin16"
+                android:padding="@dimen/margin8">
+
+                <ImageView
+                    android:id="@+id/img_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="@dimen/margin8"
+                    android:src="@drawable/ic_user_name" />
+
+                <TextView
+                    android:id="@+id/text_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_toEndOf="@id/img_name"
+                    android:text="@string/name"
+                    android:textColor="@color/colorButton" />
+
+                <TextView
+                    android:id="@+id/txt_barber_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_name"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_toEndOf="@id/img_name"
+                    android:text="@string/name"
+                    android:textColor="@color/colorButton" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_username"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_barber_name">
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin16"
+                android:padding="@dimen/margin8">
+
+                <ImageView
+                    android:id="@+id/img_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="@dimen/margin8"
+                    android:src="@drawable/ic_user" />
+
+                <TextView
+                    android:id="@+id/text_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_toEndOf="@id/img_username"
+                    android:text="@string/username"
+                    android:textColor="@color/colorButton" />
+
+                <TextView
+                    android:id="@+id/txt_barber_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_username"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_toEndOf="@id/img_username"
+                    android:text="@string/username"
+                    android:textColor="@color/colorButton" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_password"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_username">
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin16"
+                android:padding="@dimen/margin8">
+
+                <ImageView
+                    android:id="@+id/img_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="@dimen/margin8"
+                    android:src="@drawable/ic_password" />
+
+                <TextView
+                    android:id="@+id/text_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_toEndOf="@id/img_password"
+                    android:text="@string/change_password"
+                    android:textColor="@color/colorButton" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/first_view"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="2dp"
+            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginBottom="@dimen/margin20"
+            android:background="@color/colorGray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_password" />
+
+        <TextView
+            android:id="@+id/txt_general"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin8"
+            android:text="@string/general"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/first_view" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_barber_type"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_general">
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin16"
+                android:padding="@dimen/margin8">
+
+                <ImageView
+                    android:id="@+id/img_barber_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="@dimen/margin8"
+                    android:src="@drawable/ic_babrer_type" />
+
+                <TextView
+                    android:id="@+id/text_barber_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_toEndOf="@id/img_barber_type"
+                    android:text="@string/barber_type"
+                    android:textColor="@color/colorButton" />
+
+                <TextView
+                    android:id="@+id/txt_barber_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_barber_type"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_toEndOf="@id/img_barber_type"
+                    android:text="@string/men"
+                    android:textColor="@color/colorButton" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_barber_satus"
+            android:layout_width="@dimen/widthheight"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_barber_type">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin8"
+                android:padding="@dimen/margin16"
+                >
+
+                <ImageView
+                    android:id="@+id/img_barber_satus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="@dimen/margin8"
+                    android:src="@drawable/ic_password" />
+
+                <TextView
+                    android:id="@+id/txt_barber_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/margin16"
+                    android:layout_marginTop="@dimen/margin10"
+                    android:layout_toEndOf="@id/img_barber_satus"
+                    android:text="@string/barber_avaliable"
+                    android:textColor="@color/colorButton" />
+
+                <Switch
+                    android:id="@+id/switch_barber_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_barber_status"
+                    android:textColor="@color/colorButton"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>

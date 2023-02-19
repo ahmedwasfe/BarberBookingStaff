@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "190349167928-svnp2bolce9fv8rugq54l2s1mr7rqvpm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ahmet.barberbooking",
+            "certificate_hash": "4324ad0f12401652f530323085992937f7305dd2"
+          }
+        },
+        {
           "client_id": "190349167928-9gssmcpcd7lqod3a9rscekf7rp5a5asp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -51,6 +59,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "190349167928-dn3hl705l29qmqo68jhsq5ccenvcp4i6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ahmet.barberbookingstaff",
+            "certificate_hash": "4324ad0f12401652f530323085992937f7305dd2"
+          }
+        },
         {
           "client_id": "190349167928-grifbf5t93oeai2m3uvfsg8m2in2nl5i.apps.googleusercontent.com",
           "client_type": 1,

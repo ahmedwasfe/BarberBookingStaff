@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionName="transition_new_salon"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/margin8"
+    tools:context=".ui.login.salon.NewSalonActivity">
+
+    <FrameLayout
+        android:id="@+id/frame_layout_new_salon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btn_back_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_back_24"
+        android:transitionName="transition_back_arrow"
+        android:padding="@dimen/margin5"
+        android:layout_marginTop="@dimen/margin30"
+        android:layout_marginStart="@dimen/margin30"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/img_app_logo"
+        android:layout_width="@dimen/margin100"
+        android:layout_height="@dimen/margin100"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin30"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_back_arrow"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/text_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin50"
+        android:fontFamily="@font/arkhip_font"
+        android:padding="8dp"
+        android:text="Barber Booking"
+        android:textAllCaps="true"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/textSize30"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_app_logo" />
+
+    <TextView
+        android:id="@+id/text_create_your_salon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/create_your_salon"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/textSize16"
+        android:padding="@dimen/margin4"
+        android:gravity="center"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_app_name"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.syd.oden.circleprogressdialog.view.RotateLoading
+        android:id="@+id/progress_loading_check_user"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loading_color="@color/colorPrimary"
+        app:loading_width="6dp"
+        app:shadow_offset="8dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_login_salon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/textSize16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btn_facebook_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="transition_login"
+            android:layout_marginStart="@dimen/margin30"
+            android:layout_marginEnd="@dimen/margin30"
+            android:layout_marginBottom="@dimen/margin4"
+            android:background="@drawable/btn_facebook_bg"
+            android:drawableStart="@drawable/fui_ic_facebook_white_22dp"
+            android:paddingStart="@dimen/textSize16"
+            android:text="@string/fui_sign_in_with_facebook"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:id="@+id/btn_google_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="transition_login"
+            android:layout_marginStart="@dimen/margin30"
+            android:layout_marginTop="@dimen/margin4"
+            android:layout_marginEnd="@dimen/margin30"
+            android:background="@drawable/btn_google_bg"
+            android:drawableStart="@drawable/fui_ic_googleg_color_24dp"
+            android:paddingStart="@dimen/textSize16"
+            android:text="@string/fui_sign_in_with_google"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

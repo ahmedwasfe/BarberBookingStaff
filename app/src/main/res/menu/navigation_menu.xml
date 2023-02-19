@@ -15,27 +15,16 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/nav_add_barber"
-        android:icon="@drawable/ic_barber"
-        android:title="@string/add_staff"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/nav_show_product"
         android:icon="@drawable/ic_shopping_cart"
-        android:title="@string/show_product"
+        android:title="@string/products"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/nav_add_product"
-        android:icon="@drawable/ic_add_prudoct"
-        android:title="@string/add_product"
-        app:showAsAction="always"/>
 
     <item
         android:id="@+id/nav_add_service"
         android:icon="@drawable/ic_add_service"
-        android:title="@string/add_services"
+        android:title="@string/services"
         app:showAsAction="always"/>
 
     <item

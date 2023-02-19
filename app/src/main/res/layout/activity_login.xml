@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionName="transition_login"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/margin30"
+    tools:context=".ui.login.barber.barberLogin.LoginActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/btn_back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:transitionName="transition_back_arrow"
+            android:src="@drawable/ic_arrow_back_24"
+            android:padding="@dimen/margin5"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:textAllCaps="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/textSize40"
+            android:fontFamily="@font/arkhip_font"
+            android:layout_marginTop="@dimen/margin50"/>
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin80">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_input_username_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="@string/username_phone"
+                app:hintTextColor="@color/colorBlack"
+                app:boxStrokeColor="@color/colorBlack"
+                app:boxStrokeWidthFocused="@dimen/margin2"
+                app:startIconDrawable="@drawable/ic_username"
+                app:startIconTint="@color/colorBlack"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/colorBlack">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_username_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:fontFamily="@font/muli_light"
+                    android:textColor="@color/colorBlack"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_input_password_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="@string/password"
+                app:hintTextColor="@color/colorBlack"
+                app:boxStrokeColor="@color/colorBlack"
+                app:boxStrokeWidthFocused="@dimen/margin2"
+                app:startIconDrawable="@drawable/ic_password"
+                app:startIconTint="@color/colorBlack"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/colorBlack"
+                android:layout_below="@id/txt_input_username_login">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_password_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/muli_light"
+                    android:textColor="@color/colorBlack"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_forgot_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin16"
+                android:layout_below="@id/txt_input_password_login">
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                    android:text="@string/remember_me"
+                    android:textColor="@color/colorBlack"
+                    android:buttonTint="@color/colorBlack"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"/>
+
+                <Button
+                    android:id="@+id/btn_go_to_forgot_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/forgot_password"
+                    android:background="#00000000"
+                    android:transitionName="transition_forgot_password"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:transitionName="transition_home"
+                android:text="@string/login"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/btn_bg_black"
+                android:layout_marginTop="@dimen/margin24"
+                android:layout_below="@id/relative_forgot_password"/>
+
+            <Button
+                android:id="@+id/btn_go_to_create_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:transitionName="transition_create_account"
+                android:text="@string/create_account1"
+                android:fontFamily="@font/arkhip_font"
+                android:layout_gravity="center"
+                android:background="#00000000"
+                android:layout_marginTop="@dimen/margin20"
+                android:layout_below="@id/btn_login"
+                android:layout_centerHorizontal="true"/>
+
+            <RelativeLayout
+                android:id="@+id/relative_progress"
+                android:layout_width="@dimen/margin50"
+                android:layout_height="@dimen/margin50"
+                android:background="@drawable/progress_bg"
+                android:elevation="@dimen/margin8"
+                android:padding="@dimen/margin16"
+                android:layout_centerInParent="true">
+                <ProgressBar
+                    android:layout_width="@dimen/margin30"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+
+</ScrollView>

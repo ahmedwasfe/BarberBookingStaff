@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scroll_view_add_staff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/scroll_view_add_staff"
     android:padding="@dimen/margin10">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,59 +12,48 @@
         android:layout_gravity="center"
         android:padding="10dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_barber_name"
-            android:layout_width="@dimen/widthheight"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/txt_input_barber_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/barber_name"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_username"
-            android:layout_width="@dimen/widthheight"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_barber_name">
-
-            <EditText
-                android:id="@+id/txt_input_barber_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/username"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_password"
+        <EditText
+            android:id="@+id/input_barber_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/barber_name"
+            android:inputType="text"
+            android:padding="@dimen/margin16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_username">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/txt_input_barber_password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        <EditText
+            android:id="@+id/input_barber_username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/username"
+            android:inputType="text"
+            android:padding="@dimen/margin16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_barber_name" />
+
+
+        <EditText
+            android:id="@+id/input_barber_password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:padding="@dimen/margin16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_barber_username" />
+
 
         <com.jaredrummler.materialspinner.MaterialSpinner
             android:id="@+id/spinner_barber_type"
@@ -74,7 +63,7 @@
             android:padding="@dimen/margin5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_password" />
+            app:layout_constraintTop_toBottomOf="@id/input_barber_password" />
 
 
         <Button
@@ -83,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:layout_marginTop="18dp"
-            android:background="@drawable/btn_bg"
+            android:background="@drawable/btn_bg_yallow"
             android:padding="14dp"
             android:text="@string/add_staff"
             android:textAllCaps="false"

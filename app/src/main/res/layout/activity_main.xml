@@ -1,21 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
-    tools:context=".MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/margin8">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_state"
-        android:layout_width="@dimen/widthheight"
-        android:layout_height="@dimen/widthheight"
+    <TextView
+        android:id="@+id/text_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/log_in"
+        android:textSize="24sp"
+        android:textColor="@color/colorButton"
+        android:layout_marginTop="100dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    
+    <EditText
+        android:id="@+id/input_login_barber_username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/username"
+        android:inputType="text"
+        android:background="@drawable/input_bg"
+        android:padding="@dimen/margin16"
+        android:layout_marginTop="@dimen/margin20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_login"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <EditText
+        android:id="@+id/input_login_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:background="@drawable/input_bg"
+        android:padding="@dimen/margin16"
+        android:layout_marginTop="@dimen/margin10"
+        android:password="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_login_barber_username"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:background="@drawable/btn_bg_yallow"
+        android:layout_marginTop="@dimen/margin30"
+        android:paddingEnd="80dp"
+        android:paddingStart="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_login_password"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.syd.oden.circleprogressdialog.view.RotateLoading
+        android:id="@+id/progress_login"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/margin16"
+        app:loading_color="@color/colorPrimary"
+        app:loading_width="6dp"
+        app:shadow_offset="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_login" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@ android {
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.ahmet.barberbookingstaff"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -27,18 +27,20 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.2.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:runner:1.3.0-alpha03'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha03'
+    androidTestImplementation 'androidx.test:runner:1.3.0-rc01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-beta02'
 
     // material
-    implementation 'com.google.android.material:material:1.2.0-alpha03'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.2.0-beta01'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha03'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.shuhart.stepview:stepview:1.5.0'
+    implementation 'com.shuhart.stepview:stepview:1.5.1'
+    // Swipe RecyclerView
+    implementation 'com.github.ahmedwasfe:SwipeRecycler:1.0'
 
     // Spinner & Search
     implementation 'com.jaredrummler:material-spinner:1.3.1'
@@ -46,29 +48,40 @@ dependencies {
     implementation 'com.github.mancj:MaterialSearchBar:0.8.2'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-firestore:21.3.1'
-    implementation 'com.google.firebase:firebase-messaging:20.1.0'
-    implementation 'com.google.firebase:firebase-storage:19.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
+    implementation 'com.google.firebase:firebase-database:19.3.0'
+    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+    implementation 'com.google.firebase:firebase-firestore:21.4.3'
+    implementation 'com.google.firebase:firebase-messaging:20.2.0'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
+
+    // Facebook
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
 
     // Location
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.libraries.places:places:2.1.0'
+    implementation 'com.google.android.libraries.places:places:2.3.0'
 
     // Picasso Image & compressor Image
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'de.hdodenhof:circleimageview:3.0.1'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'id.zelory:compressor:2.1.0'
 
     // Permission
-    implementation 'com.karumi:dexter:6.0.1'
+    implementation 'com.karumi:dexter:6.1.2'
 
-    // Retrofit & Rxjava
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    // RX
     implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
     implementation "io.reactivex.rxjava2:rxjava:2.1.14"
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // Butterknife
     implementation 'com.jakewharton:butterknife:10.2.1'
@@ -77,13 +90,15 @@ dependencies {
     // Dialog and Permession
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
     implementation 'com.github.ybq:Android-SpinKit:1.2.0'
-    implementation 'com.karumi:dexter:6.0.1'
+    implementation 'com.github.autume:CircleProgressDialog:1.0.2'
+    // Permission
+    implementation 'com.karumi:dexter:6.1.2'
 
     // ٍintro Slid
     // implementation 'com.heinrichreimersoftware:material-intro:1.6'
 
-    // Facebook
-    implementation 'com.facebook.android:account-kit-sdk:5.+'
+    // Counter Floaung Butoon
+    implementation 'com.github.andremion:counterfab:1.2.0'
 
     // Calender
     implementation 'devs.mulham.horizontalcalendar:horizontalcalendar:1.3.4'
@@ -91,8 +106,18 @@ dependencies {
     // paperdb
     implementation 'io.paperdb:paperdb:2.6'
 
-    // google gson
-    implementation 'com.google.code.gson:gson:2.8.6'
 
+    // EvenyBus
     implementation 'org.greenrobot:eventbus:3.1.1'
+
+    // Shimmer layout
+    implementation 'io.supercharge:shimmerlayout:2.1.0'
+
+    // Country Code Picker
+    implementation 'com.hbb20:ccp:2.4.5'
+
+    // pinView
+    implementation 'com.chaos.view:pinview:1.4.4'
+
+    implementation("com.squareup.okhttp3:logging-interceptor:4.8.0")
 }

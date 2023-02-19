@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/scroll_view_add_product"
     android:padding="@dimen/margin10">
 
 
@@ -16,64 +17,53 @@
             android:layout_width="@dimen/widthheight"
             android:layout_height="220dp"
             android:layout_margin="@dimen/margin8"
-            android:background="@color/colorGray"
+            android:scaleType="centerCrop"
+            android:background="@drawable/select_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_product_name"
-            android:layout_width="@dimen/widthheight"
+        <EditText
+            android:id="@+id/input_product_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/product_name"
+            android:inputType="text"
+            android:padding="@dimen/margin16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_add_product">
+            app:layout_constraintTop_toBottomOf="@id/img_add_product" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_product_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/product_name"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_product_price"
-            android:layout_width="@dimen/widthheight"
+        <EditText
+            android:id="@+id/input_product_price"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/price"
+            android:inputType="number"
+            android:padding="@dimen/margin16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_product_name">
+            app:layout_constraintTop_toBottomOf="@id/input_product_name" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_product_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/price"
-                android:inputType="number" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txt_layout_description"
-            android:layout_width="@dimen/widthheight"
+        <EditText
+            android:id="@+id/input_product_description"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin8"
+            android:layout_marginTop="@dimen/margin10"
+            android:background="@drawable/input_bg"
+            android:hint="@string/optional_description"
+            android:inputType="textLongMessage"
+            android:padding="@dimen/margin16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_product_price">
+            app:layout_constraintTop_toBottomOf="@id/input_product_price" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt_input_product_description"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/optional_description"
-                android:inputType="textLongMessage" />
 
-        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btn_add_product"
@@ -81,25 +71,15 @@
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:layout_marginTop="18dp"
-            android:background="@drawable/btn_bg"
+            android:background="@drawable/btn_bg_yallow"
             android:padding="14dp"
             android:text="@string/add_product"
             android:textAllCaps="false"
             android:textSize="@dimen/margin16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_description" />
+            app:layout_constraintTop_toBottomOf="@id/input_product_description" />
 
-        <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/progress_load_image"
-            style="@style/SpinKitView.Large.Circle"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="40dp"
-            app:SpinKit_Color="@color/colorAccent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_layout_description" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
